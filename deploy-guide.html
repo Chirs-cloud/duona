@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>部署指南</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: #F5F3FF; color: #1E1B4B; padding: 40px 20px; line-height: 1.8; }
+    .card { max-width: 560px; margin: 0 auto; background: white; border-radius: 20px; padding: 32px; box-shadow: 0 4px 24px rgba(139,92,246,0.1); }
+    h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; color: #8B5CF6; }
+    .step { display: flex; gap: 14px; margin: 20px 0; align-items: flex-start; }
+    .num { width: 28px; height: 28px; border-radius: 50%; background: #8B5CF6; color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .content { flex: 1; }
+    .content h3 { font-size: 15px; margin-bottom: 4px; }
+    .content p { font-size: 13px; color: #6B7280; }
+    code { background: #EDE9FE; color: #7C3AED; padding: 2px 8px; border-radius: 6px; font-size: 13px; }
+    .warn { background: #FEF3C7; border-left: 4px solid #F59E0B; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-top: 20px; }
+    .ok { background: #D1FAE5; border-left: 4px solid #10B981; padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-top: 16px; }
+    .btn { display: inline-block; background: #8B5CF6; color: white; padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; margin-top: 20px; font-size: 14px; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1>💜 多拿点 · 部署指南</h1>
+  <p style="color:#6B7280;font-size:14px;margin-bottom:24px;">只需要 3 步，AI 功能马上可用</p>
+
+  <div class="step">
+    <div class="num">1</div>
+    <div class="content">
+      <h3>Fork 项目到 GitHub</h3>
+      <p>在 GitHub 新建账号（或登录）→ 点击 <code>Fork</code> 把这个项目复制到你的仓库</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">2</div>
+    <div class="content">
+      <h3>连接 Vercel 部署</h3>
+      <p>打开 <a href="https://vercel.com" target="_blank">vercel.com</a> → 用 GitHub 登录 → Import 项目 → 点 Deploy</p>
+      <p style="margin-top:6px;">Vercel 免费，不需要信用卡！</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="num">3</div>
+    <div class="content">
+      <h3>自动上线</h3>
+      <p>部署完成后，你会得到一个 <code>.vercel.app</code> 链接，AI 功能自动生效！</p>
+    </div>
+  </div>
+
+  <div class="warn">
+    <strong>⚠️ 当前状态说明：</strong><br>
+    本地预览模式已可用（演示算法）。<br>
+    真实 AI 功能需要部署后才能使用，原因：浏览器安全限制（跨域）阻止了直接调用 DeepSeek API。
+  </div>
+
+  <div class="ok">
+    <strong>✅ 推荐原因：</strong><br>
+    Vercel 完全免费，3 分钟完成部署，以后代码更新自动同步，无需维护服务器。
+  </div>
+
+  <a href="https://github.com" target="_blank" class="btn">🚀 开始部署</a>
+</div>
+</body>
+</html>

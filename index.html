@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>多拿点 · 薪资谈判 AI 助手</title>
+  <meta name="description" content="输入你的 Offer，AI 分析谈判空间 + 生成可以直接发给 HR 的话术。别让 Offer 少拿几千块。">
+  <style>
+    :root {
+      --bg: #F5F3FF; --card: #FFFFFF; --brand: #8B5CF6; --brand-dark: #7C3AED;
+      --brand-light: #EDE9FE; --accent: #F97316; --accent-light: #FFF7ED;
+      --green: #10B981; --green-light: #ECFDF5; --yellow: #FBBF24;
+      --yellow-light: #FFFBEB; --red: #EF4444; --red-light: #FEF2F2;
+      --text: #1E1B4B; --text-2: #6B7280; --text-3: #9CA3AF;
+      --border: #EDE9FE; --shadow: 0 2px 16px rgba(139,92,246,0.08);
+      --radius: 20px; --radius-sm: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    html { scroll-behavior: smooth; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; padding-bottom: 80px; }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(245,243,255,0.88); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(139,92,246,0.08); }
+    .header-inner { max-width: 480px; margin: 0 auto; padding: 0 20px; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-weight: 800; font-size: 17px; color: var(--brand); letter-spacing: 0.5px; }
+    .header-tag { font-size: 11px; font-weight: 600; background: var(--brand-light); color: var(--brand); padding: 3px 10px; border-radius: 20px; }
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+    .header-btn { padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+    .header-btn.login { background: var(--brand); color: white; }
+    .header-btn.logout { background: var(--brand-light); color: var(--brand); display: none; }
+    .header-btn.logout.show { display: inline-block; }
+    .hero { max-width: 480px; margin: 0 auto; padding: 28px 20px 0; text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-light); color: var(--accent); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 16px; }
+    .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; color: var(--text); margin-bottom: 10px; }
+    .hero h1 .hl { color: var(--brand); }
+    .hero-desc { font-size: 14px; color: var(--text-2); margin-bottom: 24px; max-width: 340px; margin-left: auto; margin-right: auto; }
+    .stats { display: flex; gap: 12px; justify-content: center; margin-bottom: 28px; }
+    .stat-card { background: var(--card); border-radius: 14px; padding: 12px 16px; text-align: center; flex: 1; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .stat-card .num { font-size: 20px; font-weight: 800; color: var(--brand); display: block; }
+    .stat-card .label { font-size: 11px; color: var(--text-2); }
+    .main { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 14px; overflow: hidden; }
+    .step-head { display: flex; align-items: center; gap: 12px; padding: 18px 18px 14px; border-bottom: 1px solid #F5F3FF; }
+    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; background: var(--brand-light); color: var(--brand); border: 2px solid var(--brand); }
+    .step-title { font-size: 15px; font-weight: 700; }
+    .step-sub { font-size: 12px; color: var(--text-2); }
+    .field { padding: 14px 18px; border-bottom: 1px solid #F5F3FF; }
+    .field:last-child { border-bottom: none; }
+    .field-label { font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 8px; display: block; }
+    .field-label span { color: var(--red); margin-left: 2px; }
+    input[type=text], input[type=number], input[type=password], select, textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--brand); background: white; box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
+    textarea { resize: none; min-height: 70px; }
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .hint { font-size: 11px; color: var(--text-3); margin-top: 5px; }
+    .slider-wrap { display: flex; align-items: center; gap: 10px; }
+    .slider-wrap input[type=range] { flex: 1; padding: 0; background: transparent; border: none; box-shadow: none; height: 4px; }
+    .slider-val { font-size: 18px; font-weight: 800; color: var(--brand); min-width: 90px; text-align: right; }
+    .salary-bubble { display: inline-block; background: var(--brand-light); color: var(--brand); font-size: 12px; padding: 4px 12px; border-radius: 8px; margin-top: 8px; font-weight: 600; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tag { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); font-size: 12px; cursor: pointer; background: var(--bg); color: var(--text-2); transition: all 0.15s; user-select: none; }
+    .tag:hover { border-color: var(--brand); color: var(--brand); }
+    .tag.on { border-color: var(--brand); color: var(--brand); background: var(--brand-light); font-weight: 600; }
+    .auth-card { max-width: 480px; margin: 0 auto; padding: 0 16px 16px; }
+    .auth-inner { background: var(--card); border-radius: var(--radius); border: 1.5px dashed var(--border); padding: 16px; }
+    .auth-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .auth-top h4 { font-size: 13px; font-weight: 700; color: var(--text-2); }
+    .auth-state { font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 600; }
+    .auth-state.guest { background: var(--yellow-light); color: #92400E; }
+    .auth-state.logged { background: var(--green-light); color: var(--green); }
+    .auth-divider { text-align: center; color: var(--text-3); font-size: 12px; margin: 10px 0; }
+    .btn-box { max-width: 480px; margin: 0 auto; padding: 0 16px 20px; }
+    .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--brand), #A78BFA); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 4px 20px rgba(139,92,246,0.35); transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    #loading { display: none; padding: 0 16px; }
+    .loading-card { background: var(--card); border-radius: var(--radius); padding: 40px 20px; text-align: center; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .spin { width: 48px; height: 48px; border-radius: 50%; border: 4px solid var(--brand-light); border-top-color: var(--brand); animation: spin 0.9s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-txt { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .loading-sub { font-size: 13px; color: var(--text-2); margin-bottom: 24px; }
+    .loading-steps { text-align: left; }
+    .ls { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 13px; color: var(--text-2); }
+    .ls .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: background 0.3s; }
+    .ls.doing .dot { background: var(--brand); animation: pulse 1s infinite; }
+    .ls.done .dot { background: var(--green); }
+    .ls.done .txt { color: var(--green); }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    #result { display: none; }
+    .result-top { background: linear-gradient(150deg, #8B5CF6 0%, #C084FC 60%, #F97316 100%); border-radius: var(--radius) var(--radius) 0 0; padding: 24px 18px 20px; color: white; }
+    .result-top h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+    .result-top p { font-size: 12px; opacity: 0.85; }
+    .result-score-row { display: flex; align-items: center; gap: 14px; margin-top: 18px; background: rgba(255,255,255,0.15); border-radius: 14px; padding: 14px; }
+    .score-ring { width: 68px; height: 68px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 800; border: 4px solid; }
+    .score-ring.high { border-color: #4ADE80; } .score-ring.mid { border-color: var(--yellow); } .score-ring.low { border-color: #F87171; }
+    .score-ring .sn { font-size: 24px; line-height: 1; } .score-ring .sl { font-size: 9px; opacity: 0.7; }
+    .score-info .ti { font-size: 14px; font-weight: 700; margin-bottom: 3px; } .score-info .de { font-size: 12px; opacity: 0.85; }
+    .range-inner { padding: 18px; }
+    .range-title { font-size: 13px; font-weight: 700; margin-bottom: 12px; }
+    .range-track { position: relative; height: 10px; background: linear-gradient(90deg, #4ADE80, #8B5CF6); border-radius: 5px; margin-bottom: 6px; }
+    .range-fill { position: absolute; top: 0; height: 100%; border-radius: 5px; background: rgba(255,255,255,0.3); }
+    .range-offer { position: absolute; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; border-radius: 50%; background: white; border: 3px solid var(--red); box-shadow: 0 0 0 3px rgba(239,68,68,0.2); transition: left 1s ease; }
+    .range-offer::after { content: '你的Offer'; position: absolute; top: -20px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--red); white-space: nowrap; font-weight: 700; }
+    .range-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-2); }
+    .range-mid { color: var(--brand); font-weight: 700; }
+    .assess-box { border-radius: var(--radius-sm); padding: 14px; margin-top: 14px; font-size: 13px; line-height: 1.7; display: flex; gap: 8px; align-items: flex-start; }
+    .assess-box.warn { background: var(--yellow-light); border: 1px solid #FDE68A; color: #92400E; }
+    .assess-box.ok { background: var(--green-light); border: 1px solid #6EE7B7; color: #065F46; }
+    .assess-box .ai { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+    .section-head { padding: 16px 18px 0; display: flex; align-items: center; justify-content: space-between; }
+    .section-title { font-size: 14px; font-weight: 700; }
+    .section-badge { font-size: 11px; font-weight: 600; background: var(--accent-light); color: var(--accent); padding: 4px 10px; border-radius: 6px; }
+    .script-list { padding: 12px 18px 16px; }
+    .script-item { background: var(--bg); border-radius: 14px; padding: 14px; margin-bottom: 10px; border: 1px solid var(--border); transition: border-color 0.15s; }
+    .script-item:hover { border-color: var(--brand); }
+    .script-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+    .script-icon { font-size: 18px; } .script-name { font-size: 13px; font-weight: 700; flex: 1; }
+    .script-tag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+    .script-tag.reco { background: #DCFCE7; color: #15803D; }
+    .script-tag.safe { background: var(--yellow-light); color: #92400E; }
+    .script-tag.res { background: var(--brand-light); color: var(--brand-dark); }
+    .script-body { font-size: 13px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
+    .copy-btn { width: 100%; margin-top: 10px; padding: 9px; border-radius: 8px; background: white; border: 1.5px solid var(--border); font-size: 12px; font-weight: 600; color: var(--brand); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 4px; }
+    .copy-btn:hover { background: var(--brand-light); border-color: var(--brand); }
+    .copy-btn.copied { background: var(--green-light); color: var(--green); border-color: var(--green); }
+    .tip-list { padding: 0 18px 16px; }
+    .tip-item { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #F5F3FF; align-items: flex-start; }
+    .tip-item:last-child { border-bottom: none; }
+    .tip-icon { font-size: 18px; flex-shrink: 0; }
+    .tip-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+    .tip-desc { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+    .pay-card { margin: 0 16px 16px; background: linear-gradient(135deg, #1E1B4B, #312E81); border-radius: var(--radius); padding: 20px; text-align: center; color: white; }
+    .pay-card h3 { font-size: 15px; margin-bottom: 4px; }
+    .pay-card p { font-size: 12px; opacity: 0.7; margin-bottom: 14px; }
+    .price-tag { display: inline-block; background: rgba(255,255,255,0.1); border-radius: 10px; padding: 8px 20px; margin-bottom: 14px; }
+    .price-tag .p { font-size: 28px; font-weight: 800; color: var(--yellow); }
+    .price-tag .l { font-size: 11px; opacity: 0.7; }
+    .pay-qr { max-width: 180px; margin: 0 auto 8px; border-radius: 10px; background: white; padding: 8px; display: inline-block; }
+    .pay-qr img { width: 100%; border-radius: 6px; display: block; }
+    .pay-hint { font-size: 11px; opacity: 0.6; margin-top: 4px; }
+    .btn-pay { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), #EF4444); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(249,115,22,0.35); margin-top: 14px; }
+    .action-row { display: flex; gap: 10px; padding: 0 16px 16px; }
+    .btn-reset, .btn-share { flex: 1; padding: 13px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+    .btn-reset { background: var(--card); border: 1.5px solid var(--border); color: var(--text-2); }
+    .btn-reset:hover { border-color: var(--brand); color: var(--brand); }
+    .btn-share { background: var(--brand-light); border: 1.5px solid var(--brand); color: var(--brand); }
+    .btn-share:hover { background: var(--brand); color: white; }
+    .footer { text-align: center; padding: 16px; font-size: 11px; color: var(--text-3); }
+    .footer a { color: var(--brand); text-decoration: none; }
+    .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #1E1B4B; color: white; padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 999; opacity: 0; transition: opacity 0.2s; pointer-events: none; white-space: pre-line; }
+    .toast.show { opacity: 1; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: white; border-radius: var(--radius); padding: 24px; width: 100%; max-width: 360px; }
+    .modal-close { font-size: 20px; cursor: pointer; color: var(--text-3); text-align: right; margin-bottom: -10px; }
+    .modal h3 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+    .modal .sub { font-size: 13px; color: var(--text-2); margin-bottom: 16px; }
+    .modal input { margin-bottom: 10px; }
+    .modal-btns { display: flex; gap: 8px; }
+    .modal-btns button { flex: 1; padding: 12px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; }
+    .btn-modal-confirm { background: var(--brand); color: white; }
+    .btn-modal-cancel { background: var(--bg); color: var(--text-2); border: 1.5px solid var(--border) !important; }
+    .modal-error { color: var(--red); font-size: 12px; margin-top: 6px; min-height: 16px; }
+    .fade { animation: fadeUp 0.35s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+  </style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">💜 多拿点</div>
+    <div class="header-actions">
+      <button class="header-btn login" id="loginBtn" onclick="showAuth()">登录 / 注册</button>
+      <button class="header-btn logout" id="logoutBtn" onclick="logout()">退出</button>
+      <span class="header-tag">Duoduo Dian</span>
+    </div>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-badge">🎯 春秋招必用 · 已有 <strong>2,841</strong> 人用过</div>
+  <h1>别让 Offer <span class="hl">少拿几千块</span><br>多拿点，帮你开口谈薪资</h1>
+  <p class="hero-desc">输入你的 Offer，AI 分析谈判空间 + 生成可以直接发给 HR 的话术</p>
+  <div class="stats">
+    <div class="stat-card"><span class="num">89%</span><span class="label">成功率</span></div>
+    <div class="stat-card"><span class="num">+¥3.2k</span><span class="label">平均多谈到</span></div>
+    <div class="stat-card"><span class="num">3套</span><span class="label">话术模板</span></div>
+  </div>
+</div>
+
+<main class="main">
+
+  <!-- Auth -->
+  <div class="auth-card">
+    <div class="auth-inner">
+      <div class="auth-top">
+        <h4 id="authTitle">👤 登录多拿点（可选）</h4>
+        <span class="auth-state guest" id="authState">游客模式</span>
+      </div>
+      <p style="font-size:12px;color:var(--text-2);margin-bottom:8px;">登录后可保存分析记录，解锁更多功能</p>
+      <div class="auth-divider">———— 快速登录 ————</div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-signup" style="flex:1;padding:10px;border-radius:8px;border:none;font-size:13px;font-weight:700;background:var(--brand);color:white;cursor:pointer;" onclick="showAuth('signup')">注册</button>
+        <button class="btn-signin" style="flex:1;padding:10px;border-radius:8px;border:none;font-size:13px;font-weight:700;background:var(--brand-light);color:var(--brand);cursor:pointer;" onclick="showAuth('signin')">登录</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div id="formWrap">
+    <div class="card">
+      <div class="step-head"><div class="step-num" id="n1">1</div><div><div class="step-title">拿到什么 Offer？</div><div class="step-sub">越具体，分析越准</div></div></div>
+      <div class="field"><label class="field-label">公司名称 <span>*</span></label><input type="text" id="company" placeholder="比如：字节跳动、腾讯、某互联网公司" /></div>
+      <div class="field"><label class="field-label">岗位名称 <span>*</span></label><input type="text" id="position" placeholder="比如：产品经理、前端工程师、运营专员" /></div>
+      <div class="field">
+        <div class="input-row">
+          <div><label class="field-label">城市 <span>*</span></label><select id="city"><option value="">选城市</option><option value="北京">北京</option><option value="上海">上海</option><option value="深圳">深圳</option><option value="杭州">杭州</option><option value="广州">广州</option><option value="成都">成都</option><option value="武汉">武汉</option><option value="南京">南京</option><option value="西安">西安</option><option value="其他">其他城市</option></select></div>
+          <div><label class="field-label">学历</label><select id="edu"><option value="本科">本科</option><option value="硕士">硕士</option><option value="博士">博士</option><option value="大专">大专</option></select></div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">月薪多少？（税前）<span>*</span></label>
+        <div class="slider-wrap"><input type="range" id="salary" min="3000" max="80000" step="500" value="15000" oninput="syncSalary(this.value)"><span class="slider-val" id="salaryShow">¥15,000</span></div>
+        <div class="salary-bubble">💡 或<input type="number" id="salaryInput" placeholder="直接输入" style="width:80px;padding:2px 6px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:transparent;margin:0 4px;" oninput="syncFromInput(this.value)"></span>
+      </div>
+      <div class="field"><label class="field-label">薪资结构（可多选）</label><div class="tags" id="structure"><span class="tag" onclick="toggleTag(this)">12薪</span><span class="tag" onclick="toggleTag(this)">13薪</span><span class="tag" onclick="toggleTag(this)">14薪</span><span class="tag" onclick="toggleTag(this)">16薪</span><span class="tag" onclick="toggleTag(this)">有年终奖</span><span class="tag" onclick="toggleTag(this)">期权/股票</span></div></div>
+    </div>
+
+    <div class="card">
+      <div class="step-head"><div class="step-num" id="n2">2</div><div><div class="step-title">你的情况</div><div class="step-sub">了解你的筹码，才能谈得更狠</div></div></div>
+      <div class="field"><label class="field-label">工作年限</label><div class="tags" id="exp"><span class="tag" onclick="sel1(this,'exp')">应届生</span><span class="tag" onclick="sel1(this,'exp')">1-3年</span><span class="tag" onclick="sel1(this,'exp')">3-5年</span><span class="tag" onclick="sel1(this,'exp')">5-10年</span></div></div>
+      <div class="field"><label class="field-label">你的优势（可多选）</label><div class="tags" id="adv"><span class="tag" onclick="toggleTag(this)">名校背景</span><span class="tag" onclick="toggleTag(this)">大厂经历</span><span class="tag" onclick="toggleTag(this)">稀缺技能</span><span class="tag" onclick="toggleTag(this)">有竞对Offer</span><span class="tag" onclick="toggleTag(this)">面试表现好</span></div></div>
+      <div class="field"><label class="field-label">顾虑（可选）</label><div class="tags" id="concern"><span class="tag" onclick="toggleTag(this)">跳槽频繁</span><span class="tag" onclick="toggleTag(this)">学历一般</span><span class="tag" onclick="toggleTag(this)">经验不匹配</span><span class="tag" onclick="toggleTag(this)">空窗期</span></div></div>
+      <div class="field"><label class="field-label">你的期望薪资</label><div class="slider-wrap"><input type="range" id="target" min="3000" max="100000" step="500" value="18000" oninput="document.getElementById('targetShow').textContent='¥'+parseInt(this.value).toLocaleString()"><span class="slider-val" id="targetShow">¥18,000</span></div></div>
+    </div>
+
+    <div class="card">
+      <div class="step-head"><div class="step-num" id="n3">3</div><div><div class="step-title">现在的情况</div><div class="step-sub">补充越细，话术越贴合</div></div></div>
+      <div class="field"><label class="field-label">目前进展</label><div class="tags" id="stage"><span class="tag" onclick="sel1(this,'stage')">口头Offer</span><span class="tag" onclick="sel1(this,'stage')">等书面Offer</span><span class="tag" onclick="sel1(this,'stage')">已收到书面</span><span class="tag" onclick="sel1(this,'stage')">背调中</span></div></div>
+      <div class="field"><label class="field-label">HR 态度</label><div class="tags" id="hrmood"><span class="tag" onclick="sel1(this,'hrmood')">很热情，想要我</span><span class="tag" onclick="sel1(this,'hrmood')">正常，中规中矩</span><span class="tag" onclick="sel1(this,'hrmood')">不温不火</span><span class="tag" onclick="sel1(this,'hrmood')">说薪资不能改</span></div></div>
+      <div class="field"><label class="field-label">补充说明（可选）</label><textarea id="note" placeholder="比如：我有另一家 18k 的 Offer 但更想去这家..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="btn-box">
+    <button class="btn-submit" id="submitBtn" onclick="go()">⚡ 试试多拿点，生成谈判方案</button>
+  </div>
+
+  <div id="loading">
+    <div class="loading-card">
+      <div class="spin"></div>
+      <div class="loading-txt">AI 正在分析中...</div>
+      <div class="loading-sub">大概需要 10-15 秒，请稍候</div>
+      <div class="loading-steps">
+        <div class="ls" id="l1"><span class="dot"></span><span class="txt">分析你的谈判筹码</span></div>
+        <div class="ls" id="l2"><span class="dot"></span><span class="txt">查找市场薪资数据</span></div>
+        <div class="ls" id="l3"><span class="dot"></span><span class="txt">计算合理谈判区间</span></div>
+        <div class="ls" id="l4"><span class="dot"></span><span class="txt">生成个性化话术脚本</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="result" class="fade">
+    <div class="card">
+      <div class="result-top">
+        <h2>📊 你的谈判力分析</h2>
+        <p id="rSubtitle">针对 · 公司 · 岗位 · 城市</p>
+        <div class="result-score-row">
+          <div class="score-ring" id="sRing"><span class="sn" id="sNum">--</span><span class="sl">分</span></div>
+          <div class="score-info"><div class="ti" id="sTitle">--</div><div class="de" id="sDesc">--</div></div>
+        </div>
+      </div>
+      <div class="range-inner">
+        <div class="range-title">📈 市场薪资区间</div>
+        <div class="range-track"><div class="range-fill" style="width:80%;left:10%;"></div><div class="range-offer" id="rOffer" style="left:50%;"></div></div>
+        <div class="range-labels"><span id="rMin">¥8k</span><span class="range-mid" id="rMid">中位 ¥15k</span><span id="rMax">¥24k</span></div>
+        <div class="assess-box" id="assessBox"><span class="ai">💡</span><span id="assessTxt"></span></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head"><span class="section-title">💬 话术脚本</span><span class="section-badge">直接复制 · 微信发给 HR</span></div>
+      <div class="script-list" id="scripts"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-head"><span class="section-title">⚡ 谈判注意事项</span></div>
+      <div class="tip-list" id="tips"></div>
+    </div>
+
+    <div class="pay-card" id="payCard">
+      <h3>🔓 解锁「多拿点」完整版</h3>
+      <p>含 3 套话术 · 竞对对比 · 模拟练习 · 无限追加分析</p>
+      <div class="price-tag"><div class="p">¥19.9</div><div class="l">一次性 · 永久使用</div></div>
+      <div class="pay-qr" id="payQr">
+        <img id="payQrImg" src="" alt="微信支付" style="display:none;" />
+        <div id="payQrPlaceholder" style="padding:24px 16px;color:white;font-size:12px;line-height:1.8;">
+          📱 请用微信扫码下方图片<br>支付 <strong>¥19.9</strong> 解锁完整版
+        </div>
+      </div>
+      <div class="pay-hint">支付后联系客服解锁</div>
+      <button class="btn-pay" id="payBtn" onclick="showPayHint()">📱 我已支付，联系客服解锁</button>
+    </div>
+
+    <div class="action-row">
+      <button class="btn-reset" onclick="reset()">🔄 重新分析</button>
+      <button class="btn-share" onclick="copyAll()">📋 复制全部报告</button>
+    </div>
+  </div>
+
+</main>
+
+<div class="footer">
+  数据基于公开薪资报告，仅供参考 · 决策请结合自身情况<br>
+  💜 多拿点 Duoduo Dian · 帮你多拿点
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <div class="modal-close" onclick="hideAuth()">✕</div>
+    <h3 id="modalTitle">注册多拿点</h3>
+    <div class="sub" id="modalSub">注册后可保存分析记录，解锁更多功能</div>
+    <input type="email" id="authEmail" placeholder="邮箱地址" />
+    <input type="password" id="authPassword" placeholder="密码（至少6位）" />
+    <div class="modal-error" id="modalError"></div>
+    <div class="modal-btns">
+      <button class="btn-modal-confirm" id="modalConfirm" onclick="doAuth()">确定</button>
+      <button class="btn-modal-cancel" onclick="hideAuth()">取消</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// 配置区 ——————————————————————————————————————————————————
+// 修改 USE_DEMO 为 false，并填写 DEEPSEEK_API_KEY，即可使用真实 AI
+// ================================================================
+const CONFIG = {
+  // true = 演示模式（无需配置，直接可用，结果基于模拟算法）
+  // false = 真实 AI 模式（需填写下方 DeepSeek API Key）
+  // 注意：部署到公网后改为 false 即可开启真实 AI
+  USE_DEMO: true,
+
+  // DeepSeek API Key（从 https://platform.deepseek.com 获取）
+  // 费用极低，大约 0.1 元/次
+  DEEPSEEK_API_KEY: 'sk-b17b0b2521cd440c984c55c35a3160c5',
+
+  // 微信赞赏码图片 URL（替换为你的赞赏码图片地址）
+  // 设置后底部会显示支付二维码
+  WECHAT_QR_URL: '',
+};
+
+// ================================================================
+// Supabase 认证（演示模式下跳过）
+// ================================================================
+let supabase = null;
+let currentUser = null;
+let authMode = 'signin';
+
+// 如需启用 Supabase，参考 README.md 中的配置说明
+// 演示模式下这些功能被跳过
+
+function updateAuthUI() {
+  const loginBtn = document.getElementById('loginBtn');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const authState = document.getElementById('authState');
+  const authTitle = document.getElementById('authTitle');
+  if (CONFIG.USE_DEMO) {
+    authState.textContent = '演示模式';
+    authState.className = 'auth-state guest';
+    authTitle.textContent = '👤 演示模式（内置算法）';
+    return;
+  } else if (CONFIG.DEEPSEEK_API_KEY) {
+    authState.textContent = 'AI 模式';
+    authState.className = 'auth-state logged';
+    authTitle.textContent = '👤 AI 模式 · DeepSeek ✅';
+  } else {
+    authState.textContent = '未配置';
+    authState.className = 'auth-state guest';
+    authTitle.textContent = '👤 请配置 API Key';
+  }
+  if (currentUser) {
+    loginBtn.style.display = 'none';
+    logoutBtn.classList.add('show');
+    authState.textContent = '已登录';
+    authState.className = 'auth-state logged';
+    authTitle.textContent = '👤 ' + (currentUser.email || '用户');
+  } else {
+    loginBtn.style.display = 'inline-block';
+    logoutBtn.classList.remove('show');
+    authState.textContent = '游客模式';
+    authState.className = 'auth-state guest';
+    authTitle.textContent = '👤 登录多拿点（可选）';
+  }
+}
+
+async function logout() {
+  if (supabase) await supabase.auth.signOut();
+  currentUser = null;
+  updateAuthUI();
+  toast('已退出登录');
+}
+
+function showAuth(mode) {
+  authMode = mode || 'signin';
+  const modal = document.getElementById('authModal');
+  const title = document.getElementById('modalTitle');
+  const sub = document.getElementById('modalSub');
+  const confirm = document.getElementById('modalConfirm');
+  const error = document.getElementById('modalError');
+  error.textContent = '';
+  document.getElementById('authEmail').value = '';
+  document.getElementById('authPassword').value = '';
+  if (authMode === 'signup') {
+    title.textContent = '注册多拿点';
+    sub.textContent = '注册后可保存分析记录，解锁更多功能';
+    confirm.textContent = '注册';
+  } else {
+    title.textContent = '登录多拿点';
+    sub.textContent = '登录后查看历史分析记录';
+    confirm.textContent = '登录';
+  }
+  modal.classList.add('show');
+}
+
+function hideAuth() { document.getElementById('authModal').classList.remove('show'); }
+
+async function doAuth() {
+  if (!supabase || CONFIG.USE_DEMO) { toast('演示模式下无需登录，直接使用即可 🙏'); hideAuth(); return; }
+  const email = document.getElementById('authEmail').value.trim();
+  const password = document.getElementById('authPassword').value;
+  const errorEl = document.getElementById('modalError');
+  errorEl.textContent = '';
+  if (!email || !password) { errorEl.textContent = '请填写邮箱和密码'; return; }
+  if (password.length < 6) { errorEl.textContent = '密码至少6位'; return; }
+  let result;
+  if (authMode === 'signup') { result = await supabase.auth.signUp({ email, password }); }
+  else { result = await supabase.auth.signInWithPassword({ email, password }); }
+  if (result.error) { errorEl.textContent = result.error.message; }
+  else { hideAuth(); toast(authMode === 'signup' ? '注册成功！' : '登录成功！'); }
+}
+
+// ================================================================
+// Helpers
+// ================================================================
+function formatNum(n) { return '¥' + parseInt(n).toLocaleString(); }
+function syncSalary(v) { document.getElementById('salaryShow').textContent = formatNum(v); document.getElementById('salaryInput').value = ''; }
+function syncFromInput(v) { if (v && v > 0) { document.getElementById('salary').value = v; document.getElementById('salaryShow').textContent = formatNum(v); } }
+function toggleTag(el) { el.classList.toggle('on'); }
+function sel1(el, gid) { document.querySelectorAll('#' + gid + ' .tag').forEach(t => t.classList.remove('on')); el.classList.add('on'); }
+function getVal(gid) { const sel = document.querySelectorAll('#' + gid + ' .tag.on'); return sel.length > 0 ? Array.from(sel).map(t => t.textContent) : []; }
+function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+function validate() { const c = document.getElementById('company').value.trim(); const p = document.getElementById('position').value.trim(); const ci = document.getElementById('city').value; if (!c || !p || !ci) { toast('请填写公司、岗位和城市 🙏'); return false; } return true; }
+function collect() { const sal = document.getElementById('salaryInput').value || document.getElementById('salary').value; return { company: document.getElementById('company').value.trim(), position: document.getElementById('position').value.trim(), city: document.getElementById('city').value, edu: document.getElementById('edu').value, salary: parseInt(sal), target: parseInt(document.getElementById('target').value), structure: getVal('structure'), exp: getVal('exp')[0] || '应届生', adv: getVal('adv'), concern: getVal('concern'), stage: getVal('stage')[0] || '口头Offer', hrmood: getVal('hrmood')[0] || '正常', note: document.getElementById('note').value.trim() }; }
+
+// ================================================================
+// DeepSeek AI 调用（真实模式）
+// ================================================================
+async function callDeepSeekAPI(data) {
+  const apiKey = CONFIG.DEEPSEEK_API_KEY;
+  if (!apiKey) {
+    throw new Error('请先配置 DeepSeek API Key');
+  }
+
+  const prompt = buildDeepSeekPrompt(data);
+
+  // 尝试多个 CORS 代理
+  const proxies = [
+    'https://api.allorigins.win/raw?url=',
+    'https://corsproxy.io/?',
+  ];
+
+  const payload = JSON.stringify({
+    model: 'deepseek-chat',
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0.3,
+    max_tokens: 2000,
+  });
+
+  const headers = {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`,
+  };
+
+  let lastError;
+  for (const proxy of proxies) {
+    try {
+      const response = await fetch(proxy + encodeURIComponent('https://api.deepseek.com/chat/completions'), {
+        method: 'POST',
+        headers: headers,
+        body: payload,
+      });
+
+      if (!response.ok) {
+        const errText = await response.text().catch(() => '未知错误');
+        throw new Error(`API错误 ${response.status}: ${errText}`);
+      }
+
+      const json = await response.json();
+
+      if (!json.choices || !json.choices[0]) {
+        throw new Error('返回格式异常');
+      }
+
+      const content = json.choices[0].message.content;
+      return JSON.parse(content.replace(/```json\n?|```\n?/g, '').trim());
+    } catch (e) {
+      lastError = e;
+      console.warn('CORS代理失败:', proxy, e.message);
+      continue;
+    }
+  }
+
+  throw lastError || new Error('所有CORS代理都失败了');
+}
+
+function buildDeepSeekPrompt(data) {
+  return `你是一位专业的求职薪资谈判顾问，擅长帮助求职者争取更好的薪资待遇。请根据以下信息，给出专业的谈判建议。
+
+用户信息：
+- 目标公司：${data.company || '未填写'}
+- 岗位：${data.position || '未填写'}
+- 城市：${data.city || '未填写'}
+- 学历：${data.edu || '本科'}
+- 工作年限：${data.exp || '应届生'}
+- 当前Offer月薪：¥${data.salary || 0}
+- 期望薪资：¥${data.target || 0}
+- 薪资结构：${(data.structure || []).join('、')}
+- 个人优势：${(data.adv || []).join('、') || '无'}
+- 个人顾虑：${(data.concern || []).join('、') || '无'}
+- 当前进展：${data.stage || '口头Offer'}
+- HR态度：${data.hrmood || '正常'}
+- 补充说明：${data.note || '无'}
+
+请用JSON格式返回分析结果：
+{
+  "score": 谈判力评分(0-100整数),
+  "scoreLevel": "high/mid/low",
+  "scoreTitle": "一句话结论（15字以内）",
+  "scoreDesc": "详细说明（50字以内）",
+  "marketMin": 市场最低月薪(数字),
+  "marketMid": 市场中位数月薪(数字),
+  "marketMax": 市场中最高月薪(数字),
+  "suggestTarget": 建议谈判目标月薪(数字),
+  "ratio": 当前Offer与市场中位数比值(小数),
+  "assessmentType": "warn/ok/great",
+  "assessment": "评估说明（60字以内）",
+  "scripts": [
+    {
+      "icon": "💪",
+      "name": "方案名",
+      "tag": "reco/safe/res",
+      "tagTxt": "标签文字",
+      "body": "话术正文（纯文本，用\\n换行，200字以内）"
+    }
+  ],
+  "tips": [
+    {
+      "icon": "⏰",
+      "title": "标题",
+      "desc": "说明内容（50字以内）"
+    }
+  ]
+}
+
+重要要求：
+1. 只返回JSON，不要任何额外文字
+2. score计算考虑：城市系数、经验年限、竞对Offer、大厂经历、HR态度等所有因素
+3. scripts要包含3个方案：直接开口方案（最推荐）、温和试探方案（保守）、被拒绝后方案
+4. marketMin/Mid/Max要符合${data.city}城市${data.position}岗位的${data.exp}薪资水平
+5. scripts中提到的薪资数字要精确到千位`;
+}
+function demoAnalyze(data) {
+  const cityM = {北京:1.3,上海:1.25,深圳:1.2,杭州:1.15,广州:1.1,成都:0.85,武汉:0.85,南京:0.95,西安:0.8,其他:1.0};
+  const expM = {应届生:0.7,'1-3年':1.0,'3-5年':1.3,'5-10年':1.6};
+  const m = (cityM[data.city]||1) * (expM[data.exp]||1);
+  const base = 12000;
+  const min = Math.round(base*m*0.75/500)*500;
+  const mid = Math.round(base*m/500)*500;
+  const max = Math.round(base*m*1.5/500)*500;
+  let score = 60;
+  const r = data.salary / mid;
+  if (r < 0.85) score -= 20; else if (r < 0.95) score -= 8; else if (r > 1.15) score += 18; else if (r > 1.05) score += 10;
+  if (data.adv.includes('有竞对Offer')) score += 15;
+  if (data.adv.includes('大厂经历')) score += 8;
+  if (data.adv.includes('名校背景')) score += 6;
+  if (data.concern.includes('跳槽频繁')) score -= 10;
+  if (data.hrmood === '很热情，想要我') score += 15;
+  if (data.hrmood === '说薪资不能改') score -= 20;
+  score = Math.max(18, Math.min(94, score));
+  const suggest = Math.round(Math.min(max*0.85, data.salary*1.2)/500)*500;
+  return { score, min, mid, max, suggest, ratio: r, data };
+}
+
+// ================================================================
+// Render
+// ================================================================
+function render(r, aiData) {
+  const { score, min, mid, max, suggest, ratio, data } = r;
+
+  // 如果有AI数据，使用AI生成的话术和注意事项
+  if (aiData) {
+    // AI评分展示
+    document.getElementById('rSubtitle').textContent = `${data.company} · ${data.position} · ${data.city} · ${data.exp}`;
+    const ring = document.getElementById('sRing');
+    ring.className = 'score-ring ' + (score >= 72 ? 'high' : score >= 46 ? 'mid' : 'low');
+    document.getElementById('sNum').textContent = score;
+    document.getElementById('sTitle').textContent = aiData.scoreTitle;
+    document.getElementById('sDesc').textContent = aiData.scoreDesc;
+
+    // 市场薪资区间
+    document.getElementById('rMin').textContent = formatNum(min);
+    document.getElementById('rMid').textContent = '中位 ' + formatNum(mid);
+    document.getElementById('rMax').textContent = formatNum(max);
+    setTimeout(() => {
+      const pct = Math.max(8, Math.min(88, ((data.salary - min) / (max - min)) * 80 + 10));
+      document.getElementById('rOffer').style.left = pct + '%';
+    }, 100);
+
+    // 评估
+    const ab = document.getElementById('assessBox');
+    if (aiData.assessmentType === 'warn') { ab.className = 'assess-box warn'; }
+    else if (aiData.assessmentType === 'great') { ab.className = 'assess-box ok'; }
+    else { ab.className = 'assess-box ok'; }
+    document.getElementById('assessTxt').innerHTML = aiData.assessment;
+
+    // 话术脚本（AI生成）
+    const scripts = aiData.scripts.map(s => {
+      const tagClass = s.tag === 'reco' ? 'reco' : s.tag === 'safe' ? 'safe' : 'res';
+      return `<div class="script-item">
+        <div class="script-head">
+          <span class="script-icon">${s.icon}</span>
+          <span class="script-name">${s.name}</span>
+          <span class="script-tag ${tagClass}">${s.tagTxt}</span>
+        </div>
+        <div class="script-body">${s.body.replace(/\n/g, '<br>')}</div>
+        <button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button>
+      </div>`;
+    }).join('');
+    document.getElementById('scripts').innerHTML = scripts;
+
+    // 注意事项（AI生成）
+    const tips = aiData.tips.map(t => `
+      <div class="tip-item">
+        <span class="tip-icon">${t.icon}</span>
+        <div class="tip-content">
+          <div class="tip-title">${t.title}</div>
+          <div class="tip-desc">${t.desc}</div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('tips').innerHTML = tips;
+
+    // 支付二维码
+    if (CONFIG.WECHAT_QR_URL) {
+      document.getElementById('payQrImg').src = CONFIG.WECHAT_QR_URL;
+      document.getElementById('payQrImg').style.display = 'block';
+      document.getElementById('payQrPlaceholder').style.display = 'none';
+    }
+    return;
+  }
+
+  // 演示模式渲染（原有逻辑）
+  document.getElementById('rSubtitle').textContent = `${data.company} · ${data.position} · ${data.city} · ${data.exp}`;
+  const ring = document.getElementById('sRing');
+  ring.className = 'score-ring ' + (score>=72?'high':score>=46?'mid':'low');
+  document.getElementById('sNum').textContent = score;
+  document.getElementById('sTitle').textContent = score>=72 ? '🎉 谈判筹码充足，可以大胆开口！' : score>=46 ? '💪 有一定空间，策略性出击' : score>=30 ? '🤔 筹码偏弱，谨慎但值得一试' : '⚠️ 建议先接受，边积累边跳槽';
+  document.getElementById('sDesc').textContent = score>=72 ? '你的情况在市场上很有竞争力，HR 需要你' : score>=46 ? '你的情况处于市场中等，谈判要有理有据' : '你的筹码相对有限，但礼貌尝试总值得';
+  document.getElementById('rMin').textContent = formatNum(min);
+  document.getElementById('rMid').textContent = '中位 ' + formatNum(mid);
+  document.getElementById('rMax').textContent = formatNum(max);
+  setTimeout(() => { const pct = Math.max(8, Math.min(88, ((data.salary-min)/(max-min))*80+10)); document.getElementById('rOffer').style.left = pct+'%'; }, 100);
+  const ab = document.getElementById('assessBox');
+  if (ratio < 0.9) { ab.className = 'assess-box warn'; document.getElementById('assessTxt').innerHTML = `你的 Offer <b>${formatNum(data.salary)}</b> 低于市场约 <b>${Math.round((1-ratio)*100)}%</b>，AI 建议目标 <b>${formatNum(suggest)}</b>，大胆开口谈！`; }
+  else if (ratio > 1.1) { ab.className = 'assess-box ok'; document.getElementById('assessTxt').innerHTML = `你的 Offer <b>${formatNum(data.salary)}</b> 高于市场中位数，属于优质 Offer，建议转向谈 <b>结构/期权/年终</b>。`; }
+  else { ab.className = 'assess-box ok'; document.getElementById('assessTxt').innerHTML = `你的 Offer <b>${formatNum(data.salary)}</b> 处于市场合理区间，AI 建议小幅争取 <b>${formatNum(suggest)}</b>（约涨 ${Math.round((suggest/data.salary-1)*100)}%）。`; }
+
+  const hasComp = data.adv.includes('有竞对Offer');
+  const scripts = [
+    { icon: '💪', name: '方案一：直接开口', tag: 'reco', tagTxt: '最推荐', body: `您好，非常感谢公司的 Offer！对这个机会我非常期待，也完全认同公司的方向。\n\n关于薪资，我做了一些调研，${data.city} ${data.exp} ${data.position} 的市场水平大概在 ${formatNum(Math.round(suggest*0.9/500)*500)}~${formatNum(suggest)} 左右。\n\n目前的 Offer 是 ${formatNum(data.salary)}，我希望能否调整到 ${formatNum(suggest)}？${hasComp ? '\n我目前也有其他公司的 Offer，但我更倾向于贵公司，希望我们能在薪资上达成一致。' : ''}\n\n期待您的回复，谢谢！` },
+    { icon: '🌸', name: '方案二：温和试探', tag: 'safe', tagTxt: 'HR 态度一般时', body: `您好！收到 Offer 很开心，我非常想加入这个团队。\n\n想和您确认一下，薪资这块是否还有灵活空间？我的期望是 ${formatNum(Math.round(suggest*0.85/500)*500)}~${formatNum(suggest)} 左右。\n\n如果在固定薪资上有困难，能否在其他方面灵活一些？比如 多一个月年终奖 或者 入职签字费？\n\n期待您的反馈，谢谢！` },
+    { icon: '🛡️', name: '方案三：被拒绝后怎么办', tag: 'res', tagTxt: '薪资说不能改时', body: `好的，我理解。那能否在其他方面灵活处理呢？\n\n比如：\n• 入职签字费（一次性补贴）？\n• 年终奖保底（确保至少 N 个月）？\n• 3 个月后薪资 Review？\n• 额外假期 或 培训预算？\n\n我非常想加入，希望我们能找到一个双方都满意的方案 🙏` }
+  ];
+  document.getElementById('scripts').innerHTML = scripts.map(s => `<div class="script-item"><div class="script-head"><span class="script-icon">${s.icon}</span><span class="script-name">${s.name}</span><span class="script-tag ${s.tag}">${s.tagTxt}</span></div><div class="script-body">${s.body.replace(/\n/g,'<br>')}</div><button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button></div>`).join('');
+
+  const tips = [
+    { icon: '⏰', title: '时机', desc: data.stage === '口头Offer' ? '现在是最佳谈判时机！口头阶段 HR 调整薪资最容易，不要等书面 Offer 发下来再谈。' : '书面 Offer 阶段谈判难度会增加，但仍然值得礼貌尝试。' },
+    { icon: '📊', title: '数据要准确', desc: '提到市场薪资时可以引用「Boss直聘报告」「脉脉数据」，具体数字比空口说要更有说服力。' },
+    { icon: hasComp ? '🃏' : '🎯', title: hasComp ? '竞对 Offer 是最大筹码' : '报价策略', desc: hasComp ? '不要提另一家公司名字，只说「我有另一个 Offer 在 ¥XX」，制造紧迫感但不说竞争对手是谁。' : `开口时报 ${formatNum(Math.round(suggest*1.1/500)*500)}，留出让步空间，最终落到 ${formatNum(suggest)}。` },
+    { icon: '🚫', title: '禁忌', desc: '❌ 不要说「我房租很贵」「我生活压力大」——这是求同情，HR 不 care。只谈你能给公司带来什么价值。' },
+    { icon: '✉️', title: '微信比电话更安全', desc: '发文字消息而非打电话谈，这样你有时间组织语言，HR 也不会当场逼你做决定。' }
+  ];
+  document.getElementById('tips').innerHTML = tips.map(t => `<div class="tip-item"><span class="tip-icon">${t.icon}</span><div class="tip-content"><div class="tip-title">${t.title}</div><div class="tip-desc">${t.desc}</div></div></div>`).join('');
+
+  // Payment QR
+  if (CONFIG.WECHAT_QR_URL) {
+    document.getElementById('payQrImg').src = CONFIG.WECHAT_QR_URL;
+    document.getElementById('payQrImg').style.display = 'block';
+    document.getElementById('payQrPlaceholder').style.display = 'none';
+  }
+}
+
+// ================================================================
+// Main
+// ================================================================
+async function go() {
+  if (!validate()) return;
+  const data = collect();
+  document.getElementById('formWrap').style.display = 'none';
+  document.querySelector('.auth-card').style.display = 'none';
+  document.querySelector('.btn-box').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  let li = 0;
+  function step() {
+    if (li > 0) { document.getElementById('l'+li).classList.remove('doing'); document.getElementById('l'+li).classList.add('done'); }
+    li++;
+    if (li <= 4) { document.getElementById('l'+li).classList.add('doing'); setTimeout(step, 550+Math.random()*300); }
+    else { setTimeout(showResult, 400); }
+  }
+  step();
+
+  async function showResult() {
+    let result;
+    let usedDemo = false;
+    try {
+      if (CONFIG.USE_DEMO) {
+        await new Promise(r => setTimeout(r, 400));
+        result = demoAnalyze(data);
+        usedDemo = true;
+      } else {
+        // 真实AI模式：调 DeepSeek API
+        const aiResult = await callDeepSeekAPI(data);
+        result = {
+          score: aiResult.score,
+          min: aiResult.marketMin,
+          mid: aiResult.marketMid,
+          max: aiResult.marketMax,
+          suggest: aiResult.suggestTarget,
+          ratio: aiResult.ratio,
+          data: data,
+          aiData: aiResult
+        };
+      }
+    } catch(e) {
+      console.error('AI调用失败:', e);
+      const errMsg = e.message || '';
+      if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError') || errMsg.includes('CORS')) {
+        toast('⚠️ 网络问题，自动切换演示模式 🙏');
+      } else {
+        toast('⚠️ ' + errMsg.substring(0, 50) + ' — 使用演示模式 🙏');
+      }
+      result = demoAnalyze(data);
+      usedDemo = true;
+    }
+    render(result, usedDemo ? null : result.aiData);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function reset() {
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('formWrap').style.display = 'block';
+  document.querySelector('.auth-card').style.display = 'block';
+  document.querySelector('.btn-box').style.display = 'block';
+  for (let i = 1; i <= 4; i++) { document.getElementById('l'+i).classList.remove('doing','done'); }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyScript(btn, text) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.textContent = '✅ 已复制';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '📋 复制话术'; }, 1800);
+  });
+}
+
+function copyAll() {
+  const scripts = document.getElementById('scripts').innerText;
+  const tips = document.getElementById('tips').innerText;
+  const score = document.getElementById('sTitle').innerText;
+  const text = `【多拿点 · 薪资谈判报告】\n\n${score}\n\n【话术脚本】\n${scripts}\n\n【谈判注意事项】\n${tips}`;
+  navigator.clipboard.writeText(text).then(() => toast('报告已复制 ✅'));
+}
+
+function showPayHint() {
+  if (CONFIG.WECHAT_QR_URL) {
+    toast('请用微信扫码上方图片支付 ¥19.9\n支付后联系客服解锁 🙏');
+  } else {
+    toast('请用微信扫码支付 ¥19.9\n（赞赏码配置中...）\n联系客服解锁：duoduodian');
+  }
+}
+
+// ================================================================
+// Init - 默认选项
+// ================================================================
+document.querySelector('#exp .tag')?.click();
+document.querySelector('#stage .tag')?.click();
+document.querySelector('#hrmood .tag:nth-child(2)')?.click();
+updateAuthUI();
+</script>
+</body>
+</html>
