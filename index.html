@@ -340,10 +340,6 @@ const CONFIG = {
   // false = 真实 AI 模式（需填写下方 DeepSeek API Key）
   USE_DEMO: false,
 
-  // DeepSeek API Key（从 https://platform.deepseek.com 获取）
-  // 费用极低，大约 0.1 元/次
-  DEEPSEEK_API_KEY: 'sk-b17b0b2521cd440c984c55c35a3160c5',
-
   // 微信赞赏码图片 URL（替换为你的赞赏码图片地址）
   // 设置后底部会显示支付二维码
   WECHAT_QR_URL: '',
@@ -456,61 +452,31 @@ function collect() { const sal = document.getElementById('salaryInput').value ||
 // DeepSeek AI 调用（真实模式）
 // ================================================================
 async function callDeepSeekAPI(data) {
-  const apiKey = CONFIG.DEEPSEEK_API_KEY;
-  if (!apiKey) {
-    throw new Error('请先配置 DeepSeek API Key');
-  }
-
   const prompt = buildDeepSeekPrompt(data);
 
-  // 尝试多个 CORS 代理
-  const proxies = [
-    'https://api.allorigins.win/raw?url=',
-    'https://corsproxy.io/?',
-  ];
-
-  const payload = JSON.stringify({
-    model: 'deepseek-chat',
-    messages: [{ role: 'user', content: prompt }],
-    temperature: 0.3,
-    max_tokens: 2000,
+  // 调用 Vercel 服务端函数（服务端无 CORS 限制）
+  const response = await fetch('/api/analyze', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages: [{ role: 'user', content: prompt }] }),
   });
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${apiKey}`,
-  };
-
-  let lastError;
-  for (const proxy of proxies) {
-    try {
-      const response = await fetch(proxy + encodeURIComponent('https://api.deepseek.com/chat/completions'), {
-        method: 'POST',
-        headers: headers,
-        body: payload,
-      });
-
-      if (!response.ok) {
-        const errText = await response.text().catch(() => '未知错误');
-        throw new Error(`API错误 ${response.status}: ${errText}`);
-      }
-
-      const json = await response.json();
-
-      if (!json.choices || !json.choices[0]) {
-        throw new Error('返回格式异常');
-      }
-
-      const content = json.choices[0].message.content;
-      return JSON.parse(content.replace(/```json\n?|```\n?/g, '').trim());
-    } catch (e) {
-      lastError = e;
-      console.warn('CORS代理失败:', proxy, e.message);
-      continue;
-    }
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.error || `请求失败: ${response.status}`);
   }
 
-  throw lastError || new Error('所有CORS代理都失败了');
+  const json = await response.json();
+  if (!json.choices || !json.choices[0]) {
+    throw new Error('返回格式异常');
+  }
+
+  const content = json.choices[0].message.content;
+  try {
+    return JSON.parse(content.replace(/```json\n?|```\n?/g, '').trim());
+  } catch {
+    throw new Error('AI 返回格式异常，请重试');
+  }
 }
 
 function buildDeepSeekPrompt(data) {
