@@ -1,0 +1,13 @@
+{
+  "name": "duoduo-dian",
+  "version": "1.0.0",
+  "description": "多拿点 - AI 薪资谈判助手",
+  "main": "index.html",
+  "scripts": {
+    "build": "echo 'Static site ready'",
+    "dev": "python -m http.server 3000"
+  },
+  "keywords": ["salary", "negotiation", "ai", "job"],
+  "author": "Chirs",
+  "license": "MIT"
+}
