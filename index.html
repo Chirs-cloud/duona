@@ -168,8 +168,6 @@
   <div class="header-inner">
     <div class="logo">💜 多拿点</div>
     <div class="header-actions">
-      <button class="header-btn login" id="loginBtn" onclick="showAuth()">登录 / 注册</button>
-      <button class="header-btn logout" id="logoutBtn" onclick="logout()">退出</button>
       <span class="header-tag">Duoduo Dian</span>
     </div>
   </div>
@@ -187,22 +185,6 @@
 </div>
 
 <main class="main">
-
-  <!-- Auth -->
-  <div class="auth-card">
-    <div class="auth-inner">
-      <div class="auth-top">
-        <h4 id="authTitle">👤 登录多拿点（可选）</h4>
-        <span class="auth-state guest" id="authState">游客模式</span>
-      </div>
-      <p style="font-size:12px;color:var(--text-2);margin-bottom:8px;">登录后可保存分析记录，解锁更多功能</p>
-      <div class="auth-divider">———— 快速登录 ————</div>
-      <div style="display:flex;gap:8px;">
-        <button class="btn-signup" style="flex:1;padding:10px;border-radius:8px;border:none;font-size:13px;font-weight:700;background:var(--brand);color:white;cursor:pointer;" onclick="showAuth('signup')">注册</button>
-        <button class="btn-signin" style="flex:1;padding:10px;border-radius:8px;border:none;font-size:13px;font-weight:700;background:var(--brand-light);color:var(--brand);cursor:pointer;" onclick="showAuth('signin')">登录</button>
-      </div>
-    </div>
-  </div>
 
   <!-- Form -->
   <div id="formWrap">
@@ -356,36 +338,16 @@ let authMode = 'signin';
 // 演示模式下这些功能被跳过
 
 function updateAuthUI() {
+  // 登录卡片已移除，仅更新 header 状态
   const loginBtn = document.getElementById('loginBtn');
   const logoutBtn = document.getElementById('logoutBtn');
-  const authState = document.getElementById('authState');
-  const authTitle = document.getElementById('authTitle');
-  if (CONFIG.USE_DEMO) {
-    authState.textContent = '演示模式';
-    authState.className = 'auth-state guest';
-    authTitle.textContent = '👤 演示模式（内置算法）';
-    return;
-  } else if (CONFIG.DEEPSEEK_API_KEY) {
-    authState.textContent = 'AI 模式';
-    authState.className = 'auth-state logged';
-    authTitle.textContent = '👤 AI 模式 · DeepSeek ✅';
-  } else {
-    authState.textContent = '未配置';
-    authState.className = 'auth-state guest';
-    authTitle.textContent = '👤 请配置 API Key';
-  }
+  if (!loginBtn) return;
   if (currentUser) {
     loginBtn.style.display = 'none';
-    logoutBtn.classList.add('show');
-    authState.textContent = '已登录';
-    authState.className = 'auth-state logged';
-    authTitle.textContent = '👤 ' + (currentUser.email || '用户');
+    logoutBtn && logoutBtn.classList.add('show');
   } else {
-    loginBtn.style.display = 'inline-block';
-    logoutBtn.classList.remove('show');
-    authState.textContent = '游客模式';
-    authState.className = 'auth-state guest';
-    authTitle.textContent = '👤 登录多拿点（可选）';
+    loginBtn.style.display = 'none'; // 登录功能已简化，不显示
+    logoutBtn && logoutBtn.classList.remove('show');
   }
 }
 
@@ -672,63 +634,111 @@ function render(r, aiData) {
 async function go() {
   if (!validate()) return;
   const data = collect();
-  document.getElementById('formWrap').style.display = 'none';
-  document.querySelector('.auth-card').style.display = 'none';
-  document.querySelector('.btn-box').style.display = 'none';
-  document.getElementById('loading').style.display = 'block';
-  let li = 0;
-  function step() {
-    if (li > 0) { document.getElementById('l'+li).classList.remove('doing'); document.getElementById('l'+li).classList.add('done'); }
-    li++;
-    if (li <= 4) { document.getElementById('l'+li).classList.add('doing'); setTimeout(step, 550+Math.random()*300); }
-    else { setTimeout(showResult, 400); }
-  }
-  step();
 
-  async function showResult() {
-    let result;
-    let usedDemo = false;
-    try {
-      if (CONFIG.USE_DEMO) {
-        await new Promise(r => setTimeout(r, 400));
-        result = demoAnalyze(data);
-        usedDemo = true;
-      } else {
-        // 真实AI模式：调 DeepSeek API
-        const aiResult = await callDeepSeekAPI(data);
-        result = {
-          score: aiResult.score,
-          min: aiResult.marketMin,
-          mid: aiResult.marketMid,
-          max: aiResult.marketMax,
-          suggest: aiResult.suggestTarget,
-          ratio: aiResult.ratio,
-          data: data,
-          aiData: aiResult
-        };
-      }
-    } catch(e) {
-      console.error('AI调用失败:', e);
-      const errMsg = e.message || '';
-      if (errMsg.includes('Failed to fetch') || errMsg.includes('NetworkError') || errMsg.includes('CORS')) {
-        toast('⚠️ 网络问题，自动切换演示模式 🙏');
-      } else {
-        toast('⚠️ ' + errMsg.substring(0, 50) + ' — 使用演示模式 🙏');
-      }
+  // 隐藏表单，显示加载态
+  document.getElementById('formWrap').style.display = 'none';
+  document.querySelector('.btn-box').style.display = 'none';
+  const loadingEl = document.getElementById('loading');
+  loadingEl.style.display = 'block';
+
+  // 重置步骤状态
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('l'+i);
+    el.classList.remove('doing','done');
+  }
+
+  // 更新加载文案
+  const loadingTxt = document.querySelector('.loading-txt');
+  const loadingSub = document.querySelector('.loading-sub');
+  loadingTxt.textContent = 'AI 正在分析中...';
+  loadingSub.textContent = '大概需要 10-20 秒，请稍候';
+
+  // 步骤推进函数（手动控制每步）
+  let currentStep = 0;
+  function advanceStep() {
+    if (currentStep > 0) {
+      document.getElementById('l'+currentStep).classList.remove('doing');
+      document.getElementById('l'+currentStep).classList.add('done');
+    }
+    currentStep++;
+    if (currentStep <= 4) {
+      document.getElementById('l'+currentStep).classList.add('doing');
+    }
+  }
+
+  // 开始第1步
+  advanceStep();
+
+  let result;
+  let usedDemo = false;
+
+  try {
+    if (CONFIG.USE_DEMO) {
+      // 演示模式：模拟步骤动画
+      await new Promise(r => setTimeout(r, 600)); advanceStep();
+      await new Promise(r => setTimeout(r, 700)); advanceStep();
+      await new Promise(r => setTimeout(r, 600)); advanceStep();
+      await new Promise(r => setTimeout(r, 500));
       result = demoAnalyze(data);
       usedDemo = true;
+    } else {
+      // 真实AI模式：并行跑动画和API
+      // 启动API调用
+      const apiPromise = callDeepSeekAPI(data);
+
+      // 步骤2：等1.5s推进
+      await new Promise(r => setTimeout(r, 1500));
+      advanceStep();
+      loadingSub.textContent = '正在查询市场薪资数据...';
+
+      // 步骤3：等2s推进
+      await new Promise(r => setTimeout(r, 2000));
+      advanceStep();
+      loadingSub.textContent = 'AI 正在生成话术脚本...';
+
+      // 步骤4：等2s推进
+      await new Promise(r => setTimeout(r, 2000));
+      advanceStep();
+      loadingSub.textContent = '即将完成，稍等一下...';
+
+      // 等待API完成
+      const aiResult = await apiPromise;
+
+      result = {
+        score: aiResult.score,
+        min: aiResult.marketMin,
+        mid: aiResult.marketMid,
+        max: aiResult.marketMax,
+        suggest: aiResult.suggestTarget,
+        ratio: aiResult.ratio,
+        data: data,
+        aiData: aiResult
+      };
     }
-    render(result, usedDemo ? null : result.aiData);
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('result').style.display = 'block';
-    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } catch(e) {
+    console.error('AI调用失败:', e);
+    const errMsg = e.message || '';
+    toast('⚠️ AI 连接超时，已切换演示模式');
+    // 确保动画跑完
+    for (let i = currentStep; i <= 4; i++) { advanceStep(); }
+    await new Promise(r => setTimeout(r, 300));
+    result = demoAnalyze(data);
+    usedDemo = true;
   }
+
+  // 完成所有步骤
+  for (let i = currentStep; i <= 4; i++) { advanceStep(); }
+  await new Promise(r => setTimeout(r, 400));
+
+  render(result, usedDemo ? null : result.aiData);
+  loadingEl.style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function reset() {
   document.getElementById('result').style.display = 'none';
   document.getElementById('formWrap').style.display = 'block';
-  document.querySelector('.auth-card').style.display = 'block';
   document.querySelector('.btn-box').style.display = 'block';
   for (let i = 1; i <= 4; i++) { document.getElementById('l'+i).classList.remove('doing','done'); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
