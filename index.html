@@ -27,12 +27,19 @@
     .header-btn.login { background: var(--brand); color: white; }
     .header-btn.logout { background: var(--brand-light); color: var(--brand); display: none; }
     .header-btn.logout.show { display: inline-block; }
-    .hero { max-width: 480px; margin: 0 auto; padding: 28px 20px 0; text-align: center; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-light); color: var(--accent); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 16px; }
-    .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; color: var(--text); margin-bottom: 10px; }
+    .user-avatar { display: none; width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; font-size: 14px; font-weight: 700; align-items: center; justify-content: center; cursor: pointer; border: 2px solid var(--brand); flex-shrink: 0; }
+    .user-avatar.show { display: flex; }
+    .user-avatar.paid { background: var(--accent); border-color: var(--accent); }
+    .hero { max-width: 480px; margin: 0 auto; padding: 24px 20px 0; text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--red-light); color: var(--red); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 14px; }
+    .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; color: var(--text); margin-bottom: 8px; }
     .hero h1 .hl { color: var(--brand); }
-    .hero-desc { font-size: 14px; color: var(--text-2); margin-bottom: 24px; max-width: 340px; margin-left: auto; margin-right: auto; }
-    .stats { display: flex; gap: 12px; justify-content: center; margin-bottom: 28px; }
+    .hero-desc { font-size: 14px; color: var(--text-2); margin-bottom: 16px; max-width: 340px; margin-left: auto; margin-right: auto; }
+    .hero-break { background: var(--card); border: 1.5px solid var(--red); border-radius: 14px; padding: 12px 16px; margin-bottom: 18px; text-align: left; box-shadow: 0 2px 12px rgba(239,68,68,0.08); }
+    .hero-break .hb-title { font-size: 13px; font-weight: 700; color: var(--red); margin-bottom: 4px; }
+    .hero-break .hb-text { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+    .hero-break .hb-text strong { color: var(--text); font-weight: 700; }
+    .stats { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; }
     .stat-card { background: var(--card); border-radius: 14px; padding: 12px 16px; text-align: center; flex: 1; box-shadow: var(--shadow); border: 1px solid var(--border); }
     .stat-card .num { font-size: 20px; font-weight: 800; color: var(--brand); display: block; }
     .stat-card .label { font-size: 11px; color: var(--text-2); }
@@ -213,6 +220,89 @@
     .modal-error { color: var(--red); font-size: 12px; margin-top: 6px; min-height: 16px; }
     .fade { animation: fadeUp 0.35s ease; }
     @keyframes fadeUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── 个人中心全屏页 ── */
+    #profile {
+      display: none; position: fixed; inset: 0; z-index: 150;
+      background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch;
+    }
+    #profile.open { display: block; animation: fadeUp 0.25s ease; }
+    .profile-header {
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(245,243,255,0.92); backdrop-filter: blur(12px);
+      padding: 12px 16px; display: flex; align-items: center; gap: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .profile-back-btn {
+      background: white; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 6px 12px; font-size: 13px; font-weight: 600; color: var(--brand);
+      cursor: pointer; display: flex; align-items: center; gap: 4px;
+    }
+    .profile-title { font-size: 15px; font-weight: 800; color: var(--text); flex: 1; text-align: center; padding-right: 60px; }
+    .profile-inner { padding: 20px 16px 60px; max-width: 480px; margin: 0 auto; }
+    .profile-user-card {
+      background: linear-gradient(150deg, var(--brand), #A78BFA);
+      border-radius: var(--radius); padding: 20px; color: white; margin-bottom: 20px;
+    }
+    .profile-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+    .profile-phone { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+    .profile-badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 600; }
+    .profile-badge.paid { background: var(--accent); }
+    .profile-usage {
+      background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+      border: 1px solid var(--border); box-shadow: var(--shadow);
+    }
+    .profile-usage-title { font-size: 13px; font-weight: 700; color: var(--text-2); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+    .usage-bar { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+    .usage-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--brand), #A78BFA); transition: width 0.5s ease; }
+    .usage-fill.warn { background: linear-gradient(90deg, var(--yellow), var(--accent)); }
+    .usage-text { font-size: 12px; color: var(--text-2); }
+    .profile-menu { background: var(--card); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); }
+    .menu-item { display: flex; align-items: center; gap: 12px; padding: 15px 16px; border-bottom: 1px solid #F5F3FF; cursor: pointer; transition: background 0.15s; }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:active { background: var(--brand-light); }
+    .menu-icon { font-size: 20px; flex-shrink: 0; }
+    .menu-text { flex: 1; }
+    .menu-text .mt { font-size: 14px; font-weight: 600; }
+    .menu-text .ms { font-size: 12px; color: var(--text-2); }
+    .menu-arrow { font-size: 16px; color: var(--text-3); }
+    .history-empty { text-align: center; padding: 40px 20px; color: var(--text-3); font-size: 13px; }
+    .history-empty-icon { font-size: 40px; margin-bottom: 12px; }
+    .history-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-bottom: 1px solid #F5F3FF; cursor: pointer; transition: background 0.15s; }
+    .history-item:last-child { border-bottom: none; }
+    .history-item:active { background: var(--brand-light); }
+    .history-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+    .history-info { flex: 1; min-width: 0; }
+    .history-company { font-size: 13px; font-weight: 700; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .history-meta { font-size: 11px; color: var(--text-2); }
+    .history-score { font-size: 18px; font-weight: 800; color: var(--brand); flex-shrink: 0; }
+    .profile-upgrade-card { background: linear-gradient(135deg, #1E1B4B, #312E81); border-radius: var(--radius); padding: 20px; color: white; margin-top: 20px; text-align: center; }
+    .profile-upgrade-card h3 { font-size: 15px; margin-bottom: 4px; }
+    .profile-upgrade-card p { font-size: 12px; opacity: 0.7; margin-bottom: 14px; }
+    .profile-upgrade-card .price { font-size: 32px; font-weight: 800; color: var(--yellow); margin-bottom: 14px; }
+    .profile-upgrade-card .price span { font-size: 14px; opacity: 0.7; font-weight: 400; }
+    .btn-upgrade-full { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), #EF4444); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(249,115,22,0.35); }
+    .profile-paid-badge { display: flex; align-items: center; justify-content: space-between; background: var(--green-light); border: 1.5px solid var(--green); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px; }
+    .profile-paid-badge .paid-text { font-size: 13px; font-weight: 700; color: var(--green); }
+    .profile-paid-badge .paid-hint { font-size: 11px; color: var(--text-2); }
+
+    /* ── 登录弹窗 ── */
+    .login-modal-tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 2px solid var(--border); }
+    .login-tab { flex: 1; padding: 8px 0; text-align: center; font-size: 14px; font-weight: 700; color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; }
+    .login-tab.active { color: var(--brand); border-color: var(--brand); }
+    .sms-row { display: flex; gap: 8px; }
+    .sms-row input { flex: 1; }
+    .btn-sms { padding: 12px 14px; background: var(--brand-light); color: var(--brand); border: 1.5px solid var(--brand); border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; }
+    .btn-sms:disabled { opacity: 0.5; cursor: not-allowed; }
+    .login-hint { font-size: 11px; color: var(--text-3); margin-top: 12px; text-align: center; line-height: 1.6; }
+    .demo-gate-overlay { position: fixed; inset: 0; z-index: 300; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; padding: 20px; }
+    .demo-gate-overlay.show { display: flex; }
+    .demo-gate-card { background: white; border-radius: var(--radius); padding: 28px 24px; width: 100%; max-width: 340px; text-align: center; }
+    .demo-gate-icon { font-size: 48px; margin-bottom: 14px; }
+    .demo-gate-card h3 { font-size: 17px; font-weight: 800; margin-bottom: 8px; }
+    .demo-gate-card p { font-size: 13px; color: var(--text-2); margin-bottom: 20px; line-height: 1.7; }
+    .btn-gate-demo { width: 100%; padding: 14px; background: var(--yellow); color: #92400E; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; margin-bottom: 10px; }
+    .btn-gate-login { width: 100%; padding: 14px; background: var(--brand); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -221,15 +311,23 @@
   <div class="header-inner">
     <div class="logo">💜 多拿点</div>
     <div class="header-actions">
-      <span class="header-tag">Duoduo Dian</span>
+      <span class="header-tag" id="headerTag">Duoduo Dian</span>
+      <div class="user-avatar" id="userAvatar" onclick="openProfile()" title="个人中心">我</div>
     </div>
   </div>
 </header>
 
 <div class="hero">
-  <div class="hero-badge">🎯 春秋招必用 · 已有 <strong>2,841</strong> 人用过</div>
-  <h1>别让 Offer <span class="hl">少拿几千块</span><br>多拿点，帮你开口谈薪资</h1>
-  <p class="hero-desc">输入你的 Offer，AI 分析谈判空间 + 生成可以直接发给 HR 的话术</p>
+  <div class="hero-break">
+    <div class="hb-title">💡 大多数人不知道的真相</div>
+    <div class="hb-text">
+      <strong>Offer 发来 ≠ 薪资谈完了。</strong><br>
+      80% 的求职者不知道 Offer 还能谈。<br>
+      HR 报的第一口价，往往比预算上限低 10-20%。
+    </div>
+  </div>
+  <h1>拿到 Offer 不知道怎么谈？<br><span class="hl">AI 帮你写好话术</span></h1>
+  <p class="hero-desc">输入 Offer 信息，AI 分析谈判空间 + 生成可直接发给 HR 的谈判话术</p>
   <div class="stats">
     <div class="stat-card"><span class="num">89%</span><span class="label">成功率</span></div>
     <div class="stat-card"><span class="num">+¥3.2k</span><span class="label">平均多谈到</span></div>
@@ -302,7 +400,8 @@
     <div class="result-page-header">
       <button class="result-back-btn" onclick="reset()">← 返回</button>
       <span class="result-page-title" id="resultPageTitle">谈判方案</span>
-      <button class="btn-share" onclick="copyAll()" style="padding:6px 12px;font-size:12px;border-radius:8px;">📋 复制报告</button>
+      <button class="btn-share" onclick="openProfile()" style="padding:6px 10px;font-size:12px;border-radius:8px;">👤</button>
+      <button class="btn-share" onclick="copyAll()" style="padding:6px 10px;font-size:12px;border-radius:8px;">📋</button>
     </div>
     <!-- 内容区 -->
     <div class="result-page-inner">
@@ -365,18 +464,121 @@
 
 <div class="toast" id="toast"></div>
 
-<div class="modal-overlay" id="authModal">
+<!-- ── 演示模式体验遮罩 ── -->
+<div class="demo-gate-overlay" id="demoGate">
+  <div class="demo-gate-card">
+    <div class="demo-gate-icon">🔒</div>
+    <h3 id="gateTitle">注册后查看完整报告</h3>
+    <p id="gateDesc">注册只需要手机号，不需要密码。<br>注册后每月免费分析 2 次，报告永久保存。</p>
+    <button class="btn-gate-demo" onclick="guestTry()">先随便看看（演示模式）</button>
+    <button class="btn-gate-login" onclick="hideDemoGate(); showLoginModal('signup')">📱 手机号注册 / 登录</button>
+  </div>
+</div>
+
+<!-- ── 登录 / 注册弹窗 ── -->
+<div class="modal-overlay" id="loginModal">
   <div class="modal">
-    <div class="modal-close" onclick="hideAuth()">✕</div>
-    <h3 id="modalTitle">注册多拿点</h3>
-    <div class="sub" id="modalSub">注册后可保存分析记录，解锁更多功能</div>
-    <input type="email" id="authEmail" placeholder="邮箱地址" />
-    <input type="password" id="authPassword" placeholder="密码（至少6位）" />
-    <div class="modal-error" id="modalError"></div>
-    <div class="modal-btns">
-      <button class="btn-modal-confirm" id="modalConfirm" onclick="doAuth()">确定</button>
-      <button class="btn-modal-cancel" onclick="hideAuth()">取消</button>
+    <div class="modal-close" onclick="hideLoginModal()">✕</div>
+    <h3 id="loginTitle">登录多拿点</h3>
+    <div class="sub" id="loginSub">注册后每月免费分析 2 次，报告永久保存</div>
+    <div class="login-modal-tabs">
+      <div class="login-tab active" id="tabSignup" onclick="switchLoginTab('signup')">注册</div>
+      <div class="login-tab" id="tabSignin" onclick="switchLoginTab('signin')">登录</div>
     </div>
+    <div id="loginPhoneWrap">
+      <input type="tel" id="loginPhone" placeholder="手机号" maxlength="11" />
+    </div>
+    <div class="sms-row">
+      <input type="tel" id="loginSms" placeholder="验证码" maxlength="6" />
+      <button class="btn-sms" id="smsBtn" onclick="sendSms()">获取验证码</button>
+    </div>
+    <div class="modal-error" id="loginError"></div>
+    <div class="modal-btns">
+      <button class="btn-modal-confirm" id="loginConfirm" onclick="doLogin()">验证并登录</button>
+    </div>
+    <div class="login-hint">
+     演示模式：验证码填 <strong>666666</strong> 即可<br>
+     你的数据仅保存在本地，不会上传到任何服务器
+    </div>
+  </div>
+</div>
+
+<!-- ── 个人中心全屏页 ── -->
+<div id="profile">
+  <div class="profile-header">
+    <button class="profile-back-btn" onclick="closeProfile()">← 返回</button>
+    <div class="profile-title">个人中心</div>
+  </div>
+  <div class="profile-inner">
+
+    <!-- 用户卡片 -->
+    <div class="profile-user-card">
+      <div class="profile-avatar" id="profileAvatar">我</div>
+      <div class="profile-phone" id="profilePhone">138****8888</div>
+      <div class="profile-badge" id="profileBadge">免费用户 · 每月2次</div>
+    </div>
+
+    <!-- 付费标识（已付费用户显示） -->
+    <div class="profile-paid-badge" id="paidBadge" style="display:none;">
+      <div>
+        <div class="paid-text">🌟 完整版已解锁</div>
+        <div class="paid-hint">无限次分析 · 报告永久保存</div>
+      </div>
+      <span style="font-size:20px;">👑</span>
+    </div>
+
+    <!-- 免费次数（未付费显示） -->
+    <div class="profile-usage" id="usageCard">
+      <div class="profile-usage-title">
+        <span>本月免费次数</span>
+        <span id="usageCountText" style="color:var(--brand);font-weight:700;">0/2</span>
+      </div>
+      <div class="usage-bar"><div class="usage-fill" id="usageFill" style="width:0%"></div></div>
+      <div class="usage-text" id="usageText">本月已用完，升级完整版可无限使用</div>
+    </div>
+
+    <!-- 历史报告 -->
+    <div class="card" style="margin-bottom:14px;">
+      <div style="padding:14px 16px;border-bottom:1px solid #F5F3FF;display:flex;align-items:center;gap:8px;">
+        <span style="font-size:16px;">📋</span>
+        <span style="font-size:14px;font-weight:700;">历史报告</span>
+        <span id="historyCount" style="margin-left:auto;background:var(--brand-light);color:var(--brand);font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;">0</span>
+      </div>
+      <div id="historyList">
+        <div class="history-empty">
+          <div class="history-empty-icon">📝</div>
+          还没有分析记录<br>生成第一份报告吧
+        </div>
+      </div>
+    </div>
+
+    <!-- 菜单 -->
+    <div class="profile-menu">
+      <div class="menu-item" onclick="showUpgradeModal()">
+        <span class="menu-icon">💎</span>
+        <div class="menu-text"><div class="mt">升级完整版</div><div class="ms">¥19.9 永久 · 无限次分析</div></div>
+        <span class="menu-arrow">›</span>
+      </div>
+      <div class="menu-item" onclick="toast('联系我们：duoduodian')">
+        <span class="menu-icon">💬</span>
+        <div class="menu-text"><div class="mt">联系客服</div><div class="ms">问题反馈 · 支付问题</div></div>
+        <span class="menu-arrow">›</span>
+      </div>
+      <div class="menu-item" onclick="doLogout()">
+        <span class="menu-icon">🚪</span>
+        <div class="menu-text"><div class="mt">退出登录</div></div>
+        <span class="menu-arrow">›</span>
+      </div>
+    </div>
+
+    <!-- 升级卡片（非付费用户） -->
+    <div class="profile-upgrade-card" id="profileUpgradeCard">
+      <h3>🔓 解锁完整版</h3>
+      <p>无限次分析 · 3 套话术 · 永久保存 · 竞对对比</p>
+      <div class="price">¥19.9 <span>/ 永久</span></div>
+      <button class="btn-upgrade-full" onclick="showUpgradeModal()">立即升级</button>
+    </div>
+
   </div>
 </div>
 
@@ -396,73 +598,213 @@ const CONFIG = {
 };
 
 // ================================================================
-// Supabase 认证（演示模式下跳过）
+// 用户体系（localStorage 实现，演示用）
 // ================================================================
-let supabase = null;
+const FREE_LIMIT = 2;
 let currentUser = null;
-let authMode = 'signin';
+let loginTab = 'signup';
+let smsCountdown = 0;
+let smsTimer = null;
 
-// 如需启用 Supabase，参考 README.md 中的配置说明
-// 演示模式下这些功能被跳过
+function getUsers() { return JSON.parse(localStorage.getItem('dd_users') || '{}'); }
+function saveUsers(u) { localStorage.setItem('dd_users', JSON.stringify(u)); }
+function getCurrentUser() { return JSON.parse(localStorage.getItem('dd_current') || 'null'); }
+function setCurrentUser(u) { currentUser = u; localStorage.setItem('dd_current', JSON.stringify(u)); updateHeaderUI(); }
 
-function updateAuthUI() {
-  // 登录卡片已移除，仅更新 header 状态
-  const loginBtn = document.getElementById('loginBtn');
-  const logoutBtn = document.getElementById('logoutBtn');
-  if (!loginBtn) return;
+function getMonthKey() { const d = new Date(); return `${d.getFullYear()}-${d.getMonth()+1}`; }
+function getUsageCount() {
+  const u = getCurrentUser();
+  if (!u) return 0;
+  const mk = getMonthKey();
+  return u.usage ? (u.usage[mk] || 0) : 0;
+}
+function canUse() {
+  const u = getCurrentUser();
+  if (!u) return false;
+  if (u.paid) return true;
+  return getUsageCount() < FREE_LIMIT;
+}
+function incrementUsage() {
+  const u = getCurrentUser();
+  if (!u || u.paid) return;
+  const mk = getMonthKey();
+  if (!u.usage) u.usage = {};
+  u.usage[mk] = (u.usage[mk] || 0) + 1;
+  setCurrentUser(u);
+  const users = getUsers();
+  users[u.phone] = u;
+  saveUsers(users);
+}
+
+function initUser() { currentUser = getCurrentUser(); updateHeaderUI(); }
+
+function updateHeaderUI() {
+  const avatar = document.getElementById('userAvatar');
+  const tag = document.getElementById('headerTag');
+  if (!avatar) return;
   if (currentUser) {
-    loginBtn.style.display = 'none';
-    logoutBtn && logoutBtn.classList.add('show');
+    avatar.classList.add('show');
+    avatar.textContent = currentUser.phone.slice(-2);
+    tag.style.display = 'none';
+    if (currentUser.paid) avatar.classList.add('paid');
+    else avatar.classList.remove('paid');
   } else {
-    loginBtn.style.display = 'none'; // 登录功能已简化，不显示
-    logoutBtn && logoutBtn.classList.remove('show');
+    avatar.classList.remove('show');
+    tag.style.display = '';
   }
 }
 
-async function logout() {
-  if (supabase) await supabase.auth.signOut();
-  currentUser = null;
-  updateAuthUI();
-  toast('已退出登录');
+// 登录弹窗
+function showLoginModal(tab) {
+  loginTab = tab || 'signup';
+  document.getElementById('loginModal').classList.add('show');
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('loginPhone').value = '';
+  document.getElementById('loginSms').value = '';
+  clearInterval(smsTimer); smsCountdown = 0;
+  const btn = document.getElementById('smsBtn');
+  if (btn) { btn.disabled = false; btn.textContent = '获取验证码'; }
+  switchLoginTab(loginTab);
+}
+function hideLoginModal() { document.getElementById('loginModal').classList.remove('show'); }
+
+function switchLoginTab(tab) {
+  loginTab = tab;
+  document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tab === 'signup' ? 'tabSignup' : 'tabSignin').classList.add('active');
+  document.getElementById('loginTitle').textContent = tab === 'signup' ? '注册多拿点' : '登录多拿点';
+  document.getElementById('loginSub').textContent = tab === 'signup' ? '注册后每月免费分析 2 次' : '登录后查看历史报告';
+  document.getElementById('loginConfirm').textContent = tab === 'signup' ? '验证并注册' : '验证并登录';
+  document.getElementById('loginError').textContent = '';
 }
 
-function showAuth(mode) {
-  authMode = mode || 'signin';
-  const modal = document.getElementById('authModal');
-  const title = document.getElementById('modalTitle');
-  const sub = document.getElementById('modalSub');
-  const confirm = document.getElementById('modalConfirm');
-  const error = document.getElementById('modalError');
-  error.textContent = '';
-  document.getElementById('authEmail').value = '';
-  document.getElementById('authPassword').value = '';
-  if (authMode === 'signup') {
-    title.textContent = '注册多拿点';
-    sub.textContent = '注册后可保存分析记录，解锁更多功能';
-    confirm.textContent = '注册';
-  } else {
-    title.textContent = '登录多拿点';
-    sub.textContent = '登录后查看历史分析记录';
-    confirm.textContent = '登录';
+function sendSms() {
+  if (smsCountdown > 0) return;
+  const phone = document.getElementById('loginPhone').value.trim();
+  if (!/^1\d{10}$/.test(phone)) { document.getElementById('loginError').textContent = '请输入正确的手机号'; return; }
+  smsCountdown = 60;
+  const btn = document.getElementById('smsBtn');
+  btn.disabled = true; btn.textContent = '60s 后重发';
+  smsTimer = setInterval(() => {
+    smsCountdown--;
+    if (smsCountdown <= 0) { clearInterval(smsTimer); btn.disabled = false; btn.textContent = '获取验证码'; }
+    else { btn.textContent = `${smsCountdown}s 后重发`; }
+  }, 1000);
+  toast('演示模式：验证码 666666（任意手机号均可）');
+}
+
+function doLogin() {
+  const phone = document.getElementById('loginPhone').value.trim();
+  const sms = document.getElementById('loginSms').value.trim();
+  const err = document.getElementById('loginError');
+  err.textContent = '';
+  if (!/^1\d{10}$/.test(phone)) { err.textContent = '请输入正确的手机号'; return; }
+  if (sms !== '666666') { err.textContent = '演示验证码：666666'; return; }
+  const users = getUsers();
+  let user = users[phone];
+  const isNew = !user;
+  if (!user) { user = { phone, created: new Date().toISOString(), paid: false, usage: {}, history: [] }; }
+  user.lastLogin = new Date().toISOString();
+  users[phone] = user; saveUsers(users);
+  setCurrentUser(user);
+  hideLoginModal();
+  toast(isNew ? `🎉 注册成功！每月免费分析 ${FREE_LIMIT} 次` : `欢迎回来！`);
+  updateProfileUI();
+}
+
+function doLogout() { setCurrentUser(null); closeProfile(); toast('已退出登录'); }
+
+// 演示遮罩
+function showDemoGate() {
+  document.getElementById('demoGate').classList.add('show');
+}
+function hideDemoGate() { document.getElementById('demoGate').classList.remove('show'); }
+function guestTry() { hideDemoGate(); toast('演示模式：报告将被部分隐藏 🙏'); }
+
+// 个人中心
+function openProfile() { document.getElementById('profile').classList.add('open'); updateProfileUI(); document.getElementById('profile').scrollTop = 0; }
+function closeProfile() { document.getElementById('profile').classList.remove('open'); }
+
+function updateProfileUI() {
+  const u = getCurrentUser();
+  const phEl = document.getElementById('profilePhone');
+  const badge = document.getElementById('profileBadge');
+  const paidBadge = document.getElementById('paidBadge');
+  const usageCard = document.getElementById('usageCard');
+  const histList = document.getElementById('historyList');
+  const histCount = document.getElementById('historyCount');
+  const upgradeCard = document.getElementById('profileUpgradeCard');
+  if (!u) {
+    phEl.textContent = '未登录';
+    badge.textContent = '点击上方登录';
+    badge.className = 'profile-badge';
+    paidBadge.style.display = 'none';
+    usageCard.style.display = 'none';
+    upgradeCard.style.display = 'none';
+    histList.innerHTML = '<div class="history-empty"><div class="history-empty-icon">🔒</div>请先登录查看历史记录</div>';
+    histCount.textContent = '0';
+    return;
   }
-  modal.classList.add('show');
+  phEl.textContent = u.phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
+  document.getElementById('profileAvatar').textContent = u.phone.slice(-2);
+  if (u.paid) {
+    badge.textContent = '完整版用户 · 无限次';
+    badge.className = 'profile-badge paid';
+    paidBadge.style.display = 'flex';
+    usageCard.style.display = 'none';
+    upgradeCard.style.display = 'none';
+  } else {
+    const used = getUsageCount();
+    const left = Math.max(0, FREE_LIMIT - used);
+    badge.textContent = `免费用户 · 本月剩余 ${left} 次`;
+    badge.className = 'profile-badge';
+    paidBadge.style.display = 'none';
+    usageCard.style.display = 'block';
+    upgradeCard.style.display = 'block';
+    const fill = Math.min(100, (used / FREE_LIMIT) * 100);
+    document.getElementById('usageFill').style.width = fill + '%';
+    document.getElementById('usageFill').className = 'usage-fill' + (used >= FREE_LIMIT ? ' warn' : '');
+    document.getElementById('usageCountText').textContent = `${used}/${FREE_LIMIT}`;
+    document.getElementById('usageText').textContent =
+      used >= FREE_LIMIT ? '本月已用完，升级完整版可无限使用' :
+      used === 0 ? `本月还有 ${FREE_LIMIT} 次免费机会` :
+      `本月还剩 ${left} 次免费机会`;
+  }
+  const hist = u.history || [];
+  histCount.textContent = hist.length;
+  if (hist.length === 0) {
+    histList.innerHTML = '<div class="history-empty"><div class="history-empty-icon">📝</div>还没有分析记录<br>生成第一份报告吧</div>';
+  } else {
+    histList.innerHTML = hist.slice().reverse().slice(0, 20).map((h, i) => `
+      <div class="history-item" onclick="loadHistory(${i})">
+        <span class="history-icon">📋</span>
+        <div class="history-info">
+          <div class="history-company">${h.company || ''} · ${h.position || ''}</div>
+          <div class="history-meta">${h.city || ''} · ${h.exp || ''} · ${h.date || ''}</div>
+        </div>
+        <div class="history-score">${h.score || '--'}分</div>
+      </div>
+    `).join('');
+  }
 }
 
-function hideAuth() { document.getElementById('authModal').classList.remove('show'); }
+function loadHistory(idx) { toast('历史报告加载中...（功能开发中）'); }
 
-async function doAuth() {
-  if (!supabase || CONFIG.USE_DEMO) { toast('演示模式下无需登录，直接使用即可 🙏'); hideAuth(); return; }
-  const email = document.getElementById('authEmail').value.trim();
-  const password = document.getElementById('authPassword').value;
-  const errorEl = document.getElementById('modalError');
-  errorEl.textContent = '';
-  if (!email || !password) { errorEl.textContent = '请填写邮箱和密码'; return; }
-  if (password.length < 6) { errorEl.textContent = '密码至少6位'; return; }
-  let result;
-  if (authMode === 'signup') { result = await supabase.auth.signUp({ email, password }); }
-  else { result = await supabase.auth.signInWithPassword({ email, password }); }
-  if (result.error) { errorEl.textContent = result.error.message; }
-  else { hideAuth(); toast(authMode === 'signup' ? '注册成功！' : '登录成功！'); }
+// 升级
+function showUpgradeModal() {
+  if (CONFIG.WECHAT_QR_URL) { toast('📱 请用微信扫码支付 ¥19.9\n支付后联系客服解锁完整版'); }
+  else { toast('💬 联系客服微信：duoduodian\n支付 ¥19.9 解锁完整版'); }
+}
+
+// 保存历史
+function saveHistory(data, result) {
+  const u = getCurrentUser();
+  if (!u) return;
+  if (!u.history) u.history = [];
+  u.history.push({ company: data.company, position: data.position, city: data.city, exp: data.exp, salary: data.salary, score: result.score, date: new Date().toLocaleDateString('zh-CN'), result: result });
+  if (u.history.length > 50) u.history = u.history.slice(-50);
+  setCurrentUser(u);
+  const users = getUsers(); users[u.phone] = u; saveUsers(users);
 }
 
 // ================================================================
@@ -725,6 +1067,19 @@ function render(r, aiData) {
 // ================================================================
 async function go() {
   if (!validate()) return;
+
+  // ── 门槛检查 ──
+  const user = getCurrentUser();
+  if (!user) {
+    showDemoGate();
+    return;
+  }
+  if (!user.paid && getUsageCount() >= FREE_LIMIT) {
+    toast(`本月 ${FREE_LIMIT} 次免费机会已用完`);
+    showUpgradeModal();
+    return;
+  }
+
   const data = collect();
 
   // ── 显示全屏加载 ──
@@ -844,6 +1199,12 @@ async function go() {
   cleanup();
   render(result, usedDemo ? null : result.aiData);
 
+  // 保存历史 + 扣次数
+  if (!usedDemo) {
+    incrementUsage();
+    saveHistory(data, result);
+  }
+
   // 更新结果页标题
   const rd = result.data || {};
   document.getElementById('resultPageTitle').textContent =
@@ -856,6 +1217,7 @@ async function go() {
 
 function reset() {
   document.getElementById('result').classList.remove('open');
+  document.getElementById('demoGate').classList.remove('show');
   for (let i = 1; i <= 4; i++) { document.getElementById('l'+i).classList.remove('doing','done'); }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -890,7 +1252,7 @@ function showPayHint() {
 document.querySelector('#exp .tag')?.click();
 document.querySelector('#stage .tag')?.click();
 document.querySelector('#hrmood .tag:nth-child(2)')?.click();
-updateAuthUI();
+initUser();
 </script>
 </body>
 </html>
