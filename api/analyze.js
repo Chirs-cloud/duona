@@ -19,8 +19,8 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         model: 'deepseek-chat',
         messages: req.body.messages,
-        temperature: 0.3,
-        max_tokens: 2000,
+        temperature: 0.7,
+        max_tokens: 4000,
       }),
     });
 
