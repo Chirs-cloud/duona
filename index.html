@@ -27,9 +27,6 @@
     .header-btn.login { background: var(--brand); color: white; }
     .header-btn.logout { background: var(--brand-light); color: var(--brand); display: none; }
     .header-btn.logout.show { display: inline-block; }
-    .user-avatar { display: none; width: 32px; height: 32px; border-radius: 50%; background: var(--brand); color: white; font-size: 14px; font-weight: 700; align-items: center; justify-content: center; cursor: pointer; border: 2px solid var(--brand); flex-shrink: 0; }
-    .user-avatar.show { display: flex; }
-    .user-avatar.paid { background: var(--accent); border-color: var(--accent); }
     .hero { max-width: 480px; margin: 0 auto; padding: 24px 20px 0; text-align: center; }
     .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--red-light); color: var(--red); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 14px; }
     .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; color: var(--text); margin-bottom: 8px; }
@@ -242,22 +239,22 @@
     .profile-title { font-size: 15px; font-weight: 800; color: var(--text); flex: 1; text-align: center; padding-right: 60px; }
     .profile-inner { padding: 20px 16px 60px; max-width: 480px; margin: 0 auto; }
     .profile-user-card {
-      background: linear-gradient(150deg, var(--brand), #A78BFA);
-      border-radius: var(--radius); padding: 20px; color: white; margin-bottom: 20px;
+      background: linear-gradient(135deg, var(--brand) 0%, #6366F1 100%);
+      border-radius: 20px; padding: 24px 20px; color: white; margin-bottom: 16px;
+      box-shadow: 0 8px 32px rgba(139,92,246,0.25);
     }
-    .profile-avatar { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.25); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700; margin-bottom: 12px; }
-    .profile-phone { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-    .profile-badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 3px 12px; font-size: 11px; font-weight: 600; }
+
+    .profile-phone { font-size: 18px; font-weight: 700; margin-bottom: 6px; text-align: center; }
+    .profile-badge { display: inline-block; background: rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 600; text-align: center; }
     .profile-badge.paid { background: var(--accent); }
-    .profile-usage {
-      background: var(--card); border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
-      border: 1px solid var(--border); box-shadow: var(--shadow);
+    .profile-paid-badge {
+      background: linear-gradient(135deg, #ECFDF5, #D1FAE5);
+      border: 1.5px solid var(--green); border-radius: 16px; padding: 16px; margin-bottom: 14px;
     }
-    .profile-usage-title { font-size: 13px; font-weight: 700; color: var(--text-2); margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
-    .usage-bar { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
-    .usage-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--brand), #A78BFA); transition: width 0.5s ease; }
-    .usage-fill.warn { background: linear-gradient(90deg, var(--yellow), var(--accent)); }
-    .usage-text { font-size: 12px; color: var(--text-2); }
+    .profile-paid-badge .paid-content { display: flex; align-items: center; gap: 12px; }
+    .profile-paid-badge .paid-icon { font-size: 28px; }
+    .profile-paid-badge .paid-text { font-size: 15px; font-weight: 700; color: var(--green); margin-bottom: 2px; }
+    .profile-paid-badge .paid-hint { font-size: 12px; color: #059669; }
     .profile-menu { background: var(--card); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: var(--shadow); }
     .menu-item { display: flex; align-items: center; gap: 12px; padding: 15px 16px; border-bottom: 1px solid #F5F3FF; cursor: pointer; transition: background 0.15s; }
     .menu-item:last-child { border-bottom: none; }
@@ -283,9 +280,7 @@
     .profile-upgrade-card .price { font-size: 32px; font-weight: 800; color: var(--yellow); margin-bottom: 14px; }
     .profile-upgrade-card .price span { font-size: 14px; opacity: 0.7; font-weight: 400; }
     .btn-upgrade-full { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), #EF4444); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(249,115,22,0.35); }
-    .profile-paid-badge { display: flex; align-items: center; justify-content: space-between; background: var(--green-light); border: 1.5px solid var(--green); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 14px; }
-    .profile-paid-badge .paid-text { font-size: 13px; font-weight: 700; color: var(--green); }
-    .profile-paid-badge .paid-hint { font-size: 11px; color: var(--text-2); }
+
 
     /* ── 登录弹窗 ── */
     .login-modal-tabs { display: flex; gap: 0; margin-bottom: 16px; border-bottom: 2px solid var(--border); }
@@ -335,7 +330,6 @@
       <button class="header-center-btn" id="headerCenterBtn" onclick="openProfile()">
         <span class="hc-icon" id="headerCenterIcon">👤</span>
       </button>
-      <div class="user-avatar" id="userAvatar" onclick="openProfile()" title="个人中心">我</div>
     </div>
   </div>
 </header>
@@ -425,7 +419,6 @@
     <div class="result-page-header">
       <button class="result-back-btn" onclick="reset()">← 返回</button>
       <span class="result-page-title" id="resultPageTitle">谈判方案</span>
-      <button class="btn-share" onclick="openProfile()" style="width:32px;min-width:32px;height:32px;padding:0;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-grow:0;">👤</button>
       <button class="btn-share" onclick="copyAll()" style="width:32px;min-width:32px;height:32px;padding:0;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-grow:0;" title="复制报告">📋</button>
     </div>
     <!-- 内容区 -->
@@ -537,28 +530,19 @@
 
     <!-- 用户卡片 -->
     <div class="profile-user-card">
-      <div class="profile-avatar" id="profileAvatar">我</div>
       <div class="profile-phone" id="profilePhone">138****8888</div>
       <div class="profile-badge" id="profileBadge">免费用户 · 每月2次</div>
     </div>
 
     <!-- 付费标识（已付费用户显示） -->
     <div class="profile-paid-badge" id="paidBadge" style="display:none;">
-      <div>
-        <div class="paid-text">🌟 完整版已解锁</div>
-        <div class="paid-hint">无限次分析 · 报告永久保存</div>
+      <div class="paid-content">
+        <span class="paid-icon">👑</span>
+        <div>
+          <div class="paid-text">完整版已解锁</div>
+          <div class="paid-hint">无限次分析 · 报告永久保存</div>
+        </div>
       </div>
-      <span style="font-size:20px;">👑</span>
-    </div>
-
-    <!-- 免费次数（未付费显示） -->
-    <div class="profile-usage" id="usageCard">
-      <div class="profile-usage-title">
-        <span>本月免费次数</span>
-        <span id="usageCountText" style="color:var(--brand);font-weight:700;">0/2</span>
-      </div>
-      <div class="usage-bar"><div class="usage-fill" id="usageFill" style="width:0%"></div></div>
-      <div class="usage-text" id="usageText">本月已用完，升级完整版可无限使用</div>
     </div>
 
     <!-- 历史报告 -->
@@ -673,24 +657,11 @@ async function initUser() {
 }
 
 function updateHeaderUI() {
-  const avatar = document.getElementById('userAvatar');
-  const tag = document.getElementById('headerTag');
+  // 始终显示个人中心图标按钮
   const centerBtn = document.getElementById('headerCenterBtn');
   const centerIcon = document.getElementById('headerCenterIcon');
-  if (!avatar) return;
-  if (currentUser) {
-    avatar.classList.add('show');
-    avatar.textContent = currentUser.phone.slice(-2);
-    tag.style.display = 'none';
-    centerBtn.style.display = 'none';
-    if (currentUser.paid) avatar.classList.add('paid');
-    else avatar.classList.remove('paid');
-  } else {
-    avatar.classList.remove('show');
-    tag.style.display = '';
-    centerBtn.style.display = 'flex';
-    centerIcon.textContent = '👤';
-  }
+  if (centerBtn) centerBtn.style.display = 'flex';
+  if (centerIcon) centerIcon.textContent = '👤';
 }
 
 // 登录弹窗
@@ -799,10 +770,6 @@ async function doLogin() {
     if (loginModal) { loginModal.classList.remove('show'); loginModal.style.display = 'none'; }
     const profile = document.getElementById('profile');
     if (profile) profile.classList.remove('open');
-    const avatar = document.getElementById('userAvatar');
-    const centerBtn = document.getElementById('headerCenterBtn');
-    if (avatar) { avatar.style.display = 'flex'; avatar.textContent = user.phone.slice(-2); avatar.classList.add('show'); if (user.is_paid) avatar.classList.add('paid'); }
-    if (centerBtn) centerBtn.style.display = 'none';
     toast(isNew ? `🎉 注册成功！每月免费分析 ${FREE_LIMIT} 次` : `欢迎回来！`);
     // 刷新个人中心数据
     updateProfileUI();
@@ -829,13 +796,8 @@ function doLogout() {
   // 关闭结果页
   const resultEl = document.getElementById('result');
   if (resultEl) resultEl.classList.remove('open');
-  // 立即更新 Header（显式设置每个元素状态）
-  const avatar = document.getElementById('userAvatar');
-  const centerBtn = document.getElementById('headerCenterBtn');
-  const centerIcon = document.getElementById('headerCenterIcon');
-  if (avatar) { avatar.style.display = 'none'; avatar.classList.remove('show', 'paid'); }
-  if (centerBtn) centerBtn.style.display = 'flex';
-  if (centerIcon) centerIcon.textContent = '👤';
+  // 更新 Header UI
+  updateHeaderUI();
   toast('已退出登录');
 }
 
@@ -868,20 +830,15 @@ async function updateProfileUI() {
   const histCount = document.getElementById('historyCount');
   const upgradeCard = document.getElementById('profileUpgradeCard');
   if (!u) {
-    const avatarEl = document.getElementById('profileAvatar');
-    if (avatarEl) avatarEl.textContent = '👤';
     if (phEl) phEl.textContent = '未登录';
     if (badge) { badge.textContent = ''; badge.className = 'profile-badge'; }
     if (paidBadge) paidBadge.style.display = 'none';
-    if (usageCard) usageCard.style.display = 'none';
     if (upgradeCard) upgradeCard.style.display = 'none';
     if (histList) histList.innerHTML = '<div class="history-empty"><div class="history-empty-icon">🔒</div>请先登录查看历史记录<br><button onclick="closeProfile(); showLoginModal()" style="margin-top:14px;padding:10px 24px;background:var(--brand);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📱 登录 / 注册</button></div>';
     if (histCount) histCount.textContent = '0';
     return;
   }
   if (phEl) phEl.textContent = u.phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
-  const avatarEl2 = document.getElementById('profileAvatar');
-  if (avatarEl2) avatarEl2.textContent = u.phone.slice(-2);
   // 显示退出菜单
   const logoutItem = document.getElementById('logoutMenuItem');
   if (logoutItem) logoutItem.style.display = 'flex';
@@ -889,25 +846,13 @@ async function updateProfileUI() {
   if (u.is_paid) {
     if (badge) { badge.textContent = '完整版用户 · 无限次'; badge.className = 'profile-badge paid'; }
     if (paidBadge) paidBadge.style.display = 'flex';
-    if (usageCard) usageCard.style.display = 'none';
     if (upgradeCard) upgradeCard.style.display = 'none';
   } else {
     const used = u.usage_count || 0;
     const left = Math.max(0, FREE_LIMIT - used);
     if (badge) { badge.textContent = `免费用户 · 本月剩余 ${left} 次`; badge.className = 'profile-badge'; }
     if (paidBadge) paidBadge.style.display = 'none';
-    if (usageCard) usageCard.style.display = 'block';
     if (upgradeCard) upgradeCard.style.display = 'block';
-    const fill = Math.min(100, (used / FREE_LIMIT) * 100);
-    const usageFill = document.getElementById('usageFill');
-    if (usageFill) { usageFill.style.width = fill + '%'; usageFill.className = 'usage-fill' + (used >= FREE_LIMIT ? ' warn' : ''); }
-    const usageCountText = document.getElementById('usageCountText');
-    if (usageCountText) usageCountText.textContent = `${used}/${FREE_LIMIT}`;
-    const usageText = document.getElementById('usageText');
-    if (usageText) usageText.textContent =
-      used >= FREE_LIMIT ? '本月已用完，升级完整版可无限使用' :
-      used === 0 ? `本月还有 ${FREE_LIMIT} 次免费机会` :
-      `本月还剩 ${left} 次免费机会`;
   }
 
   // 从后端加载历史报告
@@ -1259,196 +1204,133 @@ function render(r, aiData) {
 // ================================================================
 // Main
 // ================================================================
-window.addEventListener('error', function(e) {
-  console.error('[Page Error]', e.error);
-});
 
 async function go() {
   try {
     if (!validate()) return;
-
-    // ── 门槛检查 ──
     const user = getCurrentUser();
-    console.log('[go] user:', user);
-    if (!user) {
-      showDemoGate();
-      return;
-    }
+    if (!user) { showDemoGate(); return; }
     if (!user.is_paid && getUsageCount() >= FREE_LIMIT) {
-      toast(`本月 ${FREE_LIMIT} 次免费机会已用完`);
-      showUpgradeModal();
-      return;
+      toast('本月 ' + FREE_LIMIT + ' 次免费机会已用完');
+      showUpgradeModal(); return;
+    }
+    const data = collect();
+
+    const loadingEl = document.getElementById('loading');
+    loadingEl.classList.add('show');
+    document.body.style.overflow = 'hidden';
+    for (let i = 1; i <= 4; i++) document.getElementById('l'+i).classList.remove('doing','done');
+    document.getElementById('ldBar').style.width = '0%';
+
+    const phrases = ['正在读取你的 Offer...','分析你的谈判筹码 💪','查询该岗位市场薪资...','发现你有优势！','AI 正在计算谈判空间...','生成个性化话术脚本 ✍️','即将完成，稍等一下...'];
+    let phraseIdx = 0;
+    const phraseEl = document.getElementById('ldPhrase');
+    const hintEl = document.getElementById('ldHint');
+    phraseEl.textContent = phrases[0];
+    const phraseTimer = setInterval(() => {
+      phraseEl.style.opacity = '0';
+      setTimeout(() => {
+        phraseIdx = (phraseIdx + 1) % phrases.length;
+        phraseEl.textContent = phrases[phraseIdx];
+        phraseEl.style.opacity = '1';
+      }, 400);
+    }, 2200);
+
+    const barEl = document.getElementById('ldBar');
+    let currentStep = 0;
+    const stepPcts = [0, 25, 50, 75, 100];
+    function advanceStep() {
+      if (currentStep > 0) {
+        document.getElementById('l'+currentStep).classList.remove('doing');
+        document.getElementById('l'+currentStep).classList.add('done');
+      }
+      currentStep++;
+      if (currentStep <= 4) document.getElementById('l'+currentStep).classList.add('doing');
+      barEl.style.width = (stepPcts[currentStep] || 100) + '%';
     }
 
-  const data = collect();
-  console.log('[go] data:', data);
-
-  // ── 显示全屏加载（同步，先占位再等AI） ──
-
-  // ── 显示全屏加载 ──
-  const loadingEl = document.getElementById('loading');
-  loadingEl.classList.add('show');
-  // 防止底部页面滚动
-  document.body.style.overflow = 'hidden';
-
-  // 重置所有步骤
-  for (let i = 1; i <= 4; i++) {
-    document.getElementById('l'+i).classList.remove('doing','done');
-  }
-  document.getElementById('ldBar').style.width = '0%';
-
-  // 轮播文案
-  const phrases = [
-    '正在读取你的 Offer...',
-    '分析你的谈判筹码 💪',
-    '查询该岗位市场薪资...',
-    '发现你有这些优势！',
-    'AI 正在计算谈判空间...',
-    '生成个性化话术脚本 ✍️',
-    '即将完成，稍等一下...',
-  ];
-  let phraseIdx = 0;
-  const phraseEl = document.getElementById('ldPhrase');
-  const hintEl = document.getElementById('ldHint');
-  function rotatePhrases() {
-    phraseEl.style.opacity = '0';
-    setTimeout(() => {
-      phraseIdx = (phraseIdx + 1) % phrases.length;
-      phraseEl.textContent = phrases[phraseIdx];
-      phraseEl.style.opacity = '1';
-    }, 400);
-  }
-  phraseEl.textContent = phrases[0];
-  const phraseTimer = setInterval(rotatePhrases, 2200);
-
-  // 进度条推进（与步骤联动）
-  const barEl = document.getElementById('ldBar');
-  function setProgress(pct) {
-    barEl.style.width = pct + '%';
-  }
-
-  // 步骤推进
-  let currentStep = 0;
-  const stepProgress = [0, 25, 50, 75, 100];
-  function advanceStep() {
-    if (currentStep > 0) {
-      document.getElementById('l'+currentStep).classList.remove('doing');
-      document.getElementById('l'+currentStep).classList.add('done');
+    function cleanup() {
+      clearInterval(phraseTimer);
+      document.body.style.overflow = '';
+      const le = document.getElementById('loading');
+      if (le) { le.classList.remove('show'); le.style.display = 'none'; }
     }
-    currentStep++;
-    if (currentStep <= 4) {
-      document.getElementById('l'+currentStep).classList.add('doing');
-    }
-    setProgress(stepProgress[currentStep] || 100);
-  }
 
-  function cleanup() {
-    clearInterval(phraseTimer);
-    document.body.style.overflow = '';
-    // 强制隐藏 loading（双重保险，防止 classList.remove 失效）
-    const le = document.getElementById('loading');
-    if (le) { le.classList.remove('show'); le.style.display = 'none'; }
-  }
+    advanceStep();
+    let result, usedDemo = false;
 
-  // 开始第1步
-  advanceStep();
-
-  let result;
-  let usedDemo = false;
-
-  try {
-    if (CONFIG.USE_DEMO) {
-      // 演示模式：模拟动画
-      await new Promise(r => setTimeout(r, 800)); advanceStep();
-      await new Promise(r => setTimeout(r, 900)); advanceStep();
-      await new Promise(r => setTimeout(r, 800)); advanceStep();
-      await new Promise(r => setTimeout(r, 600));
-      result = demoAnalyze(data);
-      usedDemo = true;
-    } else {
-      // 真实AI：API和动画并行
-      hintEl.textContent = '大约需要 15-25 秒';
-      const apiPromise = callDeepSeekAPI(data);
-
-      await new Promise(r => setTimeout(r, 2000)); advanceStep();
-      await new Promise(r => setTimeout(r, 2500)); advanceStep();
-      await new Promise(r => setTimeout(r, 2000)); advanceStep();
-      hintEl.textContent = 'AI 正在写话术，快好了...';
-
-      // 等API真正完成
-      const aiResult = await apiPromise;
-      result = {
-        score: aiResult.score,
-        min: aiResult.marketMin,
-        mid: aiResult.marketMid,
-        max: aiResult.marketMax,
-        suggest: aiResult.suggestTarget,
-        ratio: aiResult.ratio,
-        data: data,
-        aiData: aiResult,
-      };
-    }
-  } catch(e) {
-    console.error('AI调用失败:', e);
-    toast('⚠️ AI 服务繁忙，已切换演示模式');
-    result = demoAnalyze(data);
-    usedDemo = true;
-  }
-
-  // 完成所有步骤 + 进度条 100%
-  while (currentStep < 4) { advanceStep(); }
-  setProgress(100);
-  phraseEl.textContent = '✅ 分析完成！';
-  await new Promise(r => setTimeout(r, 600));
-
-  cleanup();
-  // 关闭所有遮罩（确保结果页在最上层）
-  closeProfile();
-  closeConfirmModal();
-  document.getElementById('demoGate').classList.remove('show');
-
-  // 延迟100ms确保loading彻底消失后再显示结果
-  setTimeout(() => {
     try {
-      render(result, usedDemo ? null : (result ? result.aiData : null));
+      if (CONFIG.USE_DEMO) {
+        await new Promise(r => setTimeout(r, 800)); advanceStep();
+        await new Promise(r => setTimeout(r, 900)); advanceStep();
+        await new Promise(r => setTimeout(r, 800)); advanceStep();
+        await new Promise(r => setTimeout(r, 600));
+        result = demoAnalyze(data); usedDemo = true;
+      } else {
+        hintEl.textContent = '大约需要 15-25 秒';
+        const apiPromise = callDeepSeekAPI(data);
+        await new Promise(r => setTimeout(r, 2000)); advanceStep();
+        await new Promise(r => setTimeout(r, 2500)); advanceStep();
+        await new Promise(r => setTimeout(r, 2000)); advanceStep();
+        hintEl.textContent = 'AI 正在写话术，快好了...';
+        const ai = await apiPromise;
+        result = { score: ai.score, min: ai.marketMin, mid: ai.marketMid, max: ai.marketMax, suggest: ai.suggestTarget, ratio: ai.ratio, data: data, aiData: ai };
+      }
     } catch(e) {
-      console.error('渲染失败:', e);
-      toast('⚠️ 渲染出错，请刷新重试');
+      console.error('AI调用失败:', e);
+      toast('⚠️ AI 服务繁忙，已切换演示模式');
+      result = demoAnalyze(data); usedDemo = true;
     }
 
-    // 强制显示结果页
-    const resultEl = document.getElementById('result');
-    if (resultEl) {
-      resultEl.style.display = 'block';
-      resultEl.classList.add('open');
-      resultEl.scrollTop = 0;
-    }
+    while (currentStep < 4) advanceStep();
+    barEl.style.width = '100%';
+    phraseEl.textContent = '✅ 分析完成！';
+    await new Promise(r => setTimeout(r, 600));
 
-    // 更新结果页标题
-    const rd = result.data || {};
-    const titleEl = document.getElementById('resultPageTitle');
-    if (titleEl) titleEl.textContent = [rd.company, rd.position].filter(Boolean).join(' · ') || '谈判方案';
+    cleanup();
+    closeProfile();
+    closeConfirmModal();
+    const dg = document.getElementById('demoGate');
+    if (dg) dg.classList.remove('show');
 
-    // 保存历史记录（需要登录）
-    const cu = getCurrentUser();
-    if (cu && cu.id) {
-      await saveHistory(data, result, result ? result.aiData : null);
-    }
-  }, 100);
+    setTimeout(async () => {
+      try { render(result, usedDemo ? null : result.aiData); } catch(e) {
+        console.error('渲染失败:', e);
+        toast('⚠️ 渲染出错，请刷新重试');
+      }
+      const resultEl = document.getElementById('result');
+      if (resultEl) { resultEl.style.display = 'block'; resultEl.classList.add('open'); resultEl.scrollTop = 0; }
+      const rd = result.data || {};
+      const titleEl = document.getElementById('resultPageTitle');
+      if (titleEl) titleEl.textContent = [rd.company, rd.position].filter(Boolean).join(' · ') || '谈判方案';
+      const cu = getCurrentUser();
+      if (cu && cu.id) saveHistory(data, result, result.aiData);
+    }, 100);
+
   } catch(e) {
     console.error('[go] error:', e);
-    cleanup();
-    const loadingEl = document.getElementById('loading');
-    if (loadingEl) { loadingEl.classList.remove('show'); loadingEl.style.display = 'none'; }
+    const le = document.getElementById('loading');
+    if (le) { le.classList.remove('show'); le.style.display = 'none'; }
     document.body.style.overflow = '';
-    alert('出错了：' + e.message + '\n请刷新页面重试');
+    alert('出错了：' + e.message);
   }
 }
 
+
+
 function reset() {
-  document.getElementById('result').classList.remove('open');
-  document.getElementById('demoGate').classList.remove('show');
-  for (let i = 1; i <= 4; i++) { document.getElementById('l'+i).classList.remove('doing','done'); }
+  const resultEl = document.getElementById('result');
+  if (resultEl) {
+    resultEl.classList.remove('open');
+    resultEl.style.display = 'none';
+  }
+  const demoGate = document.getElementById('demoGate');
+  if (demoGate) demoGate.classList.remove('show');
+  for (let i = 1; i <= 4; i++) {
+    const el = document.getElementById('l'+i);
+    if (el) el.classList.remove('doing','done');
+  }
+  document.body.style.overflow = '';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
