@@ -7,6 +7,9 @@
     "build": "echo 'Static site ready'",
     "dev": "python -m http.server 3000"
   },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  },
   "keywords": ["salary", "negotiation", "ai", "job"],
   "author": "Chirs",
   "license": "MIT"

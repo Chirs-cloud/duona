@@ -125,16 +125,16 @@
     .ls.done .dot::after { content: '✓'; color: white; font-size: 11px; font-weight: 700; }
     .ls.doing .dot::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; display: block; }
     @keyframes ldPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.2);opacity:0.7} }
-    /* ── 结果页：独立全屏（低于弹窗 z-index 200，保证弹窗可覆盖）── */
+    /* ── 结果页：独立全屏（z-index 高于弹窗）── */
     #result {
-      display: none; position: fixed; inset: 0; z-index: 150;
+      display: none; position: fixed; inset: 0; z-index: 300;
       background: var(--bg); overflow-y: auto; -webkit-overflow-scrolling: touch;
     }
     #result.open { display: block; animation: fadeUp 0.3s ease; }
     .result-page-header {
-      position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; z-index: 20;
-      background: rgba(245,243,255,0.97); backdrop-filter: blur(12px);
-      padding: 12px 16px; display: flex; align-items: center; gap: 8px;
+      position: sticky; top: 0; z-index: 10;
+      background: rgba(245,243,255,0.92); backdrop-filter: blur(12px);
+      padding: 12px 16px; display: flex; align-items: center; gap: 10px;
       border-bottom: 1px solid var(--border);
     }
     .result-back-btn {
@@ -197,7 +197,7 @@
     .pay-qr img { width: 100%; border-radius: 6px; display: block; }
     .pay-hint { font-size: 11px; opacity: 0.6; margin-top: 4px; }
     .btn-pay { width: 100%; padding: 13px; background: linear-gradient(135deg, var(--accent), #EF4444); color: white; border: none; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(249,115,22,0.35); margin-top: 14px; }
-    .action-row { display: flex; gap: 10px; padding: 0 16px 16px; max-width: 480px; margin: 0 auto; }
+    .action-row { display: flex; gap: 10px; padding: 0 16px 16px; }
     .btn-reset, .btn-share { flex: 1; padding: 13px; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
     .btn-reset { background: var(--card); border: 1.5px solid var(--border); color: var(--text-2); }
     .btn-reset:hover { border-color: var(--brand); color: var(--brand); }
@@ -321,9 +321,6 @@
     .header-center-btn:hover { border-color: var(--brand); color: var(--brand); }
     .header-center-btn .hc-icon { font-size: 14px; }
     .modal .sub { font-size: 13px; color: var(--text-2); margin-bottom: 16px; }
-    
-    /* 简化后的登录样式 */
-    .modal-overlay .modal input.login-input { margin-bottom: 10px; }
   </style>
 </head>
 <body>
@@ -425,8 +422,8 @@
     <div class="result-page-header">
       <button class="result-back-btn" onclick="reset()">← 返回</button>
       <span class="result-page-title" id="resultPageTitle">谈判方案</span>
-      <button class="btn-share" onclick="openProfile()" style="width:32px;min-width:32px;height:32px;padding:0;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-grow:0;">👤</button>
-      <button class="btn-share" onclick="copyAll()" style="width:32px;min-width:32px;height:32px;padding:0;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;flex-grow:0;" title="复制报告">📋</button>
+      <button class="btn-share" onclick="openProfile()" style="padding:6px 10px;font-size:12px;border-radius:8px;">👤</button>
+      <button class="btn-share" onclick="copyAll()" style="padding:6px 10px;font-size:12px;border-radius:8px;">📋</button>
     </div>
     <!-- 内容区 -->
     <div class="result-page-inner">
@@ -503,9 +500,15 @@
 <div class="modal-overlay" id="loginModal">
   <div class="modal">
     <div class="modal-close" onclick="hideLoginModal()">✕</div>
-    <h3>📱 手机号登录</h3>
-    <div class="sub">输入手机号，5秒完成注册/登录</div>
-    <input type="tel" id="loginPhone" class="login-input" placeholder="手机号" maxlength="11" />
+    <h3 id="loginTitle">登录多拿点</h3>
+    <div class="sub" id="loginSub">注册后每月免费分析 2 次，报告永久保存</div>
+    <div class="login-modal-tabs">
+      <div class="login-tab active" id="tabSignup" onclick="switchLoginTab('signup')">注册</div>
+      <div class="login-tab" id="tabSignin" onclick="switchLoginTab('signin')">登录</div>
+    </div>
+    <div id="loginPhoneWrap">
+      <input type="tel" id="loginPhone" class="login-input" placeholder="手机号" maxlength="11" />
+    </div>
     <div class="captcha-row">
       <input type="text" id="loginCaptcha" class="login-input" placeholder="图形验证码" maxlength="4" style="margin-bottom:0;" />
       <canvas class="captcha-canvas" id="captchaCanvas" onclick="refreshCaptcha()"></canvas>
@@ -585,13 +588,13 @@
     </div>
 
     <!-- 菜单 -->
-    <div class="profile-menu" id="profileMenu">
+    <div class="profile-menu">
       <div class="menu-item" onclick="toast('联系我们：duoduodian')">
         <span class="menu-icon">💬</span>
         <div class="menu-text"><div class="mt">联系客服</div><div class="ms">问题反馈 · 支付问题</div></div>
         <span class="menu-arrow">›</span>
       </div>
-      <div class="menu-item" onclick="confirmLogout()" id="logoutMenuItem" style="display:none;">
+      <div class="menu-item" onclick="confirmLogout()">
         <span class="menu-icon">🚪</span>
         <div class="menu-text"><div class="mt">退出登录</div></div>
         <span class="menu-arrow">›</span>
@@ -630,47 +633,45 @@ const CONFIG = {
 };
 
 // ================================================================
-// 用户体系（Supabase 后端 + localStorage 缓存）
+// 用户体系（localStorage 实现，演示用）
 // ================================================================
 const FREE_LIMIT = 2;
 let currentUser = null;
+let loginTab = 'signup';
 let smsCountdown = 0;
 let smsTimer = null;
 
+function getUsers() { return JSON.parse(localStorage.getItem('dd_users') || '{}'); }
+function saveUsers(u) { localStorage.setItem('dd_users', JSON.stringify(u)); }
 function getCurrentUser() { return JSON.parse(localStorage.getItem('dd_current') || 'null'); }
-function setCurrentUser(u) {
-  currentUser = u;
-  if (u) localStorage.setItem('dd_current', JSON.stringify(u));
-  else localStorage.removeItem('dd_current');
-  updateHeaderUI();
-}
+function setCurrentUser(u) { currentUser = u; localStorage.setItem('dd_current', JSON.stringify(u)); updateHeaderUI(); }
 
-function getUsageCount() { const u = getCurrentUser(); return u ? (u.usage_count || 0) : 0; }
+function getMonthKey() { const d = new Date(); return `${d.getFullYear()}-${d.getMonth()+1}`; }
+function getUsageCount() {
+  const u = getCurrentUser();
+  if (!u) return 0;
+  const mk = getMonthKey();
+  return u.usage ? (u.usage[mk] || 0) : 0;
+}
 function canUse() {
   const u = getCurrentUser();
   if (!u) return false;
-  if (u.is_paid) return true;
-  return (u.usage_count || 0) < FREE_LIMIT;
+  if (u.paid) return true;
+  return getUsageCount() < FREE_LIMIT;
+}
+function incrementUsage() {
+  const u = getCurrentUser();
+  if (!u || u.paid) return;
+  const mk = getMonthKey();
+  if (!u.usage) u.usage = {};
+  u.usage[mk] = (u.usage[mk] || 0) + 1;
+  setCurrentUser(u);
+  const users = getUsers();
+  users[u.phone] = u;
+  saveUsers(users);
 }
 
-async function initUser() {
-  currentUser = getCurrentUser();
-  updateHeaderUI();
-  // 如果有缓存用户，从后端刷新最新状态
-  if (currentUser && currentUser.id) {
-    try {
-      const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: currentUser.phone, code: '666666' })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success) setCurrentUser(data.user);
-      }
-    } catch(e) { /* 网络异常，用缓存继续 */ }
-  }
-}
+function initUser() { currentUser = getCurrentUser(); updateHeaderUI(); }
 
 function updateHeaderUI() {
   const avatar = document.getElementById('userAvatar');
@@ -694,7 +695,8 @@ function updateHeaderUI() {
 }
 
 // 登录弹窗
-function showLoginModal() {
+function showLoginModal(tab) {
+  loginTab = tab || 'signup';
   document.getElementById('loginModal').classList.add('show');
   document.getElementById('loginError').textContent = '';
   document.getElementById('loginPhone').value = '';
@@ -704,6 +706,7 @@ function showLoginModal() {
   const btn = document.getElementById('smsBtn');
   if (btn) { btn.disabled = false; btn.textContent = '获取验证码'; }
   refreshCaptcha();
+  switchLoginTab(loginTab);
 }
 
 // 图形验证码
@@ -746,6 +749,16 @@ function hideLoginModal() {
   setTimeout(() => { const m2 = document.getElementById('loginModal'); if (m2) m2.style.display = 'none'; }, 200);
 }
 
+function switchLoginTab(tab) {
+  loginTab = tab;
+  document.querySelectorAll('.login-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tab === 'signup' ? 'tabSignup' : 'tabSignin').classList.add('active');
+  document.getElementById('loginTitle').textContent = tab === 'signup' ? '注册多拿点' : '登录多拿点';
+  document.getElementById('loginSub').textContent = tab === 'signup' ? '注册后每月免费分析 2 次' : '登录后查看历史报告';
+  document.getElementById('loginConfirm').textContent = tab === 'signup' ? '验证并注册' : '验证并登录';
+  document.getElementById('loginError').textContent = '';
+}
+
 function sendSms() {
   if (smsCountdown > 0) return;
   const phone = document.getElementById('loginPhone').value.trim();
@@ -768,49 +781,35 @@ function sendSms() {
   toast('演示模式：短信验证码 666666');
 }
 
-async function doLogin() {
+function doLogin() {
   const phone = document.getElementById('loginPhone').value.trim();
   const sms = document.getElementById('loginSms').value.trim();
   const err = document.getElementById('loginError');
-  const btn = document.getElementById('loginConfirm');
   err.textContent = '';
   if (!/^1\d{10}$/.test(phone)) { err.textContent = '请输入正确的手机号'; return; }
-  if (!sms) { err.textContent = '请输入验证码'; return; }
-
-  btn.disabled = true; btn.textContent = '登录中...';
-  try {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ phone, code: sms })
-    });
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      err.textContent = data.error || '登录失败，请重试';
-      btn.disabled = false; btn.textContent = '验证并登录';
-      return;
-    }
-    const user = data.user;
-    const isNew = !localStorage.getItem('dd_current') || JSON.parse(localStorage.getItem('dd_current') || 'null')?.phone !== phone;
-    // 设置用户并关闭弹窗
-    currentUser = user;
-    localStorage.setItem('dd_current', JSON.stringify(user));
-    const loginModal = document.getElementById('loginModal');
-    if (loginModal) { loginModal.classList.remove('show'); loginModal.style.display = 'none'; }
-    const profile = document.getElementById('profile');
-    if (profile) profile.classList.remove('open');
-    const avatar = document.getElementById('userAvatar');
-    const centerBtn = document.getElementById('headerCenterBtn');
-    if (avatar) { avatar.style.display = 'flex'; avatar.textContent = user.phone.slice(-2); avatar.classList.add('show'); if (user.is_paid) avatar.classList.add('paid'); }
-    if (centerBtn) centerBtn.style.display = 'none';
-    toast(isNew ? `🎉 注册成功！每月免费分析 ${FREE_LIMIT} 次` : `欢迎回来！`);
-    // 刷新个人中心数据
-    updateProfileUI();
-  } catch(e) {
-    err.textContent = '网络错误，请重试';
-  } finally {
-    btn.disabled = false; btn.textContent = '验证并登录';
-  }
+  if (sms !== '666666') { err.textContent = '演示验证码：666666'; return; }
+  const users = getUsers();
+  let user = users[phone];
+  const isNew = !user;
+  if (!user) { user = { phone, created: new Date().toISOString(), paid: false, usage: {}, history: [] }; }
+  user.lastLogin = new Date().toISOString();
+  users[phone] = user;
+  saveUsers(users);
+  // 直接设置 currentUser 并同步 localStorage + header
+  currentUser = user;
+  localStorage.setItem('dd_current', JSON.stringify(user));
+  // 关闭登录弹窗（双重保险）
+  const loginModal = document.getElementById('loginModal');
+  if (loginModal) { loginModal.classList.remove('show'); loginModal.style.display = 'none'; }
+  // 关闭个人中心
+  const profile = document.getElementById('profile');
+  if (profile) profile.classList.remove('open');
+  // 立即更新 Header（显式设置每个元素状态）
+  const avatar = document.getElementById('userAvatar');
+  const centerBtn = document.getElementById('headerCenterBtn');
+  if (avatar) { avatar.style.display = 'flex'; avatar.textContent = user.phone.slice(-2); avatar.classList.add('show'); }
+  if (centerBtn) centerBtn.style.display = 'none';
+  toast(isNew ? `🎉 注册成功！每月免费分析 ${FREE_LIMIT} 次` : `欢迎回来！`);
 }
 
 function confirmLogout() {
@@ -844,21 +843,11 @@ function showDemoGate() { showLoginModal('signup'); }
 function hideDemoGate() { }
 
 // 个人中心
-function openProfile() {
-  const u = getCurrentUser();
-  if (!u) {
-    // 未登录 → 打开登录弹窗
-    showLoginModal('signup');
-    return;
-  }
-  document.getElementById('profile').classList.add('open');
-  updateProfileUI();
-  document.getElementById('profile').scrollTop = 0;
-}
+function openProfile() { document.getElementById('profile').classList.add('open'); updateProfileUI(); document.getElementById('profile').scrollTop = 0; }
 function closeProfile() { document.getElementById('profile').classList.remove('open'); }
 function closeConfirmModal() { document.getElementById('confirmModal').classList.remove('show'); }
 
-async function updateProfileUI() {
+function updateProfileUI() {
   const u = getCurrentUser();
   const phEl = document.getElementById('profilePhone');
   const badge = document.getElementById('profileBadge');
@@ -868,102 +857,76 @@ async function updateProfileUI() {
   const histCount = document.getElementById('historyCount');
   const upgradeCard = document.getElementById('profileUpgradeCard');
   if (!u) {
-    const avatarEl = document.getElementById('profileAvatar');
-    if (avatarEl) avatarEl.textContent = '👤';
-    if (phEl) phEl.textContent = '未登录';
-    if (badge) { badge.textContent = ''; badge.className = 'profile-badge'; }
-    if (paidBadge) paidBadge.style.display = 'none';
-    if (usageCard) usageCard.style.display = 'none';
-    if (upgradeCard) upgradeCard.style.display = 'none';
-    if (histList) histList.innerHTML = '<div class="history-empty"><div class="history-empty-icon">🔒</div>请先登录查看历史记录<br><button onclick="closeProfile(); showLoginModal()" style="margin-top:14px;padding:10px 24px;background:var(--brand);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📱 登录 / 注册</button></div>';
-    if (histCount) histCount.textContent = '0';
+    document.getElementById('profileAvatar').textContent = '👤';
+    phEl.textContent = '未登录';
+    badge.textContent = '';
+    badge.className = 'profile-badge';
+    paidBadge.style.display = 'none';
+    usageCard.style.display = 'none';
+    upgradeCard.style.display = 'none';
+    histList.innerHTML = '<div class="history-empty"><div class="history-empty-icon">🔒</div>请先登录查看历史记录<br><button onclick="closeProfile(); showLoginModal(\'signup\')" style="margin-top:14px;padding:10px 24px;background:var(--brand);color:white;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;">📱 登录 / 注册</button></div>';
+    histCount.textContent = '0';
     return;
   }
-  if (phEl) phEl.textContent = u.phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
-  const avatarEl2 = document.getElementById('profileAvatar');
-  if (avatarEl2) avatarEl2.textContent = u.phone.slice(-2);
-  // 显示退出菜单
-  const logoutItem = document.getElementById('logoutMenuItem');
-  if (logoutItem) logoutItem.style.display = 'flex';
-
-  if (u.is_paid) {
-    if (badge) { badge.textContent = '完整版用户 · 无限次'; badge.className = 'profile-badge paid'; }
-    if (paidBadge) paidBadge.style.display = 'flex';
-    if (usageCard) usageCard.style.display = 'none';
-    if (upgradeCard) upgradeCard.style.display = 'none';
+  phEl.textContent = u.phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
+  document.getElementById('profileAvatar').textContent = u.phone.slice(-2);
+  if (u.paid) {
+    badge.textContent = '完整版用户 · 无限次';
+    badge.className = 'profile-badge paid';
+    paidBadge.style.display = 'flex';
+    usageCard.style.display = 'none';
+    upgradeCard.style.display = 'none';
   } else {
-    const used = u.usage_count || 0;
+    const used = getUsageCount();
     const left = Math.max(0, FREE_LIMIT - used);
-    if (badge) { badge.textContent = `免费用户 · 本月剩余 ${left} 次`; badge.className = 'profile-badge'; }
-    if (paidBadge) paidBadge.style.display = 'none';
-    if (usageCard) usageCard.style.display = 'block';
-    if (upgradeCard) upgradeCard.style.display = 'block';
+    badge.textContent = `免费用户 · 本月剩余 ${left} 次`;
+    badge.className = 'profile-badge';
+    paidBadge.style.display = 'none';
+    usageCard.style.display = 'block';
+    upgradeCard.style.display = 'block';
     const fill = Math.min(100, (used / FREE_LIMIT) * 100);
-    const usageFill = document.getElementById('usageFill');
-    if (usageFill) { usageFill.style.width = fill + '%'; usageFill.className = 'usage-fill' + (used >= FREE_LIMIT ? ' warn' : ''); }
-    const usageCountText = document.getElementById('usageCountText');
-    if (usageCountText) usageCountText.textContent = `${used}/${FREE_LIMIT}`;
-    const usageText = document.getElementById('usageText');
-    if (usageText) usageText.textContent =
+    document.getElementById('usageFill').style.width = fill + '%';
+    document.getElementById('usageFill').className = 'usage-fill' + (used >= FREE_LIMIT ? ' warn' : '');
+    document.getElementById('usageCountText').textContent = `${used}/${FREE_LIMIT}`;
+    document.getElementById('usageText').textContent =
       used >= FREE_LIMIT ? '本月已用完，升级完整版可无限使用' :
       used === 0 ? `本月还有 ${FREE_LIMIT} 次免费机会` :
       `本月还剩 ${left} 次免费机会`;
   }
-
-  // 从后端加载历史报告
-  if (histList && u.id) {
-    try {
-      const res = await fetch(`/api/reports?user_id=${u.id}`);
-      const resp = await res.json();
-      const analyses = resp.data || [];
-      if (histCount) histCount.textContent = analyses.length;
-      if (analyses.length === 0) {
-        histList.innerHTML = '<div class="history-empty"><div class="history-empty-icon">📝</div>还没有分析记录<br>生成第一份报告吧</div>';
-      } else {
-        histList.innerHTML = analyses.map(h => `
-          <div class="history-item" data-id="${h.id}" onclick="loadHistoryById('${h.id}', '${h.company}', '${h.position}')">
-            <span class="history-icon">📋</span>
-            <div class="history-info">
-              <div class="history-company">${h.company || ''} · ${h.position || ''}</div>
-              <div class="history-meta">${h.city || ''} · ¥${h.salary || 0} · ${new Date(h.created_at).toLocaleDateString('zh-CN')}</div>
-            </div>
-            <div class="history-score">${h.result?.score || '--'}分</div>
-          </div>
-        `).join('');
-      }
-    } catch(e) {
-      console.error('加载历史记录失败:', e);
-      if (histList) histList.innerHTML = '<div class="history-empty">加载失败，请刷新试试</div>';
-    }
+  const hist = u.history || [];
+  histCount.textContent = hist.length;
+  if (hist.length === 0) {
+    histList.innerHTML = '<div class="history-empty"><div class="history-empty-icon">📝</div>还没有分析记录<br>生成第一份报告吧</div>';
+  } else {
+    histList.innerHTML = hist.slice().reverse().slice(0, 20).map((h, i) => `
+      <div class="history-item" onclick="loadHistory(${i})">
+        <span class="history-icon">📋</span>
+        <div class="history-info">
+          <div class="history-company">${h.company || ''} · ${h.position || ''}</div>
+          <div class="history-meta">${h.city || ''} · ${h.exp || ''} · ${h.date || ''}</div>
+        </div>
+        <div class="history-score">${h.score || '--'}分</div>
+      </div>
+    `).join('');
   }
 }
 
-async function loadHistoryById(id, company, position) {
-  try {
-    // 直接从后端按 id 获取报告详情（analyses 表）
-    const u = getCurrentUser();
-    if (!u) return;
-    const res = await fetch(`/api/reports?user_id=${u.id}`);
-    const resp = await res.json();
-    const analyses = resp.data || [];
-    const h = analyses.find(a => a.id === id);
-    if (!h || !h.result) { toast('⚠️ 历史记录不存在'); return; }
-    const result = h.result;
-    const aiData = result.aiData || null;
-    closeProfile();
-    try { render(result, aiData); } catch(e) { console.error(e); toast('⚠️ 加载失败'); return; }
-    const titleEl = document.getElementById('resultPageTitle');
-    if (titleEl) titleEl.textContent = [company, position].filter(Boolean).join(' · ') || '谈判方案';
-    const resultEl = document.getElementById('result');
-    if (resultEl) { resultEl.style.display = 'block'; resultEl.classList.add('open'); resultEl.scrollTop = 0; }
-    toast('📋 已加载历史报告');
-  } catch(e) {
-    toast('加载失败，请重试');
-  }
+function loadHistory(idx) {
+  const u = getCurrentUser();
+  if (!u || !u.history || u.history.length === 0) return;
+  const reversed = u.history.slice().reverse();
+  const h = reversed[idx];
+  if (!h) return;
+  // 从历史记录重建完整报告
+  const result = h.result || { score: h.score || 60, min: h.min || 0, mid: h.mid || 0, max: h.max || 0, suggest: h.suggest || 0, ratio: h.ratio || 1, data: h.data || {} };
+  closeProfile();
+  render(result, h.aiData || null);
+  document.getElementById('resultPageTitle').textContent = [h.company, h.position].filter(Boolean).join(' · ') || '谈判方案';
+  const resultEl = document.getElementById('result');
+  resultEl.classList.add('open');
+  resultEl.scrollTop = 0;
+  toast('📋 已加载历史报告');
 }
-
-// 保留旧的 loadHistory 兼容（以防万一）
-function loadHistory(idx) { toast('请使用最新的历史报告列表'); }
 
 // 升级
 function showUpgradeModal() {
@@ -971,34 +934,27 @@ function showUpgradeModal() {
   else { toast('💬 联系客服微信：duoduodian\n支付 ¥19.9 解锁完整版'); }
 }
 
-// 保存历史报告（后端 API）
-async function saveHistory(data, result, aiData) {
+// 保存历史报告
+function saveHistory(data, result, aiData) {
   const u = getCurrentUser();
-  if (!u || !u.id) return;
-  try {
-    const res = await fetch('/api/save-report', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_id: u.id,
-        phone: u.phone,
-        form_data: data,
-        result: { ...result, aiData }
-      })
-    });
-    const resp = await res.json();
-    if (resp.need_upgrade) {
-      toast('本月免费次数已用完，请升级完整版');
-      return;
-    }
-    if (resp.success) {
-      // 更新本地缓存的使用次数
-      u.usage_count = resp.usage_count || (u.usage_count || 0) + 1;
-      setCurrentUser(u);
-    }
-  } catch(e) {
-    console.error('保存报告失败:', e);
-  }
+  if (!u) return;
+  if (!u.history) u.history = [];
+  u.history.push({
+    company: data.company,
+    position: data.position,
+    city: data.city,
+    exp: data.exp,
+    salary: data.salary,
+    score: result.score,
+    date: new Date().toLocaleDateString('zh-CN'),
+    timestamp: Date.now(),
+    data: data,
+    result: result,
+    aiData: aiData
+  });
+  if (u.history.length > 50) u.history = u.history.slice(-50);
+  setCurrentUser(u);
+  const users = getUsers(); users[u.phone] = u; saveUsers(users);
 }
 
 // ================================================================
@@ -1336,9 +1292,7 @@ async function go() {
   function cleanup() {
     clearInterval(phraseTimer);
     document.body.style.overflow = '';
-    // 强制隐藏 loading（双重保险，防止 classList.remove 失效）
-    const le = document.getElementById('loading');
-    if (le) { le.classList.remove('show'); le.style.display = 'none'; }
+    loadingEl.classList.remove('show');
   }
 
   // 开始第1步
@@ -1393,39 +1347,31 @@ async function go() {
   await new Promise(r => setTimeout(r, 600));
 
   cleanup();
-  // 关闭所有遮罩（确保结果页在最上层）
+  // 关闭个人中心（如果开着），确保结果页在最上层
   closeProfile();
   closeConfirmModal();
-  document.getElementById('demoGate').classList.remove('show');
+  try {
+    render(result, usedDemo ? null : (result ? result.aiData : null));
+  } catch(e) {
+    console.error('渲染失败:', e);
+    toast('⚠️ 渲染出错，请刷新重试');
+  }
 
-  // 延迟100ms确保loading彻底消失后再显示结果
-  setTimeout(() => {
-    try {
-      render(result, usedDemo ? null : (result ? result.aiData : null));
-    } catch(e) {
-      console.error('渲染失败:', e);
-      toast('⚠️ 渲染出错，请刷新重试');
-    }
+  // 保存历史 + 扣次数
+  if (!usedDemo) {
+    incrementUsage();
+    saveHistory(data, result, result.aiData);
+  }
 
-    // 强制显示结果页
-    const resultEl = document.getElementById('result');
-    if (resultEl) {
-      resultEl.style.display = 'block';
-      resultEl.classList.add('open');
-      resultEl.scrollTop = 0;
-    }
+  // 更新结果页标题
+  const rd = result.data || {};
+  document.getElementById('resultPageTitle').textContent =
+    [rd.company, rd.position].filter(Boolean).join(' · ') || '谈判方案';
 
-    // 更新结果页标题
-    const rd = result.data || {};
-    const titleEl = document.getElementById('resultPageTitle');
-    if (titleEl) titleEl.textContent = [rd.company, rd.position].filter(Boolean).join(' · ') || '谈判方案';
-
-    // 保存历史记录（需要登录）
-    const cu = getCurrentUser();
-    if (cu && cu.id) {
-      await saveHistory(data, result, result ? result.aiData : null);
-    }
-  }, 100);
+  const resultEl = document.getElementById('result');
+  resultEl.classList.add('open');
+  resultEl.style.display = 'block';  // 强制显示（防御性）
+  resultEl.scrollTop = 0;
 }
 
 function reset() {

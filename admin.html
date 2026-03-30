@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>多拿点 · 后台管理</title>
+  <style>
+    :root {
+      --brand: #8B5CF6; --brand-light: #EDE9FE; --brand-dark: #7C3AED;
+      --green: #10B981; --green-light: #ECFDF5;
+      --red: #EF4444; --red-light: #FEF2F2;
+      --yellow: #FBBF24; --yellow-light: #FFFBEB;
+      --bg: #F5F3FF; --card: #FFFFFF;
+      --text: #1E1B4B; --text-2: #6B7280; --text-3: #9CA3AF;
+      --border: #EDE9FE; --shadow: 0 2px 16px rgba(139,92,246,0.08);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* 登录页 */
+    .login-page { display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+    .login-box { background: white; border-radius: 20px; padding: 40px 32px; width: 360px; box-shadow: var(--shadow); text-align: center; }
+    .login-box h1 { font-size: 22px; font-weight: 800; color: var(--brand); margin-bottom: 6px; }
+    .login-box p { font-size: 13px; color: var(--text-2); margin-bottom: 24px; }
+    .login-box input { width: 100%; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 15px; margin-bottom: 12px; outline: none; }
+    .login-box input:focus { border-color: var(--brand); }
+    .login-box button { width: 100%; padding: 14px; background: var(--brand); color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .login-box button:hover { background: var(--brand-dark); }
+    .login-error { color: var(--red); font-size: 13px; margin-top: 8px; }
+
+    /* 主界面 */
+    .admin-layout { display: grid; grid-template-columns: 200px 1fr; min-height: 100vh; }
+    .sidebar { background: white; border-right: 1px solid var(--border); padding: 24px 0; }
+    .sidebar-logo { padding: 0 20px 24px; border-bottom: 1px solid var(--border); }
+    .sidebar-logo h2 { font-size: 18px; font-weight: 800; color: var(--brand); }
+    .sidebar-logo p { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+    .sidebar-nav { padding: 16px 12px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500; color: var(--text-2); transition: all 0.15s; margin-bottom: 4px; }
+    .nav-item:hover { background: var(--bg); color: var(--text); }
+    .nav-item.active { background: var(--brand-light); color: var(--brand); font-weight: 600; }
+    .nav-item .icon { font-size: 16px; }
+    .sidebar-footer { padding: 16px 20px; border-top: 1px solid var(--border); position: absolute; bottom: 0; width: 200px; }
+    .sidebar-footer button { font-size: 12px; color: var(--text-3); background: none; border: none; cursor: pointer; }
+
+    .main { padding: 28px 32px; overflow-y: auto; }
+    .page-header { margin-bottom: 24px; }
+    .page-header h1 { font-size: 22px; font-weight: 800; }
+    .page-header p { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+
+    /* 数据卡片 */
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 28px; }
+    .stat-card { background: white; border-radius: 16px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+    .stat-card .label { font-size: 12px; color: var(--text-2); font-weight: 500; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .stat-card .value { font-size: 32px; font-weight: 800; color: var(--text); }
+    .stat-card .sub { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+    .stat-card.brand .value { color: var(--brand); }
+    .stat-card.green .value { color: var(--green); }
+    .stat-card.yellow .value { color: var(--yellow); }
+
+    /* 表格 */
+    .table-card { background: white; border-radius: 16px; box-shadow: var(--shadow); border: 1px solid var(--border); overflow: hidden; }
+    .table-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .table-header h3 { font-size: 15px; font-weight: 700; }
+    .table-header .refresh-btn { font-size: 12px; color: var(--brand); background: var(--brand-light); padding: 6px 14px; border-radius: 20px; border: none; cursor: pointer; font-weight: 600; }
+    table { width: 100%; border-collapse: collapse; }
+    th { font-size: 12px; font-weight: 600; color: var(--text-2); text-align: left; padding: 10px 16px; background: var(--bg); border-bottom: 1px solid var(--border); }
+    td { font-size: 13px; padding: 12px 16px; border-bottom: 1px solid #F9F8FF; vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #FDFCFF; }
+    .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .badge.paid { background: var(--green-light); color: var(--green); }
+    .badge.free { background: var(--yellow-light); color: #92400E; }
+    .btn-set-paid { font-size: 11px; padding: 4px 10px; background: var(--brand-light); color: var(--brand); border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+    .btn-set-paid:hover { background: var(--brand); color: white; }
+
+    /* 分页 */
+    .pagination { display: flex; gap: 8px; padding: 16px 20px; justify-content: flex-end; align-items: center; border-top: 1px solid var(--border); }
+    .pagination button { padding: 6px 14px; border-radius: 8px; border: 1px solid var(--border); font-size: 13px; cursor: pointer; background: white; }
+    .pagination button.active { background: var(--brand); color: white; border-color: var(--brand); }
+    .pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .pagination .page-info { font-size: 13px; color: var(--text-2); }
+
+    /* 加载态 */
+    .loading { text-align: center; padding: 40px; color: var(--text-3); font-size: 14px; }
+    .empty { text-align: center; padding: 40px; color: var(--text-3); font-size: 14px; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1E1B4B; color: white; padding: 10px 20px; border-radius: 10px; font-size: 13px; opacity: 0; transition: all 0.25s; z-index: 999; white-space: nowrap; }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .admin-layout { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 登录页 -->
+<div id="loginPage" class="login-page">
+  <div class="login-box">
+    <h1>🔐 多拿点后台</h1>
+    <p>管理员专属，输入密码登录</p>
+    <input type="password" id="adminPwd" placeholder="管理员密码" onkeydown="if(event.key==='Enter') adminLogin()" />
+    <button onclick="adminLogin()">登 录</button>
+    <div class="login-error" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- 主界面 -->
+<div id="adminLayout" class="admin-layout" style="display:none;">
+  <div class="sidebar">
+    <div class="sidebar-logo">
+      <h2>多拿点</h2>
+      <p>后台管理系统</p>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-item active" onclick="showPage('overview')" id="nav-overview">
+        <span class="icon">📊</span> 数据总览
+      </div>
+      <div class="nav-item" onclick="showPage('users')" id="nav-users">
+        <span class="icon">👥</span> 用户管理
+      </div>
+      <div class="nav-item" onclick="showPage('analyses')" id="nav-analyses">
+        <span class="icon">📋</span> 报告记录
+      </div>
+    </div>
+    <div style="position:absolute;bottom:0;width:200px;padding:16px 20px;border-top:1px solid var(--border);">
+      <button onclick="adminLogout()" style="font-size:12px;color:var(--text-3);background:none;border:none;cursor:pointer;">退出登录</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- 总览 -->
+    <div id="page-overview">
+      <div class="page-header">
+        <h1>📊 数据总览</h1>
+        <p id="overviewTime">加载中...</p>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card brand">
+          <div class="label">👥 累计用户</div>
+          <div class="value" id="stat-users">--</div>
+          <div class="sub" id="stat-today-users">今日新增 -- 人</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">📋 分析报告</div>
+          <div class="value" id="stat-analyses">--</div>
+          <div class="sub" id="stat-today-analyses">今日新增 -- 份</div>
+        </div>
+        <div class="stat-card green">
+          <div class="label">💰 付费用户</div>
+          <div class="value" id="stat-paid">--</div>
+          <div class="sub" id="stat-revenue">预计收入 ¥--</div>
+        </div>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <h3>最新注册用户</h3>
+          <button class="refresh-btn" onclick="loadOverview()">🔄 刷新</button>
+        </div>
+        <div id="overview-users-table"><div class="loading">加载中...</div></div>
+      </div>
+    </div>
+
+    <!-- 用户管理 -->
+    <div id="page-users" style="display:none;">
+      <div class="page-header">
+        <h1>👥 用户管理</h1>
+        <p>查看所有注册用户，手动设置付费状态</p>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <h3>用户列表</h3>
+          <button class="refresh-btn" onclick="loadUsers(0)">🔄 刷新</button>
+        </div>
+        <div id="users-table"><div class="loading">加载中...</div></div>
+        <div class="pagination" id="users-pagination"></div>
+      </div>
+    </div>
+
+    <!-- 报告记录 -->
+    <div id="page-analyses" style="display:none;">
+      <div class="page-header">
+        <h1>📋 报告记录</h1>
+        <p>所有用户生成的分析报告</p>
+      </div>
+      <div class="table-card">
+        <div class="table-header">
+          <h3>报告列表</h3>
+          <button class="refresh-btn" onclick="loadAnalyses(0)">🔄 刷新</button>
+        </div>
+        <div id="analyses-table"><div class="loading">加载中...</div></div>
+        <div class="pagination" id="analyses-pagination"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let adminToken = '';
+let usersPage = 0;
+let analysesPage = 0;
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+async function adminLogin() {
+  const pwd = document.getElementById('adminPwd').value.trim();
+  const err = document.getElementById('loginErr');
+  if (!pwd) { err.textContent = '请输入密码'; return; }
+  // 通过 API 验证
+  const res = await fetch(`/api/admin?type=overview`, {
+    headers: { 'Authorization': `Bearer ${pwd}` }
+  });
+  if (res.status === 401) { err.textContent = '密码错误'; return; }
+  if (!res.ok) { err.textContent = '连接失败，请检查服务'; return; }
+  adminToken = pwd;
+  localStorage.setItem('admin_token', pwd);
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('adminLayout').style.display = 'grid';
+  loadOverview();
+}
+
+function adminLogout() {
+  adminToken = '';
+  localStorage.removeItem('admin_token');
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('adminLayout').style.display = 'none';
+  document.getElementById('adminPwd').value = '';
+}
+
+async function apiFetch(url) {
+  const res = await fetch(url, { headers: { 'Authorization': `Bearer ${adminToken}` } });
+  if (res.status === 401) { adminLogout(); throw new Error('无权限'); }
+  return res.json();
+}
+
+function showPage(name) {
+  ['overview','users','analyses'].forEach(p => {
+    document.getElementById('page-' + p).style.display = 'none';
+    document.getElementById('nav-' + p).classList.remove('active');
+  });
+  document.getElementById('page-' + name).style.display = 'block';
+  document.getElementById('nav-' + name).classList.add('active');
+  if (name === 'overview') loadOverview();
+  if (name === 'users') loadUsers(0);
+  if (name === 'analyses') loadAnalyses(0);
+}
+
+async function loadOverview() {
+  try {
+    const data = await apiFetch('/api/admin?type=overview');
+    document.getElementById('stat-users').textContent = data.total_users || 0;
+    document.getElementById('stat-analyses').textContent = data.total_analyses || 0;
+    document.getElementById('stat-paid').textContent = data.paid_users || 0;
+    document.getElementById('stat-today-users').textContent = `今日新增 ${data.today_users || 0} 人`;
+    document.getElementById('stat-today-analyses').textContent = `今日新增 ${data.today_analyses || 0} 份`;
+    document.getElementById('stat-revenue').textContent = `预计收入 ¥${((data.paid_users || 0) * 19.9).toFixed(1)}`;
+    document.getElementById('overviewTime').textContent = `数据更新于 ${new Date().toLocaleString('zh-CN')}`;
+    // 加载最新用户
+    const usersData = await apiFetch('/api/admin?type=users&page=0');
+    renderUsersTable(usersData.data || [], 'overview-users-table', false);
+  } catch(e) { toast('加载失败: ' + e.message); }
+}
+
+async function loadUsers(page) {
+  usersPage = page;
+  document.getElementById('users-table').innerHTML = '<div class="loading">加载中...</div>';
+  try {
+    const data = await apiFetch(`/api/admin?type=users&page=${page}`);
+    renderUsersTable(data.data || [], 'users-table', true);
+    renderPagination('users-pagination', page, data.data?.length === 20, loadUsers);
+  } catch(e) { toast('加载失败'); }
+}
+
+async function loadAnalyses(page) {
+  analysesPage = page;
+  document.getElementById('analyses-table').innerHTML = '<div class="loading">加载中...</div>';
+  try {
+    const data = await apiFetch(`/api/admin?type=analyses&page=${page}`);
+    renderAnalysesTable(data.data || []);
+    renderPagination('analyses-pagination', page, data.data?.length === 20, loadAnalyses);
+  } catch(e) { toast('加载失败'); }
+}
+
+function renderUsersTable(users, targetId, showActions) {
+  const el = document.getElementById(targetId);
+  if (users.length === 0) { el.innerHTML = '<div class="empty">暂无数据</div>'; return; }
+  el.innerHTML = `<table>
+    <thead><tr>
+      <th>手机号</th>
+      <th>状态</th>
+      <th>本月使用</th>
+      <th>注册时间</th>
+      ${showActions ? '<th>操作</th>' : ''}
+    </tr></thead>
+    <tbody>${users.map(u => `
+      <tr>
+        <td>${maskPhone(u.phone)}</td>
+        <td><span class="badge ${u.is_paid ? 'paid' : 'free'}">${u.is_paid ? '已付费' : '免费'}</span></td>
+        <td>${u.usage_count || 0} 次</td>
+        <td>${fmtDate(u.created_at)}</td>
+        ${showActions ? `<td>${!u.is_paid ? `<button class="btn-set-paid" onclick="setPaid('${u.id}')">设为付费</button>` : '<span style="color:var(--text-3);font-size:12px;">已付费</span>'}</td>` : ''}
+      </tr>
+    `).join('')}</tbody>
+  </table>`;
+}
+
+function renderAnalysesTable(analyses) {
+  const el = document.getElementById('analyses-table');
+  if (analyses.length === 0) { el.innerHTML = '<div class="empty">暂无数据</div>'; return; }
+  el.innerHTML = `<table>
+    <thead><tr>
+      <th>手机号</th>
+      <th>公司</th>
+      <th>岗位</th>
+      <th>城市</th>
+      <th>薪资</th>
+      <th>生成时间</th>
+    </tr></thead>
+    <tbody>${analyses.map(a => `
+      <tr>
+        <td>${maskPhone(a.phone)}</td>
+        <td>${a.company || '--'}</td>
+        <td>${a.position || '--'}</td>
+        <td>${a.city || '--'}</td>
+        <td>¥${(a.salary || 0).toLocaleString()}</td>
+        <td>${fmtDate(a.created_at)}</td>
+      </tr>
+    `).join('')}</tbody>
+  </table>`;
+}
+
+function renderPagination(id, page, hasMore, loadFn) {
+  const el = document.getElementById(id);
+  el.innerHTML = `
+    <span class="page-info">第 ${page + 1} 页</span>
+    <button ${page === 0 ? 'disabled' : ''} onclick="${loadFn.name}(${page - 1})">← 上一页</button>
+    <button class="active">${page + 1}</button>
+    <button ${!hasMore ? 'disabled' : ''} onclick="${loadFn.name}(${page + 1})">下一页 →</button>
+  `;
+}
+
+async function setPaid(userId) {
+  if (!confirm('确定将该用户设为付费？')) return;
+  try {
+    const data = await apiFetch(`/api/admin?type=set_paid&user_id=${userId}`);
+    if (data.success) { toast('✅ 已设置为付费用户'); loadUsers(usersPage); }
+  } catch(e) { toast('操作失败'); }
+}
+
+function maskPhone(phone) {
+  if (!phone) return '--';
+  return phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
+}
+function fmtDate(str) {
+  if (!str) return '--';
+  return new Date(str).toLocaleString('zh-CN', { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
+
+// 自动登录
+window.onload = function() {
+  const saved = localStorage.getItem('admin_token');
+  if (saved) {
+    document.getElementById('adminPwd').value = saved;
+    adminLogin();
+  }
+};
+</script>
+</body>
+</html>

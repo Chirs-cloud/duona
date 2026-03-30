@@ -1,9 +1,10 @@
 {
-  "buildCommand": "",
+  "buildCommand": "npm install",
   "devCommand": null,
   "installCommand": null,
   "outputDirectory": ".",
   "rewrites": [
+    { "source": "/admin(.*)", "destination": "/admin.html" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
