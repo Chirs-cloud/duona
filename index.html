@@ -1259,22 +1259,31 @@ function render(r, aiData) {
 // ================================================================
 // Main
 // ================================================================
-async function go() {
-  if (!validate()) return;
+window.addEventListener('error', function(e) {
+  console.error('[Page Error]', e.error);
+});
 
-  // ── 门槛检查 ──
-  const user = getCurrentUser();
-  if (!user) {
-    showDemoGate();
-    return;
-  }
-  if (!user.paid && getUsageCount() >= FREE_LIMIT) {
-    toast(`本月 ${FREE_LIMIT} 次免费机会已用完`);
-    showUpgradeModal();
-    return;
-  }
+async function go() {
+  try {
+    if (!validate()) return;
+
+    // ── 门槛检查 ──
+    const user = getCurrentUser();
+    console.log('[go] user:', user);
+    if (!user) {
+      showDemoGate();
+      return;
+    }
+    if (!user.is_paid && getUsageCount() >= FREE_LIMIT) {
+      toast(`本月 ${FREE_LIMIT} 次免费机会已用完`);
+      showUpgradeModal();
+      return;
+    }
 
   const data = collect();
+  console.log('[go] data:', data);
+
+  // ── 显示全屏加载（同步，先占位再等AI） ──
 
   // ── 显示全屏加载 ──
   const loadingEl = document.getElementById('loading');
@@ -1426,6 +1435,14 @@ async function go() {
       await saveHistory(data, result, result ? result.aiData : null);
     }
   }, 100);
+  } catch(e) {
+    console.error('[go] error:', e);
+    cleanup();
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) { loadingEl.classList.remove('show'); loadingEl.style.display = 'none'; }
+    document.body.style.overflow = '';
+    alert('出错了：' + e.message + '\n请刷新页面重试');
+  }
 }
 
 function reset() {
