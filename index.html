@@ -792,7 +792,6 @@
 
     <div class="action-row">
       <button class="btn-reset" onclick="reset()">🔄 重新分析</button>
-      <button class="btn-share" onclick="shareReport()">🔗 分享给好友</button>
       <button class="btn-share" onclick="copyAll()">📋 复制全部报告</button>
     </div>
 
@@ -2042,15 +2041,6 @@ function copyScript(btn, text) {
     btn.textContent = '✅ 已复制';
     setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '📋 复制话术'; }, 1800);
   });
-}
-function shareReport() {
-  var title = '多拿点 - 薪资谈判 AI 助手';
-  var text = '刚用这个工具分析了 Offer 谈判空间，生成了超实用的薪资谈判话术！需要的朋友可以试试👇';
-  if (navigator.share) {
-    navigator.share({ title: title, text: text, url: 'https://duoduo-dian.vercel.app' }).catch(() => {});
-  } else {
-    navigator.clipboard.writeText(text + ' https://duoduo-dian.vercel.app').then(() => toast('链接已复制，快去分享给好友吧！')).catch(() => {});
-  }
 }
 
 // ── 报告计数器（新IP访问自动累加）─────────
