@@ -7,7 +7,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY
 );
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'duoduo2026';
+const ADMIN_PASSWORD = 'duoduo2026';
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -87,6 +87,20 @@ module.exports = async function handler(req, res) {
         .eq('id', user_id);
       if (error) throw error;
       return res.status(200).json({ success: true });
+    }
+
+    if (type === 'analysis_detail') {
+      // 获取单个报告详情
+      const { id } = req.query;
+      if (!id) return res.status(400).json({ error: 'id 不能为空' });
+      const { data, error } = await supabase
+        .from('analyses')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (error) throw error;
+      if (!data) return res.status(404).json({ error: '报告不存在' });
+      return res.status(200).json({ data });
     }
 
     return res.status(400).json({ error: '未知的 type 参数' });

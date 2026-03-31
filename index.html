@@ -7,18 +7,18 @@
   <meta name="description" content="输入你的 Offer，AI 分析谈判空间 + 生成可以直接发给 HR 的话术。别让 Offer 少拿几千块。">
   <style>
     :root {
-      --bg: #F5F3FF; --card: #FFFFFF; --brand: #8B5CF6; --brand-dark: #7C3AED;
+      --bg: #F8F7FF; --card: #FFFFFF; --brand: #8B5CF6; --brand-dark: #7C3AED;
       --brand-light: #EDE9FE; --accent: #F97316; --accent-light: #FFF7ED;
       --green: #10B981; --green-light: #ECFDF5; --yellow: #FBBF24;
       --yellow-light: #FFFBEB; --red: #EF4444; --red-light: #FEF2F2;
       --text: #1E1B4B; --text-2: #6B7280; --text-3: #9CA3AF;
-      --border: #EDE9FE; --shadow: 0 2px 16px rgba(139,92,246,0.08);
-      --radius: 20px; --radius-sm: 12px;
+      --border: #E8E5FF; --shadow: 0 4px 24px rgba(139,92,246,0.1);
+      --radius: 24px; --radius-sm: 16px;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Helvetica Neue', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; min-height: 100vh; padding-bottom: 80px; }
-    .header { position: sticky; top: 0; z-index: 100; background: rgba(245,243,255,0.88); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(139,92,246,0.08); }
+    .header { position: sticky; top: 0; z-index: 100; background: rgba(248,247,255,0.92); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(139,92,246,0.08); }
     .header-inner { max-width: 480px; margin: 0 auto; padding: 0 20px; height: 52px; display: flex; align-items: center; justify-content: space-between; }
     .logo { font-weight: 800; font-size: 17px; color: var(--brand); letter-spacing: 0.5px; }
     .header-tag { font-size: 11px; font-weight: 600; background: var(--brand-light); color: var(--brand); padding: 3px 10px; border-radius: 20px; }
@@ -27,43 +27,52 @@
     .header-btn.login { background: var(--brand); color: white; }
     .header-btn.logout { background: var(--brand-light); color: var(--brand); display: none; }
     .header-btn.logout.show { display: inline-block; }
-    .hero { max-width: 480px; margin: 0 auto; padding: 24px 20px 0; text-align: center; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--red-light); color: var(--red); font-size: 12px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 14px; }
-    .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; color: var(--text); margin-bottom: 8px; }
-    .hero h1 .hl { color: var(--brand); }
-    .hero-desc { font-size: 14px; color: var(--text-2); margin-bottom: 16px; max-width: 340px; margin-left: auto; margin-right: auto; }
-    .hero-break { background: var(--card); border: 1.5px solid var(--red); border-radius: 14px; padding: 10px 14px; margin-bottom: 14px; text-align: left; box-shadow: 0 2px 12px rgba(239,68,68,0.08); display: flex; align-items: flex-start; gap: 10px; }
-    .hero-break .hb-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
-    .hero-break .hb-title { font-size: 12px; font-weight: 700; color: var(--red); margin-bottom: 2px; }
-    .hero-break .hb-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
-    .hero-break .hb-text strong { color: var(--text); font-weight: 700; }
-    .stats { display: flex; gap: 12px; justify-content: center; margin-bottom: 24px; }
-    .stat-card { background: var(--card); border-radius: 14px; padding: 12px 16px; text-align: center; flex: 1; box-shadow: var(--shadow); border: 1px solid var(--border); }
-    .stat-card .num { font-size: 20px; font-weight: 800; color: var(--brand); display: block; }
-    .stat-card .label { font-size: 11px; color: var(--text-2); }
+    .hero { max-width: 480px; margin: 0 auto; padding: 16px 16px 0; text-align: center; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #FEF2F2, #FEE2E2); color: #DC2626; font-size: 13px; font-weight: 700; padding: 7px 18px; border-radius: 20px; margin-bottom: 14px; border: 1px solid #FCA5A5; letter-spacing: 0.01em; }
+    .hero h1 { font-size: 22px; font-weight: 800; line-height: 1.3; color: var(--text); margin-bottom: 10px; }
+    .title-gradient {
+      background: linear-gradient(90deg, #7C3AED, #EC4899, #F59E0B, #7C3AED);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientShift 3s ease infinite;
+      font-size: 24px;
+    }
+    @keyframes gradientShift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .hero-desc { font-size: 13px; color: var(--text-2); margin-bottom: 12px; max-width: 340px; margin-left: auto; margin-right: auto; }
+    .stats { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
+    .stat-card { background: var(--card); border-radius: 10px; padding: 10px 12px; text-align: center; flex: 1; box-shadow: 0 2px 8px rgba(139,92,246,0.06); border: 1px solid var(--border); }
+    .stat-card .num { font-size: 16px; font-weight: 800; color: var(--brand); display: block; }
+    .stat-card .label { font-size: 10px; color: var(--text-2); }
     .main { max-width: 480px; margin: 0 auto; padding: 0 16px; }
-    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 14px; overflow: hidden; }
-    .step-head { display: flex; align-items: center; gap: 12px; padding: 18px 18px 14px; border-bottom: 1px solid #F5F3FF; }
-    .step-num { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; flex-shrink: 0; background: var(--brand-light); color: var(--brand); border: 2px solid var(--brand); }
-    .step-title { font-size: 15px; font-weight: 700; }
-    .step-sub { font-size: 12px; color: var(--text-2); }
-    .field { padding: 14px 18px; border-bottom: 1px solid #F5F3FF; }
+    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 20px; overflow: hidden; }
+    .step-head { display: flex; align-items: center; gap: 14px; padding: 20px 20px 16px; border-bottom: 1px solid var(--bg); }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; background: linear-gradient(135deg, var(--brand), #A78BFA); color: white; box-shadow: 0 2px 8px rgba(139,92,246,0.3); }
+    .step-title { font-size: 16px; font-weight: 700; color: var(--text); }
+    .step-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+    .field { padding: 16px 20px; border-bottom: 1px solid var(--bg); }
     .field:last-child { border-bottom: none; }
-    .field-label { font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 8px; display: block; }
+    .field-label { font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 10px; display: block; }
     .field-label span { color: var(--red); margin-left: 2px; }
-    input[type=text], input[type=number], input[type=password], select, textarea { width: 100%; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-size: 14px; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.2s, box-shadow 0.2s; -webkit-appearance: none; }
-    input:focus, select:focus, textarea:focus { border-color: var(--brand); background: white; box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
-    textarea { resize: none; min-height: 70px; }
-    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .hint { font-size: 11px; color: var(--text-3); margin-top: 5px; }
-    .slider-wrap { display: flex; align-items: center; gap: 10px; }
-    .slider-wrap input[type=range] { flex: 1; padding: 0; background: transparent; border: none; box-shadow: none; height: 4px; }
-    .slider-val { font-size: 18px; font-weight: 800; color: var(--brand); min-width: 90px; text-align: right; }
-    .salary-bubble { display: inline-block; background: var(--brand-light); color: var(--brand); font-size: 12px; padding: 4px 12px; border-radius: 8px; margin-top: 8px; font-weight: 600; }
-    .tags { display: flex; flex-wrap: wrap; gap: 8px; }
-    .tag { padding: 6px 14px; border-radius: 20px; border: 1.5px solid var(--border); font-size: 12px; cursor: pointer; background: var(--bg); color: var(--text-2); transition: all 0.15s; user-select: none; }
-    .tag:hover { border-color: var(--brand); color: var(--brand); }
-    .tag.on { border-color: var(--brand); color: var(--brand); background: var(--brand-light); font-weight: 600; }
+    input[type=text], input[type=number], input[type=password], select, textarea { width: 100%; padding: 13px 15px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; background: var(--bg); color: var(--text); outline: none; transition: all 0.2s; -webkit-appearance: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--brand); background: white; box-shadow: 0 0 0 4px rgba(139,92,246,0.1); }
+    textarea { resize: none; min-height: 72px; }
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .hint { font-size: 11px; color: var(--text-3); margin-top: 6px; }
+    .slider-wrap { display: flex; align-items: center; gap: 12px; }
+    .slider-wrap input[type=range] { flex: 1; padding: 0; background: linear-gradient(to right, var(--brand) 0%, var(--brand) var(--pct, 50%), var(--border) var(--pct, 50%), var(--border) 100%); border: none; box-shadow: none; height: 6px; -webkit-appearance: none; border-radius: 3px; }
+    .slider-wrap input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; background: white; border: 3px solid var(--brand); border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(139,92,246,0.3); }
+    .slider-val { font-size: 20px; font-weight: 800; color: var(--brand); min-width: 95px; text-align: right; }
+    .salary-bubble { display: inline-flex; align-items: center; gap: 6px; background: var(--brand-light); color: var(--brand); font-size: 12px; padding: 6px 12px; border-radius: 8px; margin-top: 10px; font-weight: 600; }
+    .tags { display: flex; flex-wrap: wrap; gap: 10px; }
+    .tag { padding: 8px 16px; border-radius: 24px; border: 1.5px solid var(--border); font-size: 13px; cursor: pointer; background: var(--bg); color: var(--text-2); transition: all 0.2s; user-select: none; }
+    .tag:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+    .tag.on { border-color: var(--brand); color: white; background: var(--brand); font-weight: 600; }
     .auth-card { max-width: 480px; margin: 0 auto; padding: 0 16px 16px; }
     .auth-inner { background: var(--card); border-radius: var(--radius); border: 1.5px dashed var(--border); padding: 16px; }
     .auth-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -142,10 +151,33 @@
     .result-back-btn:active { background: var(--brand-light); }
     .result-page-title { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
     .result-page-inner { padding: 0 16px 40px; max-width: 480px; margin: 0 auto; }
+    /* 步骤卡片 */
+    .result-step-card { margin-bottom: 12px; }
+    .result-step-label { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+    .step-pill { background: linear-gradient(135deg, #8B5CF6, #C084FC); color: white; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 12px; letter-spacing: 0.02em; flex-shrink: 0; }
+    /* 筹码速览 */
+    .chess-snapshot { background: linear-gradient(135deg, #F5F3FF, #EDE9FE); border: 1px solid #DDD6FE; border-radius: 12px; padding: 12px 14px; }
+    .chess-snapshot-title { font-size: 12px; font-weight: 700; color: var(--brand); margin-bottom: 8px; }
+    .chess-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .chess-tag { background: white; border: 1px solid #C4B5FD; color: var(--brand); font-size: 12px; font-weight: 600; padding: 4px 10px; border-radius: 8px; }
+    /* mini标题 */
+    .mini-section-title { font-size: 12px; font-weight: 700; color: var(--text-2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+    /* HR心理 */
+    .hr-psych-box { background: #FFF7ED; border: 1px solid #FED7AA; border-radius: 10px; padding: 10px 12px; font-size: 12px; color: var(--text); line-height: 1.6; }
+    .hr-psych-box b { color: #EA580C; }
+    /* 目标内容 */
+    .target-row { display: flex; gap: 10px; }
+    .target-item { flex: 1; background: var(--brand-light); border-radius: 10px; padding: 12px; text-align: center; }
+    .target-item .t-label { font-size: 11px; color: var(--text-2); margin-bottom: 4px; }
+    .target-item .t-value { font-size: 18px; font-weight: 800; color: var(--brand); }
+    /* 风控内容 */
+    .risk-section { display: flex; flex-direction: column; gap: 10px; }
+    .risk-phase { background: #F9FAFB; border-left: 3px solid var(--brand); border-radius: 0 10px 10px 0; padding: 10px 12px; font-size: 13px; color: var(--text); line-height: 1.6; }
+    .risk-phase b { color: var(--brand); display: block; margin-bottom: 4px; font-size: 12px; }
     .result-top { background: linear-gradient(150deg, #8B5CF6 0%, #C084FC 60%, #F97316 100%); border-radius: var(--radius) var(--radius) 0 0; padding: 24px 18px 20px; color: white; }
     .result-top h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
     .result-top p { font-size: 12px; opacity: 0.85; }
-    .result-score-row { display: flex; align-items: center; gap: 14px; margin-top: 18px; background: rgba(255,255,255,0.15); border-radius: 14px; padding: 14px; }
+    .result-score-row { display: flex; align-items: center; gap: 14px; margin-top: 4px; background: var(--brand-light); border-radius: 14px; padding: 14px; }
     .score-ring { width: 68px; height: 68px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; font-weight: 800; border: 4px solid; }
     .score-ring.high { border-color: #4ADE80; } .score-ring.mid { border-color: var(--yellow); } .score-ring.low { border-color: #F87171; }
     .score-ring .sn { font-size: 24px; line-height: 1; } .score-ring .sl { font-size: 9px; opacity: 0.7; }
@@ -174,6 +206,7 @@
     .script-tag.reco { background: #DCFCE7; color: #15803D; }
     .script-tag.safe { background: var(--yellow-light); color: #92400E; }
     .script-tag.res { background: var(--brand-light); color: var(--brand-dark); }
+    .script-channel { font-size: 10px; color: var(--text-3); background: var(--bg); padding: 2px 6px; border-radius: 4px; }
     .script-body { font-size: 13px; line-height: 1.75; color: var(--text); white-space: pre-wrap; }
     .copy-btn { width: 100%; margin-top: 10px; padding: 9px; border-radius: 8px; background: white; border: 1.5px solid var(--border); font-size: 12px; font-weight: 600; color: var(--brand); cursor: pointer; transition: all 0.15s; display: flex; align-items: center; justify-content: center; gap: 4px; }
     .copy-btn:hover { background: var(--brand-light); border-color: var(--brand); }
@@ -184,6 +217,26 @@
     .tip-icon { font-size: 18px; flex-shrink: 0; }
     .tip-title { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
     .tip-desc { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+    /* 新增深度分析板块 */
+    .reassure-text { margin-top: 8px; padding: 8px 10px; background: rgba(139,92,246,0.08); border-radius: 8px; font-size: 12px; color: var(--brand-dark); }
+    .hr-psych { margin-top: 8px; padding: 8px 10px; background: rgba(16,185,129,0.08); border-radius: 8px; font-size: 12px; }
+    .strategy-section { padding: 12px 18px 16px; }
+    .strategy-phase { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #F5F3FF; align-items: flex-start; }
+    .strategy-phase:last-child { border-bottom: none; }
+    .phase-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .strategy-phase b { font-size: 13px; color: var(--text); display: block; margin-bottom: 4px; }
+    .strategy-phase p { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+    .chess-section { padding: 12px 18px 16px; }
+    .chess-item { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
+    .chess-title { font-size: 13px; font-weight: 700; color: var(--brand); margin-bottom: 4px; }
+    .chess-desc { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+    .qa-section { padding: 12px 18px 16px; }
+    .qa-item { background: var(--bg); border-radius: 10px; padding: 12px; margin-bottom: 8px; border: 1px solid var(--border); }
+    .qa-q { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+    .qa-a { font-size: 12px; color: var(--text-2); line-height: 1.6; }
+    .followup-section { padding: 12px 18px 16px; background: linear-gradient(135deg, #F8F7FF, #EDE9FE); border-radius: var(--radius-sm); margin: 0 16px 16px; }
+    .followup-item { font-size: 12px; color: var(--text-2); line-height: 1.7; padding: 6px 0; }
+    .followup-item b { color: var(--brand); }
     .pay-card { margin: 0 16px 16px; background: linear-gradient(135deg, #1E1B4B, #312E81); border-radius: var(--radius); padding: 20px; text-align: center; color: white; }
     .pay-card h3 { font-size: 15px; margin-bottom: 4px; }
     .pay-card p { font-size: 12px; opacity: 0.7; margin-bottom: 14px; }
@@ -319,6 +372,83 @@
     
     /* 简化后的登录样式 */
     .modal-overlay .modal input.login-input { margin-bottom: 10px; }
+
+    /* ── 行动摘要卡（最顶部） ── */
+    .action-summary-card {
+      background: linear-gradient(135deg, #1E1B4B 0%, #4C1D95 100%);
+      border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px;
+      color: white; border: none;
+    }
+    .action-summary-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.6); text-transform: uppercase; margin-bottom: 8px;
+    }
+    .action-summary-main {
+      font-size: 17px; font-weight: 800; color: white; line-height: 1.4; margin-bottom: 12px;
+    }
+    .action-summary-main .asm-highlight {
+      background: rgba(251,191,36,0.25); color: #FCD34D; padding: 1px 6px;
+      border-radius: 4px; font-weight: 900;
+    }
+    .action-summary-tags {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .action-summary-tag {
+      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600;
+      padding: 4px 10px; border-radius: 6px;
+    }
+
+    /* ── 形势判断：紧凑合并版 ── */
+    .situation-grid {
+      display: grid; grid-template-columns: auto 1fr; gap: 14px;
+      align-items: start; padding: 4px 0 8px;
+    }
+    .situation-score-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .situation-score-label { font-size: 10px; color: var(--text-3); font-weight: 600; }
+    .situation-right { flex: 1; }
+    .situation-title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+    .situation-desc { font-size: 12px; color: var(--text-2); line-height: 1.55; margin-bottom: 10px; }
+    .market-inline {
+      display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
+    }
+    .market-inline-label { font-size: 11px; color: var(--text-3); white-space: nowrap; }
+    .market-inline-bar { flex: 1; height: 8px; background: linear-gradient(90deg, #4ADE80, #8B5CF6); border-radius: 4px; position: relative; }
+    .market-inline-dot { position: absolute; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; border-radius: 50%; background: white; border: 3px solid var(--red); box-shadow: 0 0 0 2px rgba(239,68,68,0.2); transition: left 1s ease; }
+    .market-inline-dot::after { content: ''; }
+    .market-inline-range { font-size: 10px; color: var(--text-2); white-space: nowrap; }
+    .verdict-box {
+      background: var(--brand-light); border-radius: 8px; padding: 8px 12px;
+      font-size: 12px; color: var(--text); line-height: 1.6;
+    }
+    .verdict-box b { color: var(--brand-dark); }
+
+    /* ── 话术折叠 ── */
+    .script-main { }
+    .scripts-alt-toggle {
+      display: flex; align-items: center; gap: 6px; padding: 10px 18px 4px;
+      font-size: 12px; color: var(--text-2); cursor: pointer; user-select: none;
+    }
+    .scripts-alt-toggle:hover { color: var(--brand); }
+    .scripts-alt-toggle .toggle-icon { font-size: 10px; transition: transform 0.2s; }
+    .scripts-alt-toggle.open .toggle-icon { transform: rotate(180deg); }
+    .scripts-alt { display: none; }
+    .scripts-alt.open { display: block; }
+
+    /* 风险与应对模块 */
+    .risk-grid { display: flex; flex-direction: column; gap: 8px; }
+    .risk-item {
+      border-radius: 10px; padding: 10px 12px; font-size: 12px;
+      line-height: 1.65; color: var(--text);
+    }
+    .risk-item.reject { background: #F0FDF4; border-left: 3px solid #4ADE80; }
+    .risk-item.timing { background: #FFF7ED; border-left: 3px solid #FBBF24; }
+    .risk-item.worry { background: var(--brand-light); border-left: 3px solid var(--brand); }
+    .risk-item-title { font-weight: 700; font-size: 12px; color: var(--text); margin-bottom: 4px; display: block; }
+    .risk-q { font-weight: 700; font-size: 12px; color: var(--text); margin-bottom: 4px; }
+    .risk-a { color: var(--text-2); }
+    .risk-divider { font-size: 11px; font-weight: 700; color: var(--text-3); letter-spacing: 0.05em;
+      text-transform: uppercase; padding: 8px 0 4px; }
   </style>
 </head>
 <body>
@@ -335,18 +465,11 @@
 </header>
 
 <div class="hero">
-  <div class="hero-break">
-    <div class="hb-icon">💡</div>
-    <div>
-      <div class="hb-title">大多数人不知道的真相</div>
-      <div class="hb-text">
-        <strong>Offer 发来 ≠ 薪资谈完了。</strong>
-        HR 第一口价往往比预算上限低 10-20%。
-      </div>
-    </div>
+  <div class="hero-badge">
+    🔥 HR 第一口价 ≠ 你的天花板
   </div>
-  <h1>拿到 Offer 不知道怎么谈？<br><span class="hl">AI 帮你写好话术</span></h1>
-  <p class="hero-desc">输入 Offer 信息，AI 分析谈判空间 + 生成可直接发给 HR 的谈判话术</p>
+  <h1 class="title-gradient">你的下一句话，决定多拿几千</h1>
+  <p class="hero-desc">输入 Offer，AI 分析谈判空间，生成可直接发给 HR 的话术</p>
   <div class="stats">
     <div class="stat-card"><span class="num">89%</span><span class="label">成功率</span></div>
     <div class="stat-card"><span class="num">+¥3.2k</span><span class="label">平均多谈到</span></div>
@@ -358,38 +481,145 @@
 
   <!-- Form -->
   <div id="formWrap">
+    
+    <!-- 第一步：Offer信息 -->
     <div class="card">
-      <div class="step-head"><div class="step-num" id="n1">1</div><div><div class="step-title">拿到什么 Offer？</div><div class="step-sub">越具体，分析越准</div></div></div>
-      <div class="field"><label class="field-label">公司名称 <span>*</span></label><input type="text" id="company" placeholder="比如：字节跳动、腾讯、某互联网公司" /></div>
-      <div class="field"><label class="field-label">岗位名称 <span>*</span></label><input type="text" id="position" placeholder="比如：产品经理、前端工程师、运营专员" /></div>
-      <div class="field">
-        <div class="input-row">
-          <div><label class="field-label">城市 <span>*</span></label><select id="city"><option value="">选城市</option><option value="北京">北京</option><option value="上海">上海</option><option value="深圳">深圳</option><option value="杭州">杭州</option><option value="广州">广州</option><option value="成都">成都</option><option value="武汉">武汉</option><option value="南京">南京</option><option value="西安">西安</option><option value="其他">其他城市</option></select></div>
-          <div><label class="field-label">学历</label><select id="edu"><option value="本科">本科</option><option value="硕士">硕士</option><option value="博士">博士</option><option value="大专">大专</option></select></div>
+      <div class="step-head">
+        <div class="step-num" id="n1">1</div>
+        <div>
+          <div class="step-title">🎯 Offer 基本信息</div>
+          <div class="step-sub">填写越详细，分析越准确</div>
         </div>
       </div>
       <div class="field">
-        <label class="field-label">月薪多少？（税前）<span>*</span></label>
-        <div class="slider-wrap"><input type="range" id="salary" min="3000" max="80000" step="500" value="15000" oninput="syncSalary(this.value)"><span class="slider-val" id="salaryShow">¥15,000</span></div>
-        <div class="salary-bubble">💡 或<input type="number" id="salaryInput" placeholder="直接输入" style="width:80px;padding:2px 6px;font-size:12px;border:1px solid var(--border);border-radius:4px;background:transparent;margin:0 4px;" oninput="syncFromInput(this.value)"></span>
+        <div class="input-row">
+          <div>
+            <label class="field-label">公司名称 <span>*</span></label>
+            <input type="text" id="company" placeholder="如：字节跳动" />
+          </div>
+          <div>
+            <label class="field-label">岗位名称 <span>*</span></label>
+            <input type="text" id="position" placeholder="如：产品经理" />
+          </div>
+        </div>
       </div>
-      <div class="field"><label class="field-label">薪资结构（可多选）</label><div class="tags" id="structure"><span class="tag" onclick="toggleTag(this)">12薪</span><span class="tag" onclick="toggleTag(this)">13薪</span><span class="tag" onclick="toggleTag(this)">14薪</span><span class="tag" onclick="toggleTag(this)">16薪</span><span class="tag" onclick="toggleTag(this)">有年终奖</span><span class="tag" onclick="toggleTag(this)">期权/股票</span></div></div>
+      <div class="field">
+        <div class="input-row">
+          <div>
+            <label class="field-label">工作城市 <span>*</span></label>
+            <select id="city"><option value="">选城市</option><option value="北京">北京</option><option value="上海">上海</option><option value="深圳">深圳</option><option value="杭州">杭州</option><option value="广州">广州</option><option value="成都">成都</option><option value="武汉">武汉</option><option value="南京">南京</option><option value="西安">西安</option><option value="其他">其他</option></select>
+          </div>
+          <div>
+            <label class="field-label">学历</label>
+            <select id="edu"><option value="本科">本科</option><option value="硕士">硕士</option><option value="博士">博士</option><option value="大专">大专</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">月薪（税前）<span>*</span></label>
+        <div class="slider-wrap">
+          <input type="range" id="salary" min="3000" max="80000" step="500" value="15000" style="--pct: 15.6%" oninput="syncSalary(this.value)">
+          <span class="slider-val" id="salaryShow">¥15,000</span>
+        </div>
+        <div class="salary-bubble">
+          💡 直接输入 <input type="number" id="salaryInput" placeholder="金额" style="width:90px;padding:3px 8px;font-size:12px;border:1px solid var(--brand);border-radius:6px;background:transparent;margin:0 4px;color:var(--brand);" oninput="syncFromInput(this.value)">
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">薪资结构</label>
+        <div class="tags" id="structure">
+          <span class="tag" onclick="toggleTag(this)">12薪</span>
+          <span class="tag" onclick="toggleTag(this)">13薪</span>
+          <span class="tag" onclick="toggleTag(this)">14薪</span>
+          <span class="tag" onclick="toggleTag(this)">16薪</span>
+          <span class="tag" onclick="toggleTag(this)">有年终奖</span>
+          <span class="tag" onclick="toggleTag(this)">期权/股票</span>
+        </div>
+      </div>
     </div>
 
+    <!-- 第二步：个人情况 -->
     <div class="card">
-      <div class="step-head"><div class="step-num" id="n2">2</div><div><div class="step-title">你的情况</div><div class="step-sub">了解你的筹码，才能谈得更狠</div></div></div>
-      <div class="field"><label class="field-label">工作年限</label><div class="tags" id="exp"><span class="tag" onclick="sel1(this,'exp')">应届生</span><span class="tag" onclick="sel1(this,'exp')">1-3年</span><span class="tag" onclick="sel1(this,'exp')">3-5年</span><span class="tag" onclick="sel1(this,'exp')">5-10年</span></div></div>
-      <div class="field"><label class="field-label">你的优势（可多选）</label><div class="tags" id="adv"><span class="tag" onclick="toggleTag(this)">名校背景</span><span class="tag" onclick="toggleTag(this)">大厂经历</span><span class="tag" onclick="toggleTag(this)">稀缺技能</span><span class="tag" onclick="toggleTag(this)">有竞对Offer</span><span class="tag" onclick="toggleTag(this)">面试表现好</span></div></div>
-      <div class="field"><label class="field-label">顾虑（可选）</label><div class="tags" id="concern"><span class="tag" onclick="toggleTag(this)">跳槽频繁</span><span class="tag" onclick="toggleTag(this)">学历一般</span><span class="tag" onclick="toggleTag(this)">经验不匹配</span><span class="tag" onclick="toggleTag(this)">空窗期</span></div></div>
-      <div class="field"><label class="field-label">你的期望薪资</label><div class="slider-wrap"><input type="range" id="target" min="3000" max="100000" step="500" value="18000" oninput="document.getElementById('targetShow').textContent='¥'+parseInt(this.value).toLocaleString()"><span class="slider-val" id="targetShow">¥18,000</span></div></div>
+      <div class="step-head">
+        <div class="step-num" id="n2">2</div>
+        <div>
+          <div class="step-title">💪 你的情况</div>
+          <div class="step-sub">了解筹码，才能谈得更好</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">工作年限</label>
+        <div class="tags" id="exp">
+          <span class="tag" onclick="sel1(this,'exp')">应届生</span>
+          <span class="tag" onclick="sel1(this,'exp')">1-3年</span>
+          <span class="tag" onclick="sel1(this,'exp')">3-5年</span>
+          <span class="tag" onclick="sel1(this,'exp')">5-10年</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">你的优势（可多选）</label>
+        <div class="tags" id="adv">
+          <span class="tag" onclick="toggleTag(this)">名校背景</span>
+          <span class="tag" onclick="toggleTag(this)">大厂经历</span>
+          <span class="tag" onclick="toggleTag(this)">稀缺技能</span>
+          <span class="tag" onclick="toggleTag(this)">有竞对Offer</span>
+          <span class="tag" onclick="toggleTag(this)">面试表现好</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">顾虑（可选）</label>
+        <div class="tags" id="concern">
+          <span class="tag" onclick="toggleTag(this)">跳槽频繁</span>
+          <span class="tag" onclick="toggleTag(this)">学历一般</span>
+          <span class="tag" onclick="toggleTag(this)">经验不匹配</span>
+          <span class="tag" onclick="toggleTag(this)">空窗期</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">期望月薪</label>
+        <div class="slider-wrap">
+          <input type="range" id="target" min="3000" max="100000" step="500" value="18000" style="--pct: 18.1%" oninput="syncTarget(this.value)">
+          <span class="slider-val" id="targetShow">¥18,000</span>
+        </div>
+        <div class="salary-bubble">
+          💡 直接输入 <input type="number" id="targetInput" placeholder="金额" style="width:90px;padding:3px 8px;font-size:12px;border:1px solid var(--brand);border-radius:6px;background:transparent;margin:0 4px;color:var(--brand);" oninput="syncFromTargetInput(this.value)">
+        </div>
+      </div>
     </div>
 
+    <!-- 第三步：谈判进展 -->
     <div class="card">
-      <div class="step-head"><div class="step-num" id="n3">3</div><div><div class="step-title">现在的情况</div><div class="step-sub">补充越细，话术越贴合</div></div></div>
-      <div class="field"><label class="field-label">目前进展</label><div class="tags" id="stage"><span class="tag" onclick="sel1(this,'stage')">口头Offer</span><span class="tag" onclick="sel1(this,'stage')">等书面Offer</span><span class="tag" onclick="sel1(this,'stage')">已收到书面</span><span class="tag" onclick="sel1(this,'stage')">背调中</span></div></div>
-      <div class="field"><label class="field-label">HR 态度</label><div class="tags" id="hrmood"><span class="tag" onclick="sel1(this,'hrmood')">很热情，想要我</span><span class="tag" onclick="sel1(this,'hrmood')">正常，中规中矩</span><span class="tag" onclick="sel1(this,'hrmood')">不温不火</span><span class="tag" onclick="sel1(this,'hrmood')">说薪资不能改</span></div></div>
-      <div class="field"><label class="field-label">补充说明（可选）</label><textarea id="note" placeholder="比如：我有另一家 18k 的 Offer 但更想去这家..."></textarea></div>
+      <div class="step-head">
+        <div class="step-num" id="n3">3</div>
+        <div>
+          <div class="step-title">📋 谈判进展</div>
+          <div class="step-sub">补充越细，话术越贴合</div>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">目前进展</label>
+        <div class="tags" id="stage">
+          <span class="tag" onclick="sel1(this,'stage')">口头Offer</span>
+          <span class="tag" onclick="sel1(this,'stage')">等书面Offer</span>
+          <span class="tag" onclick="sel1(this,'stage')">已收到书面</span>
+          <span class="tag" onclick="sel1(this,'stage')">背调中</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">HR 态度</label>
+        <div class="tags" id="hrmood">
+          <span class="tag" onclick="sel1(this,'hrmood')">很热情</span>
+          <span class="tag" onclick="sel1(this,'hrmood')">正常</span>
+          <span class="tag" onclick="sel1(this,'hrmood')">不温不火</span>
+          <span class="tag" onclick="sel1(this,'hrmood')">说不能改</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label">补充说明</label>
+        <textarea id="note" placeholder="比如：我有另一家 18k 的 Offer 但更想去这家..."></textarea>
+      </div>
     </div>
+    
   </div>
 
   <div class="btn-box">
@@ -424,31 +654,73 @@
     <!-- 内容区 -->
     <div class="result-page-inner">
 
-    <div class="card">
-      <div class="result-top">
-        <h2>📊 你的谈判力分析</h2>
-        <p id="rSubtitle">针对 · 公司 · 岗位 · 城市</p>
-        <div class="result-score-row">
+    <!-- 0. 行动摘要（30秒看完知道要做什么） -->
+    <div class="action-summary-card" id="actionSummaryCard">
+      <div class="action-summary-label">⚡ 30秒行动摘要</div>
+      <div class="action-summary-main" id="actionSummaryMain">--</div>
+      <div class="action-summary-tags" id="actionSummaryTags"></div>
+    </div>
+
+    <!-- 第一步：判断形势（评分 + 市场区间 + 核心结论，合并为一屏）-->
+    <div class="card result-step-card">
+      <div class="result-step-label"><span class="step-pill">第一步</span> 判断形势</div>
+      <div class="situation-grid">
+        <div class="situation-score-col">
           <div class="score-ring" id="sRing"><span class="sn" id="sNum">--</span><span class="sl">分</span></div>
-          <div class="score-info"><div class="ti" id="sTitle">--</div><div class="de" id="sDesc">--</div></div>
+          <div class="situation-score-label">谈判力</div>
+        </div>
+        <div class="situation-right">
+          <div class="situation-title" id="sTitle">--</div>
+          <div class="situation-desc" id="sDesc">--</div>
+          <!-- 市场区间：内联精简版 -->
+          <div class="market-inline">
+            <span class="market-inline-label" id="rMin">¥8k</span>
+            <div class="market-inline-bar">
+              <div class="market-inline-dot" id="rOffer" style="left:50%;"></div>
+            </div>
+            <span class="market-inline-range"><span id="rMid">中位¥15k</span> · <span id="rMax">¥24k</span></span>
+          </div>
+          <div class="verdict-box" id="assessBox"><span id="assessTxt">--</span></div>
         </div>
       </div>
-      <div class="range-inner">
-        <div class="range-title">📈 市场薪资区间</div>
-        <div class="range-track"><div class="range-fill" style="width:80%;left:10%;"></div><div class="range-offer" id="rOffer" style="left:50%;"></div></div>
-        <div class="range-labels"><span id="rMin">¥8k</span><span class="range-mid" id="rMid">中位 ¥15k</span><span id="rMax">¥24k</span></div>
-        <div class="assess-box" id="assessBox"><span class="ai">💡</span><span id="assessTxt"></span></div>
+      <!-- HR心理分析（紧凑内嵌）-->
+      <div id="hrPsychCard" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);">
+        <div class="mini-section-title">👤 HR 会怎么打压你？</div>
+        <div id="hrPsychContent"></div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="section-head"><span class="section-title">💬 话术脚本</span><span class="section-badge">直接复制 · 微信发给 HR</span></div>
-      <div class="script-list" id="scripts"></div>
+    <!-- 第二步：明确目标 -->
+    <div class="card result-step-card" id="targetCard" style="display:none;">
+      <div class="result-step-label"><span class="step-pill">第二步</span> 明确目标</div>
+      <div id="targetContent"></div>
     </div>
 
-    <div class="card">
-      <div class="section-head"><span class="section-title">⚡ 谈判注意事项</span></div>
-      <div class="tip-list" id="tips"></div>
+    <!-- 第三步：执行谈判（主推话术默认展示，备选折叠）-->
+    <div class="card result-step-card">
+      <div class="result-step-label"><span class="step-pill">第三步</span> 执行谈判</div>
+      <!-- 核心筹码速览 -->
+      <div id="chessSnapshotWrap" style="display:none;margin-bottom:14px;">
+        <div class="chess-snapshot" id="chessSnapshot"></div>
+      </div>
+      <div class="section-head" style="margin-bottom:8px;padding:0 0 0 0;">
+        <span class="section-title">💬 主推话术</span>
+        <span class="section-badge">直接复制 · 微信发给 HR</span>
+      </div>
+      <!-- 主推话术 -->
+      <div class="script-list script-main" id="scriptMain"></div>
+      <!-- 备选方案折叠区 -->
+      <div class="scripts-alt-toggle" id="scriptsAltToggle" onclick="toggleAltScripts()">
+        <span>查看备选方案（邮件版 · 被拒后反击版）</span>
+        <span class="toggle-icon">▼</span>
+      </div>
+      <div class="scripts-alt" id="scriptsAlt"></div>
+    </div>
+
+    <!-- 第四步：风险与应对（合并Q&A+注意事项+跟进，消除重复）-->
+    <div class="card result-step-card">
+      <div class="result-step-label"><span class="step-pill">第四步</span> 风险与应对</div>
+      <div id="riskContent"></div>
     </div>
 
     <div class="pay-card" id="payCard">
@@ -666,7 +938,9 @@ function updateHeaderUI() {
 
 // 登录弹窗
 function showLoginModal() {
-  document.getElementById('loginModal').classList.add('show');
+  const modal = document.getElementById('loginModal');
+  modal.style.display = ''; // 清除 hideLoginModal 设置的 display:none
+  modal.classList.add('show');
   document.getElementById('loginError').textContent = '';
   document.getElementById('loginPhone').value = '';
   document.getElementById('loginSms').value = '';
@@ -807,15 +1081,21 @@ function hideDemoGate() { }
 
 // 个人中心
 function openProfile() {
+  // 先确保关闭可能存在的全屏页
+  const profile = document.getElementById('profile');
+  if (profile) {
+    profile.classList.remove('open');
+  }
   const u = getCurrentUser();
   if (!u) {
-    // 未登录 → 打开登录弹窗
-    showLoginModal('signup');
+    showLoginModal();
     return;
   }
-  document.getElementById('profile').classList.add('open');
+  // 打开个人中心
+  profile.style.display = '';
+  profile.classList.add('open');
   updateProfileUI();
-  document.getElementById('profile').scrollTop = 0;
+  profile.scrollTop = 0;
 }
 function closeProfile() { document.getElementById('profile').classList.remove('open'); }
 function closeConfirmModal() { document.getElementById('confirmModal').classList.remove('show'); }
@@ -950,8 +1230,38 @@ async function saveHistory(data, result, aiData) {
 // Helpers
 // ================================================================
 function formatNum(n) { return '¥' + parseInt(n).toLocaleString(); }
-function syncSalary(v) { document.getElementById('salaryShow').textContent = formatNum(v); document.getElementById('salaryInput').value = ''; }
-function syncFromInput(v) { if (v && v > 0) { document.getElementById('salary').value = v; document.getElementById('salaryShow').textContent = formatNum(v); } }
+function syncSalary(v) { 
+  document.getElementById('salaryShow').textContent = formatNum(v); 
+  document.getElementById('salaryInput').value = '';
+  const slider = document.getElementById('salary');
+  const pct = ((v - slider.min) / (slider.max - slider.min)) * 100;
+  slider.style.setProperty('--pct', pct + '%');
+}
+function syncFromInput(v) { 
+  if (v && v > 0) { 
+    document.getElementById('salary').value = v; 
+    document.getElementById('salaryShow').textContent = formatNum(v);
+    const slider = document.getElementById('salary');
+    const pct = ((v - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.setProperty('--pct', pct + '%');
+  } 
+}
+function syncTarget(v) { 
+  document.getElementById('targetShow').textContent = formatNum(v); 
+  document.getElementById('targetInput').value = '';
+  const slider = document.getElementById('target');
+  const pct = ((v - slider.min) / (slider.max - slider.min)) * 100;
+  slider.style.setProperty('--pct', pct + '%');
+}
+function syncFromTargetInput(v) { 
+  if (v && v > 0) { 
+    document.getElementById('target').value = v; 
+    document.getElementById('targetShow').textContent = formatNum(v);
+    const slider = document.getElementById('target');
+    const pct = ((v - slider.min) / (slider.max - slider.min)) * 100;
+    slider.style.setProperty('--pct', pct + '%');
+  } 
+}
 function toggleTag(el) { el.classList.toggle('on'); }
 function sel1(el, gid) { document.querySelectorAll('#' + gid + ' .tag').forEach(t => t.classList.remove('on')); el.classList.add('on'); }
 function getVal(gid) { const sel = document.querySelectorAll('#' + gid + ' .tag.on'); return sel.length > 0 ? Array.from(sel).map(t => t.textContent) : []; }
@@ -997,7 +1307,12 @@ function buildDeepSeekPrompt(data) {
   const hasBigCo = (data.adv || []).includes('大厂经历');
   const gap = data.target > data.salary ? Math.round((data.target / data.salary - 1) * 100) : 0;
 
-  return `你是一位顶级猎头出身的薪资谈判专家，服务过数千名求职者，擅长设计贴合个人情况的谈判话术。
+  return `你是陈老师，一位从业12年的资深HR总监，曾在字节、腾讯、阿里任职，面试过上万名候选人。现在转型做求职教练，帮助超过3000人成功谈下高薪Offer。
+
+你深知：
+- 95%的HR不会主动给你最高价，他们有预算压力也有压价KPI
+- 开口谈薪资的人，平均比不开口的人多拿15-30%
+- 谈判失败最坏的结果是什么？最坏就是维持原Offer，不会被取消
 
 === 用户情况 ===
 公司：${data.company || '某公司'}
@@ -1011,64 +1326,192 @@ function buildDeepSeekPrompt(data) {
 HR态度：${data.hrmood || '正常'}
 补充情况：${data.note || '无'}
 
-=== 你的任务 ===
-根据上述信息，输出一份专业谈判分析报告，严格按JSON格式返回。
+=== 你的专业分析 ===
 
-=== 话术脚本要求（最重要）===
-1. 每套话术必须 300-500 字，有完整的开场白、核心论点、收尾，像真实微信消息/邮件一样自然
-2. 必须引用用户的真实数据：公司名、岗位、城市、具体薪资数字，不能用"某公司"替代
-3. 方案一（主攻）：直接开口要求到 ¥${(data.target||0).toLocaleString()}，给出3个有说服力的理由（市场数据/个人价值/行业背景），语气自信但不傲慢
-4. 方案二（迂回）：先不直接谈数字，通过提问探底HR空间，再提出期望，语气更温和；${hasComp ? '可以隐晦提及有其他Offer但不说具体公司' : '从"长期发展"角度切入'}
-5. 方案三（被拒后）：HR说"薪资固定不能改"后用，不死心继续谈弹性福利（签字费/年终保底/绩效加速/期权等），给出2-3个具体替代方案
-6. ${hasBigCo ? '方案一要提到大厂背景作为谈判筹码' : ''}${hasComp ? '话术中自然融入竞对Offer作为筹码，不要过于直白威胁' : ''}
-7. 每套话术结尾要有一个"跟进话术"（对方不回复时怎么追）
+**1. 先给你吃颗定心丸**
+（基于你的情况，用2-3句话告诉用户为什么值得谈、为什么应该自信。要像朋友在给你打气，而不是老师在讲道理）
+
+**2. 市场行情深度解读**
+- ${data.city}${data.position}（${data.exp}）市场价区间：¥___-¥___/月
+- 你的Offer：¥${(data.salary||0).toLocaleString()}/月
+- 在市场中处于什么位置？（给出具体分位数，如"处于市场的25%分位，属于偏低的"）
+- 低于/高于市场中位数多少？（¥___）
+- 最高能谈到多少？（¥___，基于你的筹码）
+
+**3. 谈判筹码深度分析**
+
+【你的3个强筹码】
+1. （最强优势）：具体怎么说、什么时候说、说完对方的反应预判
+2. （次强优势）：怎么包装成加分项，而不是暴露短板
+3. （隐藏优势）：用户可能没意识到，但可以用来加分的点
+
+【你的顾虑怎么破】
+- 针对"${concernList}"：这不是真正的弱点，而是可以这样解读...
+- 哪些话不要主动提，哪些问题可以提前准备答案
+
+**4. HR心理战术分析**
+- 这家公司在这个阶段（${data.stage}）招聘有多急？（推测招聘紧迫度）
+- HR在这个薪资上有多大的决策权？（谁是他的上级，他能灵活的空间）
+- HR通常会用什么话术压价？（提前告诉你他可能会说什么）
+- 你应该用什么话术反制？（见下面的具体话术）
+
+**5. 完整谈判策略（保姆级指南）**
+
+【第一阶段：谈判前48小时】
+要做的事清单：
+1. 准备好你的"底牌"：你能接受的最低薪资是多少？（不是期望薪资，是底线）
+2. 准备好你的"让步空间"：如果对方还价，你可以放弃什么？（比如早入职、降低其他要求）
+3. 选好沟通渠道：${data.stage?.includes('书面') ? '书面Offer已发，建议用电话或视频谈' : '口头阶段，建议先发微信探探口风'}
+4. 心理建设：你不是在"求"他们给钱，你是在谈一笔合作
+
+【第二阶段：开口时刻】
+第一步：怎么开场？（建立情感连接，不要一上来就谈钱）
+- 具体怎么发这条微信/怎么说第一句话
+- ${hasBigCo ? '大厂背景这个时候怎么用？建议这样说...' : ''}
+
+第二步：怎么提诉求？
+- 不要说"我想加点钱"，要说...
+- ${hasComp ? '竞对Offer这个时候要不要提？怎么提不扣分？' : '如果没有竞对，用什么替代筹码？'}
+
+第三步：对方可能的反应和你的应对
+- HR说"薪资是固定的"→ 怎么接？
+- HR说"需要和领导申请"→ 怎么接？
+- HR说"你的期望有点高"→ 怎么接？
+- HR长时间不回复→ 怎么追？
+
+【第三阶段：被拒后（弹性福利）】
+当对方明确说"不能加钱"时，立刻转向谈这些：
+1. 签字费（Sign-on Bonus）：一次性支付，不影响年度预算，通常最容易谈
+2. 年终奖保底：确保至少X个月，而不是"上不封顶"
+3. 股票期权/RSU：争取更多股数或更低的行权价
+4. 绩效系数：确保base不打折，或者绩效评定起点更高
+5. 入职时间：争取更晚入职（可以用来拖延或者谈更多准备时间）
+6. 其他福利：培训预算、异地补贴、试用期缩短...
+
+**6. 话术脚本（完整可复制版本）**
+
+【方案一：主推 - 微信/电话沟通】
+这是你应该最先尝试的。完整的话术，包括：
+- 开场白（怎么寒暄、怎么切入正题）
+- 核心论点（用具体数字和理由支撑你的诉求）
+- 正式提出期望（¥${(data.target||0).toLocaleString()}，怎么表达）
+- 可能的拒绝和你的回应
+- 结尾（感谢、约定下次沟通）
+- ${hasBigCo ? '关于大厂背景，可以这样自然融入...' : ''}
+- ${hasComp ? '关于竞对Offer，具体怎么说才加分...' : ''}
+对方不回复怎么追？（1天不回复怎么追，3天不回复怎么追）
+
+【方案二：保守 - 邮件沟通】
+如果你觉得电话/微信压力太大，用这封邮件。
+- 完整的邮件正文，包括标题、称呼、正文、结尾
+- 邮件的好处：你可以组织好语言，不容易被当场压价
+- 邮件的风险：看不到对方反应，回复周期长
+
+【方案三：终极 - 被拒后反击】
+当HR说"薪资真的改不了"时，立刻用这个。
+- 每个弹性福利怎么谈（签字费/年终/股票/绩效...）
+- 具体话术："那我想问一下，如果薪资确实没有空间的话，关于签字费..."
+
+**7. 你担心的那些问题**
+
+Q1: 万一谈崩了，Offer会不会没了？
+A: （根据用户情况具体分析，告诉他这不是大概率事件，以及万一发生时的应对）
+
+Q2: 我不知道怎么开口，感觉像在讨价还价
+A: （告诉他这不是讨价还价，而是正常的职业沟通，给一个"最简版"话术让他降低心理门槛）
+
+Q3: 对方会不会觉得我不真诚/贪心？
+A: （告诉他这种担心是多余的，谈薪资是职场正常环节，不谈才奇怪）
+
+Q4: 如果我有多个Offer怎么选？
+A: （如果有竞对，给出选择建议）
+
+**8. 谈判后的跟进**
+谈完当天：发一条微信确认，保持关系
+一周内：如果没回复，怎么追
+最终答复期限：如果到了deadline还没结果，怎么处理
 
 === JSON格式 ===
 {
   "score": 谈判力评分(0-100整数),
-  "scoreLevel": "high（70+）/mid（40-70）/low（40以下）",
-  "scoreTitle": "评分一句话（15字以内，直接说结论，比如'筹码很足，可以大胆开口'）",
-  "scoreDesc": "详细说明你为什么这样评分，提到哪些因素加了分哪些扣了分（80字以内）",
-  "marketMin": ${data.city}${data.position}${data.exp}市场最低月薪(数字，不含¥),
-  "marketMid": ${data.city}${data.position}${data.exp}市场中位数月薪(数字),
-  "marketMax": ${data.city}${data.position}${data.exp}市场顶部月薪(数字),
-  "suggestTarget": 综合考虑用户情况后建议开口目标薪资(数字，通常比期望高5-10%留谈判空间),
-  "ratio": 当前Offer除以市场中位数的比值(保留两位小数),
-  "assessmentType": "warn（低于市场15%+）/ok（市场合理区间）/great（高于市场10%+）",
-  "assessment": "针对这个Offer的核心判断，要有具体建议，比如'你的Offer低于${data.city}市场中位数约XX%，谈判空间大，建议直接开口要XX'（100字以内）",
+  "scoreLevel": "strong（75+）/good（50-75）/weak（50以下）",
+  "scoreTitle": "一句话结论（12字内）",
+  "scoreDesc": "评分理由，提到加分项和减分项（100字内）",
+  "marketMin": 市场最低月薪(数字),
+  "marketMid": 市场中位月薪(数字),
+  "marketMax": 市场最高月薪(数字),
+  "yourLevel": "你的Offer在市场的分位数，如'约40%分位，偏低'",
+  "negotiableSpace": "可谈空间，如'¥2000-4000/月'",
+  "suggestTarget": 建议开口目标(数字),
+  "assessment": "核心判断，要有具体数字和结论（150字内）",
+  "reassure": "吃定心丸的2-3句话，像朋友打气，不要说教（60字内）",
+  "hrPsychology": {
+    "urgency": "公司在这个阶段招聘的紧迫度推测（40字）",
+    "hrPower": "HR在这个薪资上能灵活的空间推测（40字）",
+    "likelyPloy": "HR最可能用什么话术压价（40字）",
+    "yourCounter": "你的反制话术（40字）"
+  },
+  "battlePlan": {
+    "phase1": "谈判前48小时要做的事清单（80字）",
+    "phase2": "开口时刻：开场+提诉求+应对拒绝的具体建议（100字）",
+    "phase3": "被拒后：立刻转向谈哪些弹性福利（80字）"
+  },
+  "chess": [
+    {"title": "最强筹码1", "desc": "具体怎么用、什么时候说、对方可能的反应（80字）"},
+    {"title": "最强筹码2", "desc": "怎么包装成加分项（80字）"},
+    {"title": "隐藏优势", "desc": "用户可能没意识到但可以用的点（80字）"},
+    {"title": "顾虑破解", "desc": "针对${concernList}，这样解读就不是弱点了（80字）"}
+  ],
   "scripts": [
     {
-      "icon": "💪",
-      "name": "方案一：直接开口（最推荐）",
+      "icon": "🎯",
+      "name": "方案一：主推话术",
       "tag": "reco",
       "tagTxt": "最推荐",
-      "body": "完整话术正文，300-500字，用\\n分段，包含跟进话术"
+      "channel": "电话/微信",
+      "body": "完整可复制的话术，400-600字，包含：开场白→切入正题→陈述理由→正式提诉求→可能的拒绝应对→结尾→${hasBigCo ? '大厂背景用法' : ''}${hasComp ? '竞对Offer用法' : ''}→对方不回复怎么追"
     },
     {
-      "icon": "🌸",
-      "name": "方案二：迂回试探",
+      "icon": "📧",
+      "name": "方案二：邮件话术",
       "tag": "safe",
-      "tagTxt": "HR不确定时",
-      "body": "完整话术正文，300-500字，用\\n分段，包含跟进话术"
+      "tagTxt": "保守选择",
+      "channel": "邮件",
+      "body": "完整邮件模板：标题/称呼/正文（开场→理由→诉求→结尾）/落款，300-400字，说明邮件的优劣"
     },
     {
       "icon": "🛡️",
-      "name": "方案三：被拒后反击",
+      "name": "方案三：弹性福利反击",
       "tag": "res",
-      "tagTxt": "薪资说不能改时",
-      "body": "完整话术正文，300-500字，用\\n分段，给出2-3个替代方案，包含跟进话术"
+      "tagTxt": "被拒后用",
+      "channel": "电话",
+      "body": "被拒后立刻转向谈：1)签字费（怎么谈+话术）2)年终奖保底（怎么谈+话术）3)股票期权/其他福利（怎么谈+话术），每项50-80字"
     }
   ],
+  "followup": {
+    "sameDay": "谈完当天怎么发微信/邮件确认（40字）",
+    "noReply": "1-3天不回复怎么追（40字）",
+    "deadline": "到了答复期限还没结果怎么处理（40字）"
+  },
   "tips": [
-    {"icon": "⏰", "title": "最佳时机", "desc": "针对用户${data.stage}阶段的具体建议（60字）"},
-    {"icon": "📊", "title": "数据支撑", "desc": "告诉用户可以引用哪些数据平台和具体数字（60字）"},
-    {"icon": "🎯", "title": "开口策略", "desc": "基于用户具体情况，给出报价节奏和策略（60字）"},
-    {"icon": "🚫", "title": "避免踩坑", "desc": "针对用户顾虑${concernList}，给出具体注意事项（60字）"},
-    {"icon": "✉️", "title": "沟通方式", "desc": "微信/邮件/电话哪种更适合这个情况，理由是什么（60字）"}
+    {"icon": "💪", "title": "心理建设", "desc": "针对${concernList}的具体心理建设，不是鸡汤，是实操建议（80字）"},
+    {"icon": "⏰", "title": "最佳时机", "desc": "${data.stage}阶段的具体时间节点建议和deadline（80字）"},
+    {"icon": "📊", "title": "数据支撑", "desc": "可以用哪些平台的数据、怎么呈现更有说服力（80字）"},
+    {"icon": "🎯", "title": "沟通渠道", "desc": "电话vs微信vs邮件的优劣对比和推荐（80字）"},
+    {"icon": "🆘", "title": "最坏打算", "desc": "万一谈崩了/对方撤销Offer怎么办（80字）"}
+  ],
+  "qa": [
+    {"q": "万一谈崩了，Offer会不会没了？", "a": "针对${data.company}这个阶段的具体分析+实际概率+万一发生的应对（100字）"},
+    {"q": "我不知道怎么开口，感觉像讨价还价", "a": "这不是讨价还价是正常沟通，给一个最简版话术降低门槛（100字）"},
+    {"q": "会不会显得我不真诚/太贪心？", "a": "正常职业行为，不谈才奇怪+具体话术示范（80字）"}
   ]
 }
 
-严格要求：只返回JSON字符串，不要任何markdown代码块或额外文字。`;
+重要：
+1. 所有话术必须是${data.company}、${data.position}、¥${(data.salary||0).toLocaleString()}等真实数据
+2. 不要有任何AI感，要像真实的人写的
+3. 话术要有具体数字、具体理由，不是泛泛而谈
+4. 只返回JSON，不要任何markdown格式`;
 }
 function demoAnalyze(data) {
   const cityM = {北京:1.3,上海:1.25,深圳:1.2,杭州:1.15,广州:1.1,成都:0.85,武汉:0.85,南京:0.95,西安:0.8,其他:1.0};
@@ -1100,56 +1543,151 @@ function render(r, aiData) {
 
   // 如果有AI数据，使用AI生成的话术和注意事项
   if (aiData) {
-    // AI评分展示
-    document.getElementById('rSubtitle').textContent = `${data.company} · ${data.position} · ${data.city} · ${data.exp}`;
+    // ── 0. 行动摘要（30秒知道要做什么）─────────────────
+    document.getElementById('resultPageTitle').textContent = `${data.company} · ${data.position}`;
+    const channel = (data.stage || '').includes('书面') ? '发邮件' : '发微信';
+    const suggestVal = aiData.suggestTarget || suggest;
+    const bottomLine = Math.round((suggestVal * 0.92) / 500) * 500;
+    document.getElementById('actionSummaryMain').innerHTML =
+      `建议用<span class="asm-highlight">${channel}</span>沟通，` +
+      `目标 <span class="asm-highlight">${formatNum(suggestVal)}</span>，` +
+      `底线 <span class="asm-highlight">${formatNum(bottomLine)}</span>`;
+    const tagTexts = [];
+    if (aiData.yourLevel) tagTexts.push('📊 ' + aiData.yourLevel);
+    if (aiData.negotiableSpace) tagTexts.push('💰 可谈 ' + aiData.negotiableSpace);
+    tagTexts.push('⏱ 现在是谈判时机');
+    document.getElementById('actionSummaryTags').innerHTML =
+      tagTexts.map(t => `<span class="action-summary-tag">${t}</span>`).join('');
+
+    // ── 第一步：判断形势（评分+市场+结论 合并）──────────
     const ring = document.getElementById('sRing');
-    ring.className = 'score-ring ' + (score >= 72 ? 'high' : score >= 46 ? 'mid' : 'low');
+    ring.className = 'score-ring ' + (score >= 75 ? 'high' : score >= 50 ? 'mid' : 'low');
     document.getElementById('sNum').textContent = score;
     document.getElementById('sTitle').textContent = aiData.scoreTitle;
     document.getElementById('sDesc').textContent = aiData.scoreDesc;
 
-    // 市场薪资区间
-    document.getElementById('rMin').textContent = formatNum(min);
-    document.getElementById('rMid').textContent = '中位 ' + formatNum(mid);
-    document.getElementById('rMax').textContent = formatNum(max);
+    // 市场薪资区间（内联精简）
+    document.getElementById('rMin').textContent = formatNum(aiData.marketMin || min);
+    document.getElementById('rMid').textContent = '中位' + formatNum(aiData.marketMid || mid);
+    document.getElementById('rMax').textContent = formatNum(aiData.marketMax || max);
     setTimeout(() => {
-      const pct = Math.max(8, Math.min(88, ((data.salary - min) / (max - min)) * 80 + 10));
+      const mMin = aiData.marketMin || min;
+      const mMax = aiData.marketMax || max;
+      const pct = Math.max(5, Math.min(90, ((data.salary - mMin) / (mMax - mMin)) * 80 + 10));
       document.getElementById('rOffer').style.left = pct + '%';
     }, 100);
 
-    // 评估
-    const ab = document.getElementById('assessBox');
-    if (aiData.assessmentType === 'warn') { ab.className = 'assess-box warn'; }
-    else if (aiData.assessmentType === 'great') { ab.className = 'assess-box ok'; }
-    else { ab.className = 'assess-box ok'; }
-    document.getElementById('assessTxt').innerHTML = aiData.assessment;
+    // 核心结论（assessment + reassure 合并）
+    let assessHtml = `<b>💡 结论：</b>${aiData.assessment || ''}`;
+    if (aiData.reassure) {
+      assessHtml += `<br><span style="color:var(--brand-dark);">👊 ${aiData.reassure}</span>`;
+    }
+    document.getElementById('assessTxt').innerHTML = assessHtml;
 
-    // 话术脚本（AI生成）
-    const scripts = aiData.scripts.map(s => {
-      const tagClass = s.tag === 'reco' ? 'reco' : s.tag === 'safe' ? 'safe' : 'res';
-      return `<div class="script-item">
-        <div class="script-head">
-          <span class="script-icon">${s.icon}</span>
-          <span class="script-name">${s.name}</span>
-          <span class="script-tag ${tagClass}">${s.tagTxt}</span>
+    // HR心理分析（紧凑内嵌，只展示压价话术+反制）
+    if (aiData.hrPsychology && aiData.hrPsychology.likelyPloy) {
+      document.getElementById('hrPsychContent').innerHTML = `
+        <div class="hr-psych-box">
+          <b>🎯 常见压价话术：</b>${aiData.hrPsychology.likelyPloy || ''}<br>
+          <b>✅ 你的反制：</b>${aiData.hrPsychology.yourCounter || ''}
+        </div>`;
+      document.getElementById('hrPsychCard').style.display = 'block';
+    }
+
+    // ── 第二步：明确目标 ──────────────────────────────
+    const flexDesc = aiData.flexBenefits || '入职签字费 · 年终保底 · 薪资Review';
+    document.getElementById('targetContent').innerHTML = `
+      <div class="target-row">
+        <div class="target-item">
+          <div class="t-label">🎯 开口目标</div>
+          <div class="t-value">${formatNum(suggestVal)}</div>
         </div>
-        <div class="script-body">${s.body.replace(/\n/g, '<br>')}</div>
+        <div class="target-item">
+          <div class="t-label">🛡️ 底线 / 可谈福利</div>
+          <div class="t-value" style="font-size:13px;line-height:1.4;">${formatNum(bottomLine)} · ${flexDesc}</div>
+        </div>
+      </div>`;
+    document.getElementById('targetCard').style.display = 'block';
+
+    // ── 第三步：执行谈判 ──────────────────────────────
+    // 核心筹码速览（精简标签云）
+    if (aiData.chess && aiData.chess.length > 0) {
+      const tags = aiData.chess.slice(0, 3).map(c => `<span class="chess-tag">✦ ${c.title}</span>`).join('');
+      document.getElementById('chessSnapshot').innerHTML = `
+        <div class="chess-snapshot-title">🃏 你的核心筹码（已融入话术）</div>
+        <div class="chess-tags">${tags}</div>`;
+      document.getElementById('chessSnapshotWrap').style.display = 'block';
+    }
+
+    // 话术：主推（方案一）+ 备选（方案二/三）分离
+    const scripts = aiData.scripts || [];
+    const mainScript = scripts[0];
+    const altScripts = scripts.slice(1);
+
+    if (mainScript) {
+      const channel = mainScript.channel ? `<span class="script-channel">${mainScript.channel}</span>` : '';
+      document.getElementById('scriptMain').innerHTML = `<div class="script-item">
+        <div class="script-head">
+          <span class="script-icon">${mainScript.icon}</span>
+          <span class="script-name">${mainScript.name}</span>
+          <span class="script-tag reco">${mainScript.tagTxt}</span>
+          ${channel}
+        </div>
+        <div class="script-body">${mainScript.body.replace(/\n/g, '<br>')}</div>
         <button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button>
       </div>`;
-    }).join('');
-    document.getElementById('scripts').innerHTML = scripts;
+    }
 
-    // 注意事项（AI生成）
-    const tips = aiData.tips.map(t => `
-      <div class="tip-item">
-        <span class="tip-icon">${t.icon}</span>
-        <div class="tip-content">
-          <div class="tip-title">${t.title}</div>
-          <div class="tip-desc">${t.desc}</div>
-        </div>
-      </div>
-    `).join('');
-    document.getElementById('tips').innerHTML = tips;
+    if (altScripts.length > 0) {
+      document.getElementById('scriptsAlt').innerHTML = altScripts.map(s => {
+        const tagClass = s.tag === 'safe' ? 'safe' : 'res';
+        const ch = s.channel ? `<span class="script-channel">${s.channel}</span>` : '';
+        return `<div class="script-item">
+          <div class="script-head">
+            <span class="script-icon">${s.icon}</span>
+            <span class="script-name">${s.name}</span>
+            <span class="script-tag ${tagClass}">${s.tagTxt}</span>
+            ${ch}
+          </div>
+          <div class="script-body">${s.body.replace(/\n/g, '<br>')}</div>
+          <button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button>
+        </div>`;
+      }).join('');
+      document.getElementById('scriptsAltToggle').style.display = 'flex';
+    } else {
+      document.getElementById('scriptsAltToggle').style.display = 'none';
+    }
+
+    // ── 第四步：风险与应对（合并Q&A + 跟进 + tips，消除重复）──
+    let riskHtml = '<div class="risk-grid">';
+
+    // 被拒后方案（来自battlePlan.phase3 — 简洁版）
+    if (aiData.battlePlan && aiData.battlePlan.phase3) {
+      riskHtml += `<div class="risk-item reject"><span class="risk-item-title">🛡️ 被拒后立刻说什么</span>${aiData.battlePlan.phase3}</div>`;
+    }
+
+    // 跟进时机
+    if (aiData.followup && (aiData.followup.sameDay || aiData.followup.noReply)) {
+      let followText = '';
+      if (aiData.followup.sameDay)  followText += `<b>当天：</b>${aiData.followup.sameDay}　`;
+      if (aiData.followup.noReply)  followText += `<b>3天未回：</b>${aiData.followup.noReply}`;
+      if (aiData.followup.deadline) followText += `　<b>到Deadline：</b>${aiData.followup.deadline}`;
+      riskHtml += `<div class="risk-item timing"><span class="risk-item-title">⏰ 跟进时机</span>${followText}</div>`;
+    }
+
+    // Q&A（聚焦恐惧点，合并谈崩+最坏打算）
+    if (aiData.qa && aiData.qa.length > 0) {
+      riskHtml += `<div class="risk-divider">🙋 你的顾虑</div>`;
+      aiData.qa.forEach(q => {
+        riskHtml += `<div class="risk-item worry">
+          <div class="risk-q">❓ ${q.q}</div>
+          <div class="risk-a">💡 ${q.a}</div>
+        </div>`;
+      });
+    }
+
+    riskHtml += '</div>';
+    document.getElementById('riskContent').innerHTML = riskHtml;
 
     // 支付二维码
     if (CONFIG.WECHAT_QR_URL) {
@@ -1161,37 +1699,86 @@ function render(r, aiData) {
   }
 
   // 演示模式渲染（原有逻辑）
-  document.getElementById('rSubtitle').textContent = `${data.company} · ${data.position} · ${data.city} · ${data.exp}`;
+  document.getElementById('resultPageTitle').textContent = `${data.company} · ${data.position}`;
+
+  // 行动摘要
+  const channel = (data.stage || '').includes('书面') ? '发邮件' : '发微信';
+  const bottomLine = Math.round((suggest * 0.92) / 500) * 500;
+  document.getElementById('actionSummaryMain').innerHTML =
+    `建议用<span class="asm-highlight">${channel}</span>沟通，` +
+    `目标 <span class="asm-highlight">${formatNum(suggest)}</span>，` +
+    `底线 <span class="asm-highlight">${formatNum(bottomLine)}</span>`;
+  const levelText = ratio < 0.85 ? '你的Offer明显偏低' : ratio < 0.95 ? '略低于市场' : ratio > 1.1 ? '处于市场较高位' : '处于市场合理区间';
+  document.getElementById('actionSummaryTags').innerHTML = [
+    `📊 ${levelText}`,
+    `💰 可谈 ¥${Math.round((suggest - data.salary)/500)*500}~¥${Math.round((suggest*1.05-data.salary)/500)*500}`,
+    '⏱ 现在是谈判时机'
+  ].map(t => `<span class="action-summary-tag">${t}</span>`).join('');
+
+  // 形势判断（合并版）
   const ring = document.getElementById('sRing');
   ring.className = 'score-ring ' + (score>=72?'high':score>=46?'mid':'low');
   document.getElementById('sNum').textContent = score;
-  document.getElementById('sTitle').textContent = score>=72 ? '🎉 谈判筹码充足，可以大胆开口！' : score>=46 ? '💪 有一定空间，策略性出击' : score>=30 ? '🤔 筹码偏弱，谨慎但值得一试' : '⚠️ 建议先接受，边积累边跳槽';
-  document.getElementById('sDesc').textContent = score>=72 ? '你的情况在市场上很有竞争力，HR 需要你' : score>=46 ? '你的情况处于市场中等，谈判要有理有据' : '你的筹码相对有限，但礼貌尝试总值得';
+  document.getElementById('sTitle').textContent = score>=72 ? '🎉 谈判筹码充足，可大胆开口！' : score>=46 ? '💪 有一定空间，策略出击' : '🤔 筹码偏弱，但值得礼貌一试';
+  document.getElementById('sDesc').textContent = score>=72 ? '你的情况在市场上有竞争力，HR 需要你' : score>=46 ? '处于市场中等，谈判要有理有据' : '筹码相对有限，礼貌且自信地尝试';
   document.getElementById('rMin').textContent = formatNum(min);
-  document.getElementById('rMid').textContent = '中位 ' + formatNum(mid);
+  document.getElementById('rMid').textContent = '中位' + formatNum(mid);
   document.getElementById('rMax').textContent = formatNum(max);
-  setTimeout(() => { const pct = Math.max(8, Math.min(88, ((data.salary-min)/(max-min))*80+10)); document.getElementById('rOffer').style.left = pct+'%'; }, 100);
-  const ab = document.getElementById('assessBox');
-  if (ratio < 0.9) { ab.className = 'assess-box warn'; document.getElementById('assessTxt').innerHTML = `你的 Offer <b>${formatNum(data.salary)}</b> 低于市场约 <b>${Math.round((1-ratio)*100)}%</b>，AI 建议目标 <b>${formatNum(suggest)}</b>，大胆开口谈！`; }
-  else if (ratio > 1.1) { ab.className = 'assess-box ok'; document.getElementById('assessTxt').innerHTML = `你的 Offer <b>${formatNum(data.salary)}</b> 高于市场中位数，属于优质 Offer，建议转向谈 <b>结构/期权/年终</b>。`; }
-  else { ab.className = 'assess-box ok'; document.getElementById('assessTxt').innerHTML = `你的 Offer <b>${formatNum(data.salary)}</b> 处于市场合理区间，AI 建议小幅争取 <b>${formatNum(suggest)}</b>（约涨 ${Math.round((suggest/data.salary-1)*100)}%）。`; }
+  setTimeout(() => { const pct = Math.max(5, Math.min(90, ((data.salary-min)/(max-min))*80+10)); document.getElementById('rOffer').style.left = pct+'%'; }, 100);
 
+  let assessHtml = '';
+  if (ratio < 0.9) { assessHtml = `<b>💡 结论：</b>你的 Offer <b>${formatNum(data.salary)}</b> 低于市场约 <b>${Math.round((1-ratio)*100)}%</b>，建议目标 <b>${formatNum(suggest)}</b>，大胆开口！<br><span style="color:var(--brand-dark);">👊 谈最坏也是维持原价，不会被取消，值得一试！</span>`; }
+  else if (ratio > 1.1) { assessHtml = `<b>💡 结论：</b>你的 Offer <b>${formatNum(data.salary)}</b> 高于市场中位数，建议转向谈 <b>结构/期权/年终</b>。<br><span style="color:var(--brand-dark);">👊 你在市场中处于优势位置，底气十足！</span>`; }
+  else { assessHtml = `<b>💡 结论：</b>你的 Offer <b>${formatNum(data.salary)}</b> 处于合理区间，建议小幅争取 <b>${formatNum(suggest)}</b>（约涨 ${Math.round((suggest/data.salary-1)*100)}%）。<br><span style="color:var(--brand-dark);">👊 语气诚恳+有据可依，成功率在70%以上。</span>`; }
+  document.getElementById('assessTxt').innerHTML = assessHtml;
+  document.getElementById('hrPsychCard').style.display = 'none';
+
+  // 第二步：目标
+  document.getElementById('targetContent').innerHTML = `
+    <div class="target-row">
+      <div class="target-item">
+        <div class="t-label">🎯 开口目标</div>
+        <div class="t-value">${formatNum(suggest)}</div>
+      </div>
+      <div class="target-item">
+        <div class="t-label">🛡️ 底线 / 可谈福利</div>
+        <div class="t-value" style="font-size:13px;line-height:1.4;">${formatNum(bottomLine)} · 签字费 · 年终保底</div>
+      </div>
+    </div>`;
+  document.getElementById('targetCard').style.display = 'block';
+
+  // 第三步：话术（主推默认展示，备选折叠）
+  document.getElementById('chessSnapshotWrap').style.display = 'none';
   const hasComp = data.adv.includes('有竞对Offer');
-  const scripts = [
-    { icon: '💪', name: '方案一：直接开口', tag: 'reco', tagTxt: '最推荐', body: `您好，非常感谢公司的 Offer！对这个机会我非常期待，也完全认同公司的方向。\n\n关于薪资，我做了一些调研，${data.city} ${data.exp} ${data.position} 的市场水平大概在 ${formatNum(Math.round(suggest*0.9/500)*500)}~${formatNum(suggest)} 左右。\n\n目前的 Offer 是 ${formatNum(data.salary)}，我希望能否调整到 ${formatNum(suggest)}？${hasComp ? '\n我目前也有其他公司的 Offer，但我更倾向于贵公司，希望我们能在薪资上达成一致。' : ''}\n\n期待您的回复，谢谢！` },
-    { icon: '🌸', name: '方案二：温和试探', tag: 'safe', tagTxt: 'HR 态度一般时', body: `您好！收到 Offer 很开心，我非常想加入这个团队。\n\n想和您确认一下，薪资这块是否还有灵活空间？我的期望是 ${formatNum(Math.round(suggest*0.85/500)*500)}~${formatNum(suggest)} 左右。\n\n如果在固定薪资上有困难，能否在其他方面灵活一些？比如 多一个月年终奖 或者 入职签字费？\n\n期待您的反馈，谢谢！` },
-    { icon: '🛡️', name: '方案三：被拒绝后怎么办', tag: 'res', tagTxt: '薪资说不能改时', body: `好的，我理解。那能否在其他方面灵活处理呢？\n\n比如：\n• 入职签字费（一次性补贴）？\n• 年终奖保底（确保至少 N 个月）？\n• 3 个月后薪资 Review？\n• 额外假期 或 培训预算？\n\n我非常想加入，希望我们能找到一个双方都满意的方案 🙏` }
-  ];
-  document.getElementById('scripts').innerHTML = scripts.map(s => `<div class="script-item"><div class="script-head"><span class="script-icon">${s.icon}</span><span class="script-name">${s.name}</span><span class="script-tag ${s.tag}">${s.tagTxt}</span></div><div class="script-body">${s.body.replace(/\n/g,'<br>')}</div><button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button></div>`).join('');
+  const mainScriptBody = `您好，非常感谢公司的 Offer！对这个机会我非常期待，也完全认同公司的方向。\n\n关于薪资，我做了一些市场调研，${data.city} ${data.exp} ${data.position} 的市场水平大概在 ${formatNum(Math.round(suggest*0.9/500)*500)}~${formatNum(suggest)} 左右。\n\n目前的 Offer 是 ${formatNum(data.salary)}，希望能否调整到 ${formatNum(suggest)}？${hasComp ? '\n\n我目前也有其他公司的 Offer，但我更倾向于贵公司，希望我们能在薪资上达成一致。' : ''}\n\n期待您的回复，谢谢！`;
+  document.getElementById('scriptMain').innerHTML = `<div class="script-item">
+    <div class="script-head">
+      <span class="script-icon">💪</span>
+      <span class="script-name">主推话术</span>
+      <span class="script-tag reco">最推荐</span>
+      <span class="script-channel">${(data.stage||'').includes('书面') ? '邮件' : '微信'}</span>
+    </div>
+    <div class="script-body">${mainScriptBody.replace(/\n/g,'<br>')}</div>
+    <button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button>
+  </div>`;
+  document.getElementById('scriptsAlt').innerHTML = [
+    { icon: '🌸', name: '温和试探版', tag: 'safe', tagTxt: 'HR态度一般时', body: `您好！收到 Offer 很开心，我非常想加入这个团队。\n\n想和您确认一下，薪资这块是否还有灵活空间？我的期望是 ${formatNum(Math.round(suggest*0.85/500)*500)}~${formatNum(suggest)} 左右。\n\n如果固定薪资有困难，能否在其他方面灵活一些？比如多一个月年终奖或者入职签字费？\n\n期待您的反馈，谢谢！` },
+    { icon: '🛡️', name: '被拒后反击版', tag: 'res', tagTxt: '薪资说不能改时', body: `好的，我理解。那能否在其他方面灵活处理呢？\n\n比如：\n• 入职签字费（一次性补贴）？\n• 年终奖保底（确保至少 N 个月）？\n• 3个月后薪资Review？\n• 额外假期或培训预算？\n\n我非常想加入，希望我们能找到双方都满意的方案 🙏` }
+  ].map(s => `<div class="script-item">
+    <div class="script-head"><span class="script-icon">${s.icon}</span><span class="script-name">${s.name}</span><span class="script-tag ${s.tag}">${s.tagTxt}</span></div>
+    <div class="script-body">${s.body.replace(/\n/g,'<br>')}</div>
+    <button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button>
+  </div>`).join('');
+  document.getElementById('scriptsAltToggle').style.display = 'flex';
 
-  const tips = [
-    { icon: '⏰', title: '时机', desc: data.stage === '口头Offer' ? '现在是最佳谈判时机！口头阶段 HR 调整薪资最容易，不要等书面 Offer 发下来再谈。' : '书面 Offer 阶段谈判难度会增加，但仍然值得礼貌尝试。' },
-    { icon: '📊', title: '数据要准确', desc: '提到市场薪资时可以引用「Boss直聘报告」「脉脉数据」，具体数字比空口说要更有说服力。' },
-    { icon: hasComp ? '🃏' : '🎯', title: hasComp ? '竞对 Offer 是最大筹码' : '报价策略', desc: hasComp ? '不要提另一家公司名字，只说「我有另一个 Offer 在 ¥XX」，制造紧迫感但不说竞争对手是谁。' : `开口时报 ${formatNum(Math.round(suggest*1.1/500)*500)}，留出让步空间，最终落到 ${formatNum(suggest)}。` },
-    { icon: '🚫', title: '禁忌', desc: '❌ 不要说「我房租很贵」「我生活压力大」——这是求同情，HR 不 care。只谈你能给公司带来什么价值。' },
-    { icon: '✉️', title: '微信比电话更安全', desc: '发文字消息而非打电话谈，这样你有时间组织语言，HR 也不会当场逼你做决定。' }
-  ];
-  document.getElementById('tips').innerHTML = tips.map(t => `<div class="tip-item"><span class="tip-icon">${t.icon}</span><div class="tip-content"><div class="tip-title">${t.title}</div><div class="tip-desc">${t.desc}</div></div></div>`).join('');
+  // 第四步：风险与应对（合并，演示版）
+  document.getElementById('riskContent').innerHTML = `<div class="risk-grid">
+    <div class="risk-item reject"><span class="risk-item-title">🛡️ 被拒后立刻说什么</span>好的，我理解。那能否灵活处理签字费、年终保底或试用期缩短？我非常希望加入，期待找到双方都满意的方案。</div>
+    <div class="risk-item timing"><span class="risk-item-title">⏰ 跟进时机</span><b>当天：</b>发一条确认微信，保持关系温度　<b>3天未回：</b>礼貌追一句"请问这边有进展吗？"　<b>到Deadline：</b>坦诚说明自己的决策时间线</div>
+    <div class="risk-divider">🙋 你的顾虑</div>
+    <div class="risk-item worry"><div class="risk-q">❓ 万一谈崩了，Offer会不会没了？</div><div class="risk-a">💡 极少发生。公司在这个阶段撤回Offer的代价极高，礼貌表达期望不会触怒HR。最坏结果是维持原价，继续接受即可。</div></div>
+    <div class="risk-item worry"><div class="risk-q">❓ 感觉像在讨价还价，不好意思开口？</div><div class="risk-a">💡 薪资谈判是职场正常环节，HR本身就预留了调整空间。不谈才浪费。最简单的开场："我对这个机会非常期待，能否在薪资上再交流一下？"</div></div>
+  </div>`;
 
   // Payment QR
   if (CONFIG.WECHAT_QR_URL) {
@@ -1342,11 +1929,21 @@ function copyScript(btn, text) {
   });
 }
 
+function toggleAltScripts() {
+  const toggle = document.getElementById('scriptsAltToggle');
+  const alt = document.getElementById('scriptsAlt');
+  const isOpen = alt.classList.contains('open');
+  alt.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+}
+
 function copyAll() {
-  const scripts = document.getElementById('scripts').innerText;
-  const tips = document.getElementById('tips').innerText;
+  const mainScript = document.getElementById('scriptMain');
+  const scripts = mainScript ? mainScript.innerText : (document.getElementById('scripts') ? document.getElementById('scripts').innerText : '');
+  const risk = document.getElementById('riskContent') ? document.getElementById('riskContent').innerText : '';
   const score = document.getElementById('sTitle').innerText;
-  const text = `【多拿点 · 薪资谈判报告】\n\n${score}\n\n【话术脚本】\n${scripts}\n\n【谈判注意事项】\n${tips}`;
+  const summary = document.getElementById('actionSummaryMain') ? document.getElementById('actionSummaryMain').innerText : '';
+  const text = `【多拿点 · 薪资谈判报告】\n\n⚡ ${summary}\n\n📊 ${score}\n\n【主推话术】\n${scripts}\n\n【风险与应对】\n${risk}`;
   navigator.clipboard.writeText(text).then(() => toast('报告已复制 ✅'));
 }
 
