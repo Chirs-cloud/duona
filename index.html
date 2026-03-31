@@ -2039,23 +2039,30 @@ function copyScript(btn, text) {
 (function initReportCounter() {
   const KEY = 'dd_counted';
   const el = document.getElementById('reportCounter');
-  if (!el) return;
+  console.log('[counter] el:', el, 'KEY in ls:', localStorage.getItem(KEY));
+
+  if (!el) { console.warn('[counter] 元素不存在'); return; }
 
   // 立即显示默认值
   el.classList.add('show');
 
-  if (localStorage.getItem(KEY)) return; // 已计数的IP不重复累加
+  if (localStorage.getItem(KEY)) {
+    console.log('[counter] 已计数过，跳过');
+    return;
+  }
 
   fetch('/api/counter')
     .then(r => r.json())
     .then(data => {
+      console.log('[counter] API返回:', data);
       if (data.count > 0) {
         el.innerHTML = `累计已分析 <b>${data.count.toLocaleString()}</b> 份报告`;
       }
       localStorage.setItem(KEY, '1');
     })
-    .catch(() => {});
+    .catch(err => { console.error('[counter] 失败:', err); });
 })();
+</script>
 
 function toggleAltScripts() {
   const toggle = document.getElementById('scriptsAltToggle');
