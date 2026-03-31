@@ -1332,14 +1332,21 @@ async function saveHistory(data, result, aiData) {
 // ================================================================
 function formatNum(n) { return '¥' + parseInt(n).toLocaleString(); }
 
-// 锚点导航：点击跳转
+// 锚点导航：点击跳转（留出导航栏高度）
 function navToStep(step) {
   const card = document.querySelector('.step-card[data-step="' + step + '"]');
-  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // 延迟修正：导航栏固定高度 112px，防止被遮挡
+    setTimeout(() => window.scrollBy(0, -110), 350);
+    syncNavStep(step);
+  }
 }
 
 // 锚点导航：滚动时自动高亮
-let lastStep = 1;
+let lastStep = 0; // 初始值设为0，页面加载后自动同步到1
+document.addEventListener('DOMContentLoaded', () => syncNavStep(1));
+
 function syncNavStep(step) {
   if (step === lastStep) return;
   lastStep = step;
