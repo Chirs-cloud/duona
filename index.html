@@ -80,19 +80,10 @@
     .tag:active { transform: scale(0.96); }
     .tag.on { border-color: var(--brand); color: white; background: var(--brand); font-weight: 600; box-shadow: 0 4px 12px rgba(139,92,246,0.35); transform: scale(1.02); }
     .tag.on:hover { transform: scale(1.04); }
-    /* 固定锚点导航 */
-    .form-nav { position: sticky; top: 52px; z-index: 90; background: rgba(248,247,255,0.96); backdrop-filter: blur(12px); padding: 10px 16px 14px; }
-    .nav-track { height: 3px; background: var(--border); border-radius: 2px; margin: 0 36px 14px; overflow: hidden; }
-    .nav-fill { height: 100%; background: linear-gradient(90deg, var(--brand), #A78BFA); border-radius: 2px; transition: width 0.35s cubic-bezier(0.4,0,0.2,1); width: 0%; }
-    .nav-steps { display: flex; }
-    .nav-step { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex: 1; transition: transform 0.15s; }
-    .nav-step:active { transform: scale(0.94); }
-    .nav-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--text-3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; transition: all 0.3s; }
-    .nav-step.active .nav-dot { background: var(--brand); color: white; box-shadow: 0 2px 8px rgba(139,92,246,0.4); transform: scale(1.08); }
-    .nav-step.done .nav-dot { background: var(--green); color: white; }
-    .nav-label { font-size: 11px; color: var(--text-3); font-weight: 500; transition: all 0.3s; padding-bottom: 2px; }
-    .nav-step.active .nav-label { color: var(--brand); font-weight: 700; }
-    .nav-step.done .nav-label { color: var(--green); }
+    /* 步骤浮条 */
+    .step-bar { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1.5px solid var(--border); border-radius: 24px; padding: 8px 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(139,92,246,0.06); }
+    .step-bar-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); flex-shrink: 0; box-shadow: 0 0 0 3px rgba(139,92,246,0.15); transition: background 0.3s; }
+    .step-bar-text { font-size: 13px; font-weight: 600; color: var(--text-2); }
     .auth-card { max-width: 480px; margin: 0 auto; padding: 0 16px 16px; }
     .auth-inner { background: var(--card); border-radius: var(--radius); border: 1.5px dashed var(--border); padding: 16px; }
     .auth-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -550,20 +541,10 @@
 
 <main class="main">
 
-  <!-- 固定锚点导航 -->
-  <div class="form-nav" id="formNav">
-    <div class="nav-track"><div class="nav-fill" id="navFill"></div></div>
-    <div class="nav-steps">
-      <div class="nav-step active" onclick="navToStep(1)">
-        <div class="nav-dot"><span>1</span></div><span class="nav-label">基本信息</span>
-      </div>
-      <div class="nav-step" onclick="navToStep(2)">
-        <div class="nav-dot"><span>2</span></div><span class="nav-label">你的情况</span>
-      </div>
-      <div class="nav-step" onclick="navToStep(3)">
-        <div class="nav-dot"><span>3</span></div><span class="nav-label">补充说明</span>
-      </div>
-    </div>
+  <!-- 步骤浮条 -->
+  <div class="step-bar" id="stepBar">
+    <span class="step-bar-dot"></span>
+    <span class="step-bar-text" id="stepBarText">步骤 1/3 · 基本信息</span>
   </div>
 
   <!-- Form -->
@@ -1333,43 +1314,24 @@ async function saveHistory(data, result, aiData) {
 // ================================================================
 function formatNum(n) { return '¥' + parseInt(n).toLocaleString(); }
 
-// 锚点导航：点击跳转（留出导航栏高度）
-function navToStep(step) {
-  const card = document.querySelector('.step-card[data-step="' + step + '"]');
-  if (card) {
-    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // 延迟修正：导航栏固定高度 112px，防止被遮挡
-    setTimeout(() => window.scrollBy(0, -110), 350);
-    syncNavStep(step);
-  }
-}
-
-// 锚点导航：滚动时自动高亮
-let lastStep = 0; // 初始值设为0，页面加载后自动同步到1
-document.addEventListener('DOMContentLoaded', () => syncNavStep(1));
-
-function syncNavStep(step) {
+// 步骤浮条：滚动时更新
+const stepLabels = { 1: '基本信息', 2: '你的情况', 3: '补充说明' };
+let lastStep = 0;
+function syncStepBar(step) {
   if (step === lastStep) return;
   lastStep = step;
-  document.querySelectorAll('.nav-step').forEach((el, i) => {
-    const s = i + 1;
-    el.classList.remove('active', 'done');
-    if (s < step) el.classList.add('done');
-    else if (s === step) el.classList.add('active');
-  });
-  const fill = (step - 1) / 2 * 100;
-  document.getElementById('navFill').style.width = fill + '%';
+  const barText = document.getElementById('stepBarText');
+  if (barText) barText.textContent = '步骤 ' + step + '/3 · ' + (stepLabels[step] || '');
 }
 window.addEventListener('scroll', function() {
   if (document.getElementById('result')?.classList.contains('open')) return;
   const cards = document.querySelectorAll('.step-card');
-  const triggerY = 200; // 视口中间偏上触发
   let activeStep = 1;
   cards.forEach((card, i) => {
     const rect = card.getBoundingClientRect();
-    if (rect.top <= triggerY) activeStep = i + 1;
+    if (rect.top <= 180) activeStep = i + 1;
   });
-  syncNavStep(activeStep);
+  syncStepBar(activeStep);
 }, { passive: true });
 
 function syncSalary(v) { 
@@ -1424,7 +1386,7 @@ function validate() {
   if (!c.value.trim()) { c.classList.add('error'); valid = false; } else { c.classList.add('valid'); }
   if (!p.value.trim()) { p.classList.add('error'); valid = false; } else { p.classList.add('valid'); }
   if (!ci.value) { ci.classList.add('error'); valid = false; } else { ci.classList.add('valid'); }
-  if (!valid) { toast('请填写必填项 🙏'); navToStep(1); }
+  if (!valid) { toast('请填写必填项 🙏'); syncStepBar(1); document.querySelector('.step-card[data-step="1"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   return valid;
 }
 function collect() { const sal = document.getElementById('salaryInput').value || document.getElementById('salary').value; return { company: document.getElementById('company').value.trim(), position: document.getElementById('position').value.trim(), city: document.getElementById('city').value, edu: document.getElementById('edu').value, salary: parseInt(sal), target: parseInt(document.getElementById('target').value), structure: getVal('structure'), exp: getVal('exp')[0] || '应届生', adv: getVal('adv'), concern: getVal('concern'), stage: getVal('stage')[0] || '口头Offer', hrmood: getVal('hrmood')[0] || '正常', note: document.getElementById('note').value.trim() }; }
