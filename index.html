@@ -1355,13 +1355,14 @@ function syncNavStep(step) {
 window.addEventListener('scroll', function() {
   if (document.getElementById('result')?.classList.contains('open')) return;
   const cards = document.querySelectorAll('.step-card');
-  const scrollTop = window.scrollY + 180;
+  const triggerY = 200; // 视口中间偏上触发
+  let activeStep = 1;
   cards.forEach((card, i) => {
-    const top = card.offsetTop;
-    const bottom = top + card.offsetHeight;
-    if (scrollTop >= top && scrollTop < bottom) syncNavStep(i + 1);
+    const rect = card.getBoundingClientRect();
+    if (rect.top <= triggerY) activeStep = i + 1;
   });
-});
+  syncNavStep(activeStep);
+}, { passive: true });
 
 function syncSalary(v) { 
   document.getElementById('salaryShow').textContent = formatNum(v); 
