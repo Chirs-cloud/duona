@@ -779,11 +779,11 @@
     <div class="pay-card" id="payCard">
       <h3>🔓 解锁「多拿点」完整版</h3>
       <p>含 3 套话术 · 竞对对比 · 模拟练习 · 无限追加分析</p>
-      <div class="price-tag"><div class="p">¥19.9</div><div class="l">一次性 · 永久使用</div></div>
+      <div class="price-tag"><div class="p">¥9.9</div><div class="l">一次性 · 永久使用</div></div>
       <div class="pay-qr" id="payQr">
         <img id="payQrImg" src="" alt="微信支付" style="display:none;" />
         <div id="payQrPlaceholder" style="padding:24px 16px;color:white;font-size:12px;line-height:1.8;">
-          📱 请用微信扫码下方图片<br>支付 <strong>¥19.9</strong> 解锁完整版
+          📱 请用微信扫码下方图片<br>支付 <strong>¥9.9</strong> 解锁完整版
         </div>
       </div>
       <div class="pay-hint">支付后联系客服解锁</div>
@@ -894,7 +894,7 @@
     <div class="profile-upgrade-card" id="profileUpgradeCard">
       <h3>🔓 解锁完整版</h3>
       <p>无限次分析 · 3 套话术 · 永久保存 · 竞对对比</p>
-      <div class="price">¥19.9 <span>/ 永久</span></div>
+      <div class="price">¥9.9 <span>/ 永久</span></div>
       <button class="btn-upgrade-full" onclick="showUpgradeModal()">立即升级</button>
     </div>
 
@@ -1250,8 +1250,8 @@ function loadHistory(idx) { toast('请使用最新的历史报告列表'); }
 
 // 升级
 function showUpgradeModal() {
-  if (CONFIG.WECHAT_QR_URL) { toast('📱 请用微信扫码支付 ¥19.9\n支付后联系客服解锁完整版'); }
-  else { toast('💬 联系客服微信：duoduodian\n支付 ¥19.9 解锁完整版'); }
+  if (CONFIG.WECHAT_QR_URL) { toast('📱 请用微信扫码支付 ¥9.9\n支付后联系客服解锁完整版'); }
+  else { toast('💬 联系客服微信：duoduodian\n支付 ¥9.9 解锁完整版'); }
 }
 
 // 保存历史报告（后端 API）
@@ -2088,9 +2088,9 @@ function copyAll() {
 
 function showPayHint() {
   if (CONFIG.WECHAT_QR_URL) {
-    toast('请用微信扫码上方图片支付 ¥19.9\n支付后联系客服解锁 🙏');
+    toast('请用微信扫码上方图片支付 ¥9.9\n支付后联系客服解锁 🙏');
   } else {
-    toast('请用微信扫码支付 ¥19.9\n（赞赏码配置中...）\n联系客服解锁：duoduodian');
+    toast('请用微信扫码支付 ¥9.9\n（赞赏码配置中...）\n联系客服解锁：duoduodian');
   }
 }
 

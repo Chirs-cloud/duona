@@ -326,7 +326,7 @@ async function loadOverview() {
     document.getElementById('stat-paid').textContent = data.paid_users || 0;
     document.getElementById('stat-today-users').textContent = `今日新增 ${data.today_users || 0} 人`;
     document.getElementById('stat-today-analyses').textContent = `今日新增 ${data.today_analyses || 0} 份`;
-    document.getElementById('stat-revenue').textContent = `预计收入 ¥${((data.paid_users || 0) * 19.9).toFixed(1)}`;
+    document.getElementById('stat-revenue').textContent = `预计收入 ¥${((data.paid_users || 0) * 9.9).toFixed(1)}`;
     document.getElementById('overviewTime').textContent = `数据更新于 ${new Date().toLocaleString('zh-CN')}`;
     // 加载最新用户
     const usersData = await apiFetch('/api/admin?type=users&page=0');
