@@ -2035,32 +2035,19 @@ function copyScript(btn, text) {
   });
 }
 
-// ── 报告计数器（每次访问首页，同一IP只+1）─────────
+// ── 报告计数器（每次访问首页，后端按IP去重计数）─────────
 (function initReportCounter() {
-  const KEY = 'dd_counted';
   const el = document.getElementById('reportCounter');
-  console.log('[counter] el:', el, 'KEY in ls:', localStorage.getItem(KEY));
-
-  if (!el) { console.warn('[counter] 元素不存在'); return; }
-
-  // 立即显示默认值
-  el.classList.add('show');
-
-  if (localStorage.getItem(KEY)) {
-    console.log('[counter] 已计数过，跳过');
-    return;
-  }
+  if (!el) return;
 
   fetch('/api/counter')
     .then(r => r.json())
     .then(data => {
-      console.log('[counter] API返回:', data);
       if (data.count > 0) {
         el.innerHTML = `累计已分析 <b>${data.count.toLocaleString()}</b> 份报告`;
       }
-      localStorage.setItem(KEY, '1');
     })
-    .catch(err => { console.error('[counter] 失败:', err); });
+    .catch(() => {});
 })();
 </script>
 
