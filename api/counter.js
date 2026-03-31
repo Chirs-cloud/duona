@@ -13,57 +13,124 @@ module.exports = async function handler(req, res) {
     return res.status(200).end();
   }
 
-  // GET：只读展示，不累加
+  // 获取真实IP
+  const getClientIP = () => {
+    const forwarded = req.headers['x-vercel-forwarded-for'];
+    if (forwarded) {
+      return forwarded.split(',')[0].trim();
+    }
+    return req.headers['x-real-ip'] || 'unknown';
+  };
+
+  // 重置功能（POST ?reset=1883）
+  if (req.method === 'POST' && req.query.reset !== undefined) {
+    const newCount = parseInt(req.query.reset, 10);
+    await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify({ count: newCount }),
+    });
+    await fetch(`${SUPABASE_URL}/rest/v1/visitor_ips`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    });
+    return res.status(200).json({ ok: true, count: newCount });
+  }
+
+  // GET：新IP自动累加（页面加载时调用）
   if (req.method === 'GET') {
+    const ip = getClientIP();
+    
     try {
-      const getRes = await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1&select=count`, {
+      // 1. 检查IP是否已访问过
+      const checkRes = await fetch(`${SUPABASE_URL}/rest/v1/visitor_ips?ip=eq.${ip}&select=ip`, {
         headers: {
           'apikey': SUPABASE_KEY,
           'Authorization': `Bearer ${SUPABASE_KEY}`,
           'Content-Type': 'application/json',
         },
       });
-      let count = 1883; // 默认兜底
-      if (getRes.ok) {
-        const data = await getRes.json();
-        if (data && data[0] && data[0].count !== undefined) {
-          count = parseInt(data[0].count, 10) || 1883;
+      const existingIP = await checkRes.json();
+      
+      let count = 1883;
+      
+      if (!existingIP || existingIP.length === 0) {
+        // 新IP：累加计数器 + 记录IP
+        const getRes = await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1&select=count`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (getRes.ok) {
+          const data = await getRes.json();
+          if (data && data[0] && data[0].count !== undefined) {
+            count = parseInt(data[0].count, 10) || 1883;
+          }
+        }
+        
+        const newCount = count + 1;
+        
+        // 更新计数器
+        await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1`, {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ count: newCount }),
+        });
+        
+        // 记录IP
+        await fetch(`${SUPABASE_URL}/rest/v1/visitor_ips`, {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal',
+          },
+          body: JSON.stringify({ ip: ip }),
+        });
+        
+        count = newCount;
+      } else {
+        // 老IP：只获取当前计数
+        const getRes = await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1&select=count`, {
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': `Bearer ${SUPABASE_KEY}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (getRes.ok) {
+          const data = await getRes.json();
+          if (data && data[0] && data[0].count !== undefined) {
+            count = parseInt(data[0].count, 10) || 1883;
+          }
         }
       }
-      return res.status(200).json({ count });
+      
+      return res.status(200).json({ count, isNew: !existingIP || existingIP.length === 0 });
     } catch (e) {
       return res.status(200).json({ count: 1883, error: e.message });
     }
   }
 
-  // POST：累加计数器（只生成报告时调用）
+  // POST：手动累加（生成报告时调用，可选）
   if (req.method === 'POST') {
-    // 重置功能
-    const resetVal = req.query.reset;
-    if (resetVal) {
-      const newCount = parseInt(resetVal, 10);
-      await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1`, {
-        method: 'PATCH',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=minimal',
-        },
-        body: JSON.stringify({ count: newCount }),
-      });
-      await fetch(`${SUPABASE_URL}/rest/v1/visitor_ips`, {
-        method: 'DELETE',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      });
-      return res.status(200).json({ ok: true, count: newCount });
-    }
-
-    // 累加 +1
     try {
       const getRes = await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1&select=count`, {
         headers: {
