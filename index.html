@@ -1998,8 +1998,6 @@ async function go() {
       if (titleEl) titleEl.textContent = [rd.company, rd.position].filter(Boolean).join(' · ') || '谈判方案';
       const cu = getCurrentUser();
       if (cu && cu.id) saveHistory(data, result, result.aiData);
-      // 报告生成成功，计数器+1
-      fetch('/api/counter', { method: 'POST' }).catch(() => {});
     }, 100);
 
   } catch(e) {
