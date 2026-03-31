@@ -404,10 +404,24 @@
       display: grid; grid-template-columns: auto 1fr; gap: 14px;
       align-items: start; padding: 4px 0 8px;
     }
-    .situation-score-col { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .situation-score-label { font-size: 10px; color: var(--text-3); font-weight: 600; }
+    .situation-score-col { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+    .situation-difficulty {
+      font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 20px;
+      white-space: nowrap;
+    }
+    .situation-difficulty.easy { background: #DCFCE7; color: #15803D; }
+    .situation-difficulty.mid { background: var(--yellow-light); color: #92400E; }
+    .situation-difficulty.hard { background: var(--red-light); color: #B91C1C; }
     .situation-right { flex: 1; }
-    .situation-title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 3px; }
+    /* 一句话行动建议 */
+    .action-line {
+      display: flex; align-items: center; gap: 6px;
+      background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 8px;
+      padding: 7px 10px; margin-bottom: 10px; font-size: 12px; font-weight: 600; color: #15803D;
+    }
+    .action-line .al-icon { font-size: 14px; flex-shrink: 0; }
+    .action-line .al-text { line-height: 1.5; }
+    .action-line .al-text b { color: #047857; }
     .situation-desc { font-size: 12px; color: var(--text-2); line-height: 1.55; margin-bottom: 10px; }
     .market-inline {
       display: flex; align-items: center; gap: 8px; margin-bottom: 8px;
@@ -434,6 +448,27 @@
     .scripts-alt-toggle.open .toggle-icon { transform: rotate(180deg); }
     .scripts-alt { display: none; }
     .scripts-alt.open { display: block; }
+
+    /* 话术卡点折叠区 */
+    .sticking-point-toggle {
+      display: flex; align-items: center; gap: 6px;
+      padding: 8px 12px; margin-top: 8px;
+      border: 1px dashed #C4B5FD; border-radius: 8px;
+      font-size: 12px; color: var(--brand); cursor: pointer; user-select: none;
+      background: var(--brand-light);
+    }
+    .sticking-point-toggle:hover { background: #DDD6FE; }
+    .sticking-point-toggle .toggle-icon { font-size: 10px; transition: transform 0.2s; margin-left: auto; }
+    .sticking-point-toggle.open .toggle-icon { transform: rotate(180deg); }
+    .sticking-point-panel { display: none; margin-top: 6px; }
+    .sticking-point-panel.open { display: block; }
+    .sp-item {
+      border-radius: 8px; padding: 8px 10px; margin-bottom: 6px;
+      font-size: 12px; line-height: 1.65; color: var(--text);
+    }
+    .sp-item.reject { background: #F0FDF4; border-left: 3px solid #4ADE80; }
+    .sp-item.noreply { background: #FFF7ED; border-left: 3px solid #FBBF24; }
+    .sp-item b { display: block; font-size: 11px; font-weight: 700; margin-bottom: 3px; }
 
     /* 风险与应对模块 */
     .risk-grid { display: flex; flex-direction: column; gap: 8px; }
@@ -667,10 +702,14 @@
       <div class="situation-grid">
         <div class="situation-score-col">
           <div class="score-ring" id="sRing"><span class="sn" id="sNum">--</span><span class="sl">分</span></div>
-          <div class="situation-score-label">谈判力</div>
+          <div class="situation-difficulty" id="difficultyTag">有空间</div>
         </div>
         <div class="situation-right">
-          <div class="situation-title" id="sTitle">--</div>
+          <!-- 一句话行动建议（始终置顶）-->
+          <div class="action-line" id="actionLine">
+            <span class="al-icon">🎯</span>
+            <span class="al-text" id="actionLineText">--</span>
+          </div>
           <div class="situation-desc" id="sDesc">--</div>
           <!-- 市场区间：内联精简版 -->
           <div class="market-inline">
@@ -740,6 +779,11 @@
     <div class="action-row">
       <button class="btn-reset" onclick="reset()">🔄 重新分析</button>
       <button class="btn-share" onclick="copyAll()">📋 复制全部报告</button>
+    </div>
+
+    <div style="text-align:center;font-size:11px;color:var(--text-3);padding:0 16px 16px;line-height:1.8;">
+      ⏳ 本报告基于你填写的信息生成，建议在 <b>3天内</b> 使用<br>
+      若进展发生变化（如已收到书面Offer），可重新生成
     </div>
 
     </div><!-- /result-page-inner -->
@@ -1563,7 +1607,16 @@ function render(r, aiData) {
     const ring = document.getElementById('sRing');
     ring.className = 'score-ring ' + (score >= 75 ? 'high' : score >= 50 ? 'mid' : 'low');
     document.getElementById('sNum').textContent = score;
-    document.getElementById('sTitle').textContent = aiData.scoreTitle;
+    // 难度标签
+    const diffTag = document.getElementById('difficultyTag');
+    if (score >= 75) { diffTag.textContent = '轻松谈'; diffTag.className = 'situation-difficulty easy'; }
+    else if (score >= 55) { diffTag.textContent = '有空间'; diffTag.className = 'situation-difficulty mid'; }
+    else { diffTag.textContent = '谨慎谈'; diffTag.className = 'situation-difficulty hard'; }
+    // 一句话行动建议
+    const actionLineEl = document.getElementById('actionLineText');
+    if (actionLineEl) {
+      actionLineEl.innerHTML = `目标 <b>${formatNum(suggestVal)}</b> · 底线 <b>${formatNum(bottomLine)}</b> · ${channel}沟通`;
+    }
     document.getElementById('sDesc').textContent = aiData.scoreDesc;
 
     // 市场薪资区间（内联精简）
@@ -1610,13 +1663,19 @@ function render(r, aiData) {
     document.getElementById('targetCard').style.display = 'block';
 
     // ── 第三步：执行谈判 ──────────────────────────────
-    // 核心筹码速览（精简标签云）
+    // 核心筹码速览（精简标签云）：无顾虑时过滤「顾虑破解」，最多3条
     if (aiData.chess && aiData.chess.length > 0) {
-      const tags = aiData.chess.slice(0, 3).map(c => `<span class="chess-tag">✦ ${c.title}</span>`).join('');
-      document.getElementById('chessSnapshot').innerHTML = `
-        <div class="chess-snapshot-title">🃏 你的核心筹码（已融入话术）</div>
-        <div class="chess-tags">${tags}</div>`;
-      document.getElementById('chessSnapshotWrap').style.display = 'block';
+      const hasConcern = data.concern && data.concern.length > 0;
+      const filteredChess = aiData.chess
+        .filter(c => hasConcern || !c.title.includes('顾虑'))
+        .slice(0, 3);
+      if (filteredChess.length > 0) {
+        const tags = filteredChess.map(c => `<span class="chess-tag">✦ ${c.title}</span>`).join('');
+        document.getElementById('chessSnapshot').innerHTML = `
+          <div class="chess-snapshot-title">🃏 你的核心筹码（已融入话术）</div>
+          <div class="chess-tags">${tags}</div>`;
+        document.getElementById('chessSnapshotWrap').style.display = 'block';
+      }
     }
 
     // 话术：主推（方案一）+ 备选（方案二/三）分离
@@ -1625,16 +1684,31 @@ function render(r, aiData) {
     const altScripts = scripts.slice(1);
 
     if (mainScript) {
-      const channel = mainScript.channel ? `<span class="script-channel">${mainScript.channel}</span>` : '';
+      const ch = mainScript.channel ? `<span class="script-channel">${mainScript.channel}</span>` : '';
+      // 构建卡点折叠区
+      let stickingHtml = '';
+      if (aiData.battlePlan && aiData.battlePlan.phase3) {
+        stickingHtml += `<div class="sp-item reject"><b>🛡️ HR说"薪资不能改"，立刻说：</b>${aiData.battlePlan.phase3}</div>`;
+      }
+      if (aiData.followup && aiData.followup.noReply) {
+        stickingHtml += `<div class="sp-item noreply"><b>⏰ 发出去没回复，${aiData.followup.noReply ? '3天后：' : ''}</b>${aiData.followup.noReply || ''}</div>`;
+      }
+      const stickingBlock = stickingHtml ? `
+        <div class="sticking-point-toggle" id="spToggle" onclick="toggleStickingPoint()">
+          <span>🤔 遇到卡点怎么办？（被拒/不回复）</span>
+          <span class="toggle-icon">▼</span>
+        </div>
+        <div class="sticking-point-panel" id="spPanel">${stickingHtml}</div>` : '';
       document.getElementById('scriptMain').innerHTML = `<div class="script-item">
         <div class="script-head">
           <span class="script-icon">${mainScript.icon}</span>
           <span class="script-name">${mainScript.name}</span>
           <span class="script-tag reco">${mainScript.tagTxt}</span>
-          ${channel}
+          ${ch}
         </div>
         <div class="script-body">${mainScript.body.replace(/\n/g, '<br>')}</div>
         <button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button>
+        ${stickingBlock}
       </div>`;
     }
 
@@ -1661,24 +1735,31 @@ function render(r, aiData) {
     // ── 第四步：风险与应对（合并Q&A + 跟进 + tips，消除重复）──
     let riskHtml = '<div class="risk-grid">';
 
-    // 被拒后方案（来自battlePlan.phase3 — 简洁版）
-    if (aiData.battlePlan && aiData.battlePlan.phase3) {
-      riskHtml += `<div class="risk-item reject"><span class="risk-item-title">🛡️ 被拒后立刻说什么</span>${aiData.battlePlan.phase3}</div>`;
+    // 被拒后方案（来自battlePlan.phase3）+ 「谈崩了」合并到这里
+    const rejectText = aiData.battlePlan && aiData.battlePlan.phase3 ? aiData.battlePlan.phase3 : '';
+    const crashQa = (aiData.qa || []).find(q => /谈崩|没了|撤回|取消/.test(q.q));
+    let rejectBlock = '';
+    if (rejectText) rejectBlock += rejectText;
+    if (crashQa) rejectBlock += `<br><b style="color:#047857;">💡 会不会谈崩？</b>${crashQa.a}`;
+    if (rejectBlock) {
+      riskHtml += `<div class="risk-item reject"><span class="risk-item-title">🛡️ 被拒后 / 谈崩风险</span>${rejectBlock}</div>`;
     }
 
-    // 跟进时机
-    if (aiData.followup && (aiData.followup.sameDay || aiData.followup.noReply)) {
+    // 跟进时机（sameDay + deadline，noReply已移到话术卡点里）
+    if (aiData.followup && (aiData.followup.sameDay || aiData.followup.deadline)) {
       let followText = '';
-      if (aiData.followup.sameDay)  followText += `<b>当天：</b>${aiData.followup.sameDay}　`;
-      if (aiData.followup.noReply)  followText += `<b>3天未回：</b>${aiData.followup.noReply}`;
+      if (aiData.followup.sameDay)  followText += `<b>当天：</b>${aiData.followup.sameDay}`;
       if (aiData.followup.deadline) followText += `　<b>到Deadline：</b>${aiData.followup.deadline}`;
       riskHtml += `<div class="risk-item timing"><span class="risk-item-title">⏰ 跟进时机</span>${followText}</div>`;
     }
 
-    // Q&A（聚焦恐惧点，合并谈崩+最坏打算）
-    if (aiData.qa && aiData.qa.length > 0) {
+    // Q&A（只保留心理层面2条，过滤「谈崩/没了/撤回」相关）
+    const qaFiltered = (aiData.qa || [])
+      .filter(q => !/谈崩|没了|撤回|取消/.test(q.q))
+      .slice(0, 2);
+    if (qaFiltered.length > 0) {
       riskHtml += `<div class="risk-divider">🙋 你的顾虑</div>`;
-      aiData.qa.forEach(q => {
+      qaFiltered.forEach(q => {
         riskHtml += `<div class="risk-item worry">
           <div class="risk-q">❓ ${q.q}</div>
           <div class="risk-a">💡 ${q.a}</div>
@@ -1719,7 +1800,16 @@ function render(r, aiData) {
   const ring = document.getElementById('sRing');
   ring.className = 'score-ring ' + (score>=72?'high':score>=46?'mid':'low');
   document.getElementById('sNum').textContent = score;
-  document.getElementById('sTitle').textContent = score>=72 ? '🎉 谈判筹码充足，可大胆开口！' : score>=46 ? '💪 有一定空间，策略出击' : '🤔 筹码偏弱，但值得礼貌一试';
+  // 难度标签
+  const diffTag = document.getElementById('difficultyTag');
+  if (score >= 72) { diffTag.textContent = '轻松谈'; diffTag.className = 'situation-difficulty easy'; }
+  else if (score >= 46) { diffTag.textContent = '有空间'; diffTag.className = 'situation-difficulty mid'; }
+  else { diffTag.textContent = '谨慎谈'; diffTag.className = 'situation-difficulty hard'; }
+  // 一句话行动建议行
+  const actionLineEl = document.getElementById('actionLineText');
+  if (actionLineEl) {
+    actionLineEl.innerHTML = `目标 <b>${formatNum(suggest)}</b> · 底线 <b>${formatNum(bottomLine)}</b> · ${channel}沟通`;
+  }
   document.getElementById('sDesc').textContent = score>=72 ? '你的情况在市场上有竞争力，HR 需要你' : score>=46 ? '处于市场中等，谈判要有理有据' : '筹码相对有限，礼貌且自信地尝试';
   document.getElementById('rMin').textContent = formatNum(min);
   document.getElementById('rMid').textContent = '中位' + formatNum(mid);
@@ -1760,6 +1850,14 @@ function render(r, aiData) {
     </div>
     <div class="script-body">${mainScriptBody.replace(/\n/g,'<br>')}</div>
     <button class="copy-btn" onclick="copyScript(this,this.previousElementSibling.innerText)">📋 复制话术</button>
+    <div class="sticking-point-toggle" id="spToggle" onclick="toggleStickingPoint()">
+      <span>🤔 遇到卡点怎么办？（被拒/不回复）</span>
+      <span class="toggle-icon">▼</span>
+    </div>
+    <div class="sticking-point-panel" id="spPanel">
+      <div class="sp-item reject"><b>🛡️ HR说"薪资不能改"，立刻说：</b>好的，我理解。那可以在签字费、年终奖保底或试用期缩短上灵活吗？非常希望达成一致 🙏</div>
+      <div class="sp-item noreply"><b>⏰ 发出去3天没回复：</b>X老师您好，想跟进一下上次关于薪资的沟通，请问这边有进展了吗？期待您的回复，谢谢！</div>
+    </div>
   </div>`;
   document.getElementById('scriptsAlt').innerHTML = [
     { icon: '🌸', name: '温和试探版', tag: 'safe', tagTxt: 'HR态度一般时', body: `您好！收到 Offer 很开心，我非常想加入这个团队。\n\n想和您确认一下，薪资这块是否还有灵活空间？我的期望是 ${formatNum(Math.round(suggest*0.85/500)*500)}~${formatNum(suggest)} 左右。\n\n如果固定薪资有困难，能否在其他方面灵活一些？比如多一个月年终奖或者入职签字费？\n\n期待您的反馈，谢谢！` },
@@ -1773,11 +1871,11 @@ function render(r, aiData) {
 
   // 第四步：风险与应对（合并，演示版）
   document.getElementById('riskContent').innerHTML = `<div class="risk-grid">
-    <div class="risk-item reject"><span class="risk-item-title">🛡️ 被拒后立刻说什么</span>好的，我理解。那能否灵活处理签字费、年终保底或试用期缩短？我非常希望加入，期待找到双方都满意的方案。</div>
-    <div class="risk-item timing"><span class="risk-item-title">⏰ 跟进时机</span><b>当天：</b>发一条确认微信，保持关系温度　<b>3天未回：</b>礼貌追一句"请问这边有进展吗？"　<b>到Deadline：</b>坦诚说明自己的决策时间线</div>
+    <div class="risk-item reject"><span class="risk-item-title">🛡️ 被拒后 / 谈崩风险</span>好的，我理解。那可以在签字费、年终保底或试用期缩短上灵活吗？期待找到双方都满意的方案。<br><b style="color:#047857;">💡 会不会谈崩？</b>极少发生。公司在这个阶段撤回Offer代价极高，礼貌表达期望不会触怒HR。最坏结果是维持原价。</div>
+    <div class="risk-item timing"><span class="risk-item-title">⏰ 跟进时机</span><b>当天：</b>发一条确认微信，保持温度　<b>到Deadline：</b>坦诚说明自己的决策时间线</div>
     <div class="risk-divider">🙋 你的顾虑</div>
-    <div class="risk-item worry"><div class="risk-q">❓ 万一谈崩了，Offer会不会没了？</div><div class="risk-a">💡 极少发生。公司在这个阶段撤回Offer的代价极高，礼貌表达期望不会触怒HR。最坏结果是维持原价，继续接受即可。</div></div>
     <div class="risk-item worry"><div class="risk-q">❓ 感觉像在讨价还价，不好意思开口？</div><div class="risk-a">💡 薪资谈判是职场正常环节，HR本身就预留了调整空间。不谈才浪费。最简单的开场："我对这个机会非常期待，能否在薪资上再交流一下？"</div></div>
+    <div class="risk-item worry"><div class="risk-q">❓ 会不会显得我太贪心？</div><div class="risk-a">💡 谈薪资是正常职业行为，HR不会因为你谈薪就觉得你贪心。关键是态度诚恳，有理有据，而不是漫天要价。</div></div>
   </div>`;
 
   // Payment QR
@@ -1937,13 +2035,22 @@ function toggleAltScripts() {
   toggle.classList.toggle('open', !isOpen);
 }
 
+function toggleStickingPoint() {
+  const toggle = document.getElementById('spToggle');
+  const panel = document.getElementById('spPanel');
+  if (!toggle || !panel) return;
+  const isOpen = panel.classList.contains('open');
+  panel.classList.toggle('open', !isOpen);
+  toggle.classList.toggle('open', !isOpen);
+}
+
 function copyAll() {
   const mainScript = document.getElementById('scriptMain');
   const scripts = mainScript ? mainScript.innerText : (document.getElementById('scripts') ? document.getElementById('scripts').innerText : '');
   const risk = document.getElementById('riskContent') ? document.getElementById('riskContent').innerText : '';
-  const score = document.getElementById('sTitle').innerText;
+  const actionLine = document.getElementById('actionLineText') ? document.getElementById('actionLineText').innerText : '';
   const summary = document.getElementById('actionSummaryMain') ? document.getElementById('actionSummaryMain').innerText : '';
-  const text = `【多拿点 · 薪资谈判报告】\n\n⚡ ${summary}\n\n📊 ${score}\n\n【主推话术】\n${scripts}\n\n【风险与应对】\n${risk}`;
+  const text = `【多拿点 · 薪资谈判报告】\n\n⚡ ${summary}\n\n🎯 ${actionLine}\n\n【主推话术】\n${scripts}\n\n【风险与应对】\n${risk}`;
   navigator.clipboard.writeText(text).then(() => toast('报告已复制 ✅'));
 }
 
