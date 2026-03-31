@@ -14,13 +14,16 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === 'GET') {
-    // 获取真实 IP
-    const ip = (
-      req.headers['x-forwarded-for'] ||
-      req.headers['x-real-ip'] ||
-      req.socket?.remoteAddress ||
-      '127.0.0.1'
-    ).split(',')[0].trim();
+    // 获取真实 IP（Vercel serverless 用 x-vercel-forwarded-for）
+    const vercelIp = req.headers['x-vercel-forwarded-for'];
+    const ip = vercelIp
+      ? vercelIp.split(',')[0].trim()
+      : (
+          req.headers['x-forwarded-for'] ||
+          req.headers['x-real-ip'] ||
+          req.socket?.remoteAddress ||
+          '127.0.0.1'
+        ).split(',')[0].trim();
 
     try {
       // 先尝试查询 counter 表
