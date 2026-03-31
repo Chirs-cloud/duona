@@ -80,18 +80,18 @@
     .tag:active { transform: scale(0.96); }
     .tag.on { border-color: var(--brand); color: white; background: var(--brand); font-weight: 600; box-shadow: 0 4px 12px rgba(139,92,246,0.35); transform: scale(1.02); }
     .tag.on:hover { transform: scale(1.04); }
-    /* 步骤指示器 */
-    .step-indicator { margin-bottom: 16px; text-align: center; }
-    .step-dots { display: flex; align-items: center; justify-content: center; gap: 0; }
-    .step-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--text-3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; transition: all 0.3s; }
-    .step-dot.active { background: var(--brand); color: white; box-shadow: 0 2px 8px rgba(139,92,246,0.4); transform: scale(1.1); }
-    .step-dot.done { background: var(--green); color: white; }
-    .step-line { width: 40px; height: 2px; background: var(--border); transition: background 0.3s; }
-    .step-line.done { background: var(--green); }
-    .step-labels { display: flex; justify-content: space-between; margin-top: 8px; padding: 0 8px; }
-    .step-label { font-size: 11px; color: var(--text-3); transition: all 0.3s; }
-    .step-label.active { color: var(--brand); font-weight: 600; }
-    .step-label.done { color: var(--green); }
+    /* 固定锚点导航 */
+    .form-nav { position: sticky; top: 52px; z-index: 90; background: rgba(248,247,255,0.96); backdrop-filter: blur(12px); padding: 10px 16px 0; }
+    .nav-track { height: 3px; background: var(--border); border-radius: 2px; margin: 0 36px 10px; overflow: hidden; }
+    .nav-fill { height: 100%; background: linear-gradient(90deg, var(--brand), #A78BFA); border-radius: 2px; transition: width 0.35s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+    .nav-steps { display: flex; }
+    .nav-step { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; flex: 1; }
+    .nav-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--text-3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; transition: all 0.3s; }
+    .nav-step.active .nav-dot { background: var(--brand); color: white; box-shadow: 0 2px 8px rgba(139,92,246,0.4); transform: scale(1.08); }
+    .nav-step.done .nav-dot { background: var(--green); color: white; }
+    .nav-label { font-size: 11px; color: var(--text-3); font-weight: 500; transition: all 0.3s; }
+    .nav-step.active .nav-label { color: var(--brand); font-weight: 700; }
+    .nav-step.done .nav-label { color: var(--green); }
     .auth-card { max-width: 480px; margin: 0 auto; padding: 0 16px 16px; }
     .auth-inner { background: var(--card); border-radius: var(--radius); border: 1.5px dashed var(--border); padding: 16px; }
     .auth-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -549,19 +549,19 @@
 
 <main class="main">
 
-  <!-- 步骤指示器 -->
-  <div class="step-indicator" id="stepIndicator">
-    <div class="step-dots">
-      <div class="step-dot active" data-step="1"><span>1</span></div>
-      <div class="step-line"></div>
-      <div class="step-dot" data-step="2"><span>2</span></div>
-      <div class="step-line"></div>
-      <div class="step-dot" data-step="3"><span>3</span></div>
-    </div>
-    <div class="step-labels">
-      <span class="step-label active">基本信息</span>
-      <span class="step-label">你的情况</span>
-      <span class="step-label">期望薪资</span>
+  <!-- 固定锚点导航 -->
+  <div class="form-nav" id="formNav">
+    <div class="nav-track"><div class="nav-fill" id="navFill"></div></div>
+    <div class="nav-steps">
+      <div class="nav-step active" onclick="navToStep(1)">
+        <div class="nav-dot"><span>1</span></div><span class="nav-label">基本信息</span>
+      </div>
+      <div class="nav-step" onclick="navToStep(2)">
+        <div class="nav-dot"><span>2</span></div><span class="nav-label">你的情况</span>
+      </div>
+      <div class="nav-step" onclick="navToStep(3)">
+        <div class="nav-dot"><span>3</span></div><span class="nav-label">补充说明</span>
+      </div>
     </div>
   </div>
 
@@ -1332,46 +1332,36 @@ async function saveHistory(data, result, aiData) {
 // ================================================================
 function formatNum(n) { return '¥' + parseInt(n).toLocaleString(); }
 
-// 步骤指示器控制
-function updateStepIndicator(currentStep) {
-  const dots = document.querySelectorAll('.step-dot');
-  const lines = document.querySelectorAll('.step-line');
-  const labels = document.querySelectorAll('.step-label');
-  dots.forEach((dot, i) => {
-    const step = i + 1;
-    if (step < currentStep) {
-      dot.classList.add('done');
-      dot.classList.remove('active');
-      dot.innerHTML = '✓';
-    } else if (step === currentStep) {
-      dot.classList.add('active');
-      dot.classList.remove('done');
-      dot.innerHTML = '<span>' + step + '</span>';
-    } else {
-      dot.classList.remove('active', 'done');
-      dot.innerHTML = '<span>' + step + '</span>';
-    }
-  });
-  lines.forEach((line, i) => {
-    if (i + 1 < currentStep) line.classList.add('done');
-    else line.classList.remove('done');
-  });
-  labels.forEach((label, i) => {
-    const step = i + 1;
-    label.classList.remove('active', 'done');
-    if (step < currentStep) label.classList.add('done');
-    else if (step === currentStep) label.classList.add('active');
-  });
+// 锚点导航：点击跳转
+function navToStep(step) {
+  const card = document.querySelector('.step-card[data-step="' + step + '"]');
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// 滚动到指定步骤
-function scrollToStep(step) {
-  const card = document.querySelector('.step-card[data-step="' + step + '"]');
-  if (card) {
-    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    updateStepIndicator(step);
-  }
+// 锚点导航：滚动时自动高亮
+let lastStep = 1;
+function syncNavStep(step) {
+  if (step === lastStep) return;
+  lastStep = step;
+  document.querySelectorAll('.nav-step').forEach((el, i) => {
+    const s = i + 1;
+    el.classList.remove('active', 'done');
+    if (s < step) el.classList.add('done');
+    else if (s === step) el.classList.add('active');
+  });
+  const fill = (step - 1) / 2 * 100;
+  document.getElementById('navFill').style.width = fill + '%';
 }
+window.addEventListener('scroll', function() {
+  if (document.getElementById('result')?.classList.contains('open')) return;
+  const cards = document.querySelectorAll('.step-card');
+  const scrollTop = window.scrollY + 180;
+  cards.forEach((card, i) => {
+    const top = card.offsetTop;
+    const bottom = top + card.offsetHeight;
+    if (scrollTop >= top && scrollTop < bottom) syncNavStep(i + 1);
+  });
+});
 
 function syncSalary(v) { 
   document.getElementById('salaryShow').textContent = formatNum(v); 
@@ -1412,24 +1402,7 @@ function toggleAdvance() { var c = document.getElementById('advanceContent'); va
 function getVal(gid) { const sel = document.querySelectorAll('#' + gid + ' .tag.on'); return sel.length > 0 ? Array.from(sel).map(t => t.textContent) : []; }
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 
-// 滚动监听更新步骤指示器
-let lastStep = 1;
-window.addEventListener('scroll', function() {
-  if (document.getElementById('result')?.classList.contains('open')) return;
-  const cards = document.querySelectorAll('.step-card');
-  const scrollTop = window.scrollY + 150;
-  cards.forEach((card, i) => {
-    const top = card.offsetTop;
-    const bottom = top + card.offsetHeight;
-    if (scrollTop >= top && scrollTop < bottom) {
-      const step = i + 1;
-      if (step !== lastStep) {
-        lastStep = step;
-        updateStepIndicator(step);
-      }
-    }
-  });
-});
+
 
 function validate() {
   const c = document.getElementById('company');
@@ -1442,7 +1415,7 @@ function validate() {
   if (!c.value.trim()) { c.classList.add('error'); valid = false; } else { c.classList.add('valid'); }
   if (!p.value.trim()) { p.classList.add('error'); valid = false; } else { p.classList.add('valid'); }
   if (!ci.value) { ci.classList.add('error'); valid = false; } else { ci.classList.add('valid'); }
-  if (!valid) { toast('请填写必填项 🙏'); scrollToStep(1); }
+  if (!valid) { toast('请填写必填项 🙏'); navToStep(1); }
   return valid;
 }
 function collect() { const sal = document.getElementById('salaryInput').value || document.getElementById('salary').value; return { company: document.getElementById('company').value.trim(), position: document.getElementById('position').value.trim(), city: document.getElementById('city').value, edu: document.getElementById('edu').value, salary: parseInt(sal), target: parseInt(document.getElementById('target').value), structure: getVal('structure'), exp: getVal('exp')[0] || '应届生', adv: getVal('adv'), concern: getVal('concern'), stage: getVal('stage')[0] || '口头Offer', hrmood: getVal('hrmood')[0] || '正常', note: document.getElementById('note').value.trim() }; }
