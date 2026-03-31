@@ -498,7 +498,7 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo">💜 多拿点<span class="report-counter" id="reportCounter">已分析 0 份报告</span></div>
+    <div class="logo">💜 多拿点<span class="report-counter show" id="reportCounter">累计已分析 <b>1883</b> 份报告</span></div>
     <div class="header-actions">
       <button class="header-center-btn" id="headerCenterBtn" onclick="openProfile()">
         <span class="hc-icon" id="headerCenterIcon">👤</span>
@@ -2038,17 +2038,19 @@ function copyScript(btn, text) {
 // ── 报告计数器（每次访问首页，同一IP只+1）─────────
 (function initReportCounter() {
   const KEY = 'dd_counted';
+  const el = document.getElementById('reportCounter');
+  if (!el) return;
+
+  // 立即显示默认值
+  el.classList.add('show');
+
   if (localStorage.getItem(KEY)) return; // 已计数的IP不重复累加
 
   fetch('/api/counter')
     .then(r => r.json())
     .then(data => {
       if (data.count > 0) {
-        const el = document.getElementById('reportCounter');
-        if (el) {
-          el.textContent = `已分析 ${data.count.toLocaleString()} 份`;
-          el.classList.add('show');
-        }
+        el.innerHTML = `累计已分析 <b>${data.count.toLocaleString()}</b> 份报告`;
       }
       localStorage.setItem(KEY, '1');
     })

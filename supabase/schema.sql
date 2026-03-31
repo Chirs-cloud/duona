@@ -66,7 +66,7 @@ alter table public.counter disable row level security;
 alter table public.visitor_ips disable row level security;
 
 -- 初始化计数器
-insert into public.counter (id, count) values (1, 0) on conflict (id) do nothing;
+insert into public.counter (id, count) values (1, 1883) on conflict (id) do nothing;
 
 -- 索引优化
 create index if not exists idx_users_phone on public.users(phone);
