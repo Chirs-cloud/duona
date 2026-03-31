@@ -47,6 +47,27 @@ alter table public.users disable row level security;
 alter table public.analyses disable row level security;
 alter table public.payments disable row level security;
 
+-- 访问计数器表（全局报告数）
+create table if not exists public.counter (
+  id integer primary key default 1,
+  count integer default 0,
+  updated_at timestamptz default now()
+);
+
+-- 访问 IP 记录表（去重用）
+create table if not exists public.visitor_ips (
+  id bigserial primary key,
+  ip text unique not null,
+  visited_at timestamptz default now()
+);
+
+-- 关闭 RLS
+alter table public.counter disable row level security;
+alter table public.visitor_ips disable row level security;
+
+-- 初始化计数器
+insert into public.counter (id, count) values (1, 0) on conflict (id) do nothing;
+
 -- 索引优化
 create index if not exists idx_users_phone on public.users(phone);
 create index if not exists idx_analyses_user_id on public.analyses(user_id);
@@ -54,3 +75,4 @@ create index if not exists idx_analyses_phone on public.analyses(phone);
 create index if not exists idx_analyses_created_at on public.analyses(created_at desc);
 create index if not exists idx_payments_user_id on public.payments(user_id);
 create index if not exists idx_payments_created_at on public.payments(created_at desc);
+create index if not exists idx_visitor_ips_ip on public.visitor_ips(ip);
