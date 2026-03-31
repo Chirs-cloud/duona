@@ -1998,6 +1998,8 @@ async function go() {
       if (titleEl) titleEl.textContent = [rd.company, rd.position].filter(Boolean).join(' · ') || '谈判方案';
       const cu = getCurrentUser();
       if (cu && cu.id) saveHistory(data, result, result.aiData);
+      // 报告生成成功，计数器+1
+      fetch('/api/counter', { method: 'POST' }).catch(() => {});
     }, 100);
 
   } catch(e) {
@@ -2035,11 +2037,10 @@ function copyScript(btn, text) {
   });
 }
 
-// ── 报告计数器（每次访问首页，后端按IP去重计数）─────────
+// ── 报告计数器（只读展示，累加在生成报告时）─────────
 (function initReportCounter() {
   const el = document.getElementById('reportCounter');
   if (!el) return;
-
   fetch('/api/counter')
     .then(r => r.json())
     .then(data => {
@@ -2049,7 +2050,6 @@ function copyScript(btn, text) {
     })
     .catch(() => {});
 })();
-</script>
 
 function toggleAltScripts() {
   const toggle = document.getElementById('scriptsAltToggle');
