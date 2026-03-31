@@ -96,5 +96,33 @@ module.exports = async function handler(req, res) {
     }
   }
 
+  if (req.method === 'POST') {
+    // 重置计数器（仅管理员用，URL 带 ?reset=1883）
+    const resetVal = req.query.reset;
+    if (resetVal) {
+      const newCount = parseInt(resetVal, 10);
+      await fetch(`${SUPABASE_URL}/rest/v1/counter?id=eq.1`, {
+        method: 'PATCH',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=minimal',
+        },
+        body: JSON.stringify({ count: newCount }),
+      });
+      // 清空IP记录
+      await fetch(`${SUPABASE_URL}/rest/v1/visitor_ips`, {
+        method: 'DELETE',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      return res.status(200).json({ ok: true, count: newCount });
+    }
+  }
+
   return res.status(405).json({ error: '不支持的请求方法' });
 };
