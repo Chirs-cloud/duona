@@ -81,15 +81,16 @@
     .tag.on { border-color: var(--brand); color: white; background: var(--brand); font-weight: 600; box-shadow: 0 4px 12px rgba(139,92,246,0.35); transform: scale(1.02); }
     .tag.on:hover { transform: scale(1.04); }
     /* 固定锚点导航 */
-    .form-nav { position: sticky; top: 52px; z-index: 90; background: rgba(248,247,255,0.96); backdrop-filter: blur(12px); padding: 10px 16px 0; }
-    .nav-track { height: 3px; background: var(--border); border-radius: 2px; margin: 0 36px 10px; overflow: hidden; }
+    .form-nav { position: sticky; top: 52px; z-index: 90; background: rgba(248,247,255,0.96); backdrop-filter: blur(12px); padding: 10px 16px 14px; }
+    .nav-track { height: 3px; background: var(--border); border-radius: 2px; margin: 0 36px 14px; overflow: hidden; }
     .nav-fill { height: 100%; background: linear-gradient(90deg, var(--brand), #A78BFA); border-radius: 2px; transition: width 0.35s cubic-bezier(0.4,0,0.2,1); width: 0%; }
     .nav-steps { display: flex; }
-    .nav-step { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; flex: 1; }
+    .nav-step { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; flex: 1; transition: transform 0.15s; }
+    .nav-step:active { transform: scale(0.94); }
     .nav-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--text-3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; transition: all 0.3s; }
     .nav-step.active .nav-dot { background: var(--brand); color: white; box-shadow: 0 2px 8px rgba(139,92,246,0.4); transform: scale(1.08); }
     .nav-step.done .nav-dot { background: var(--green); color: white; }
-    .nav-label { font-size: 11px; color: var(--text-3); font-weight: 500; transition: all 0.3s; }
+    .nav-label { font-size: 11px; color: var(--text-3); font-weight: 500; transition: all 0.3s; padding-bottom: 2px; }
     .nav-step.active .nav-label { color: var(--brand); font-weight: 700; }
     .nav-step.done .nav-label { color: var(--green); }
     .auth-card { max-width: 480px; margin: 0 auto; padding: 0 16px 16px; }
