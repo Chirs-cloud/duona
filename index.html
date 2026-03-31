@@ -62,7 +62,10 @@
     .field-label { font-size: 13px; font-weight: 600; color: var(--text-2); margin-bottom: 10px; display: block; }
     .field-label span { color: var(--red); margin-left: 2px; }
     input[type=text], input[type=number], input[type=password], select, textarea { width: 100%; padding: 13px 15px; border: 1.5px solid var(--border); border-radius: 12px; font-size: 14px; background: var(--bg); color: var(--text); outline: none; transition: all 0.2s; -webkit-appearance: none; }
-    input:focus, select:focus, textarea:focus { border-color: var(--brand); background: white; box-shadow: 0 0 0 4px rgba(139,92,246,0.1); }
+    input:focus, select:focus, textarea:focus { border-color: var(--brand); background: white; box-shadow: 0 0 0 4px rgba(139,92,246,0.1); transform: translateY(-1px); }
+    input.error, select.error, textarea.error { border-color: var(--red); animation: shake 0.3s; }
+    input.valid { border-color: var(--green); }
+    @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
     textarea { resize: none; min-height: 72px; }
     .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .hint { font-size: 11px; color: var(--text-3); margin-top: 6px; }
@@ -72,9 +75,23 @@
     .slider-val { font-size: 20px; font-weight: 800; color: var(--brand); min-width: 95px; text-align: right; }
     .salary-bubble { display: inline-flex; align-items: center; gap: 6px; background: var(--brand-light); color: var(--brand); font-size: 12px; padding: 6px 12px; border-radius: 8px; margin-top: 10px; font-weight: 600; }
     .tags { display: flex; flex-wrap: wrap; gap: 10px; }
-    .tag { padding: 8px 16px; border-radius: 24px; border: 1.5px solid var(--border); font-size: 13px; cursor: pointer; background: var(--bg); color: var(--text-2); transition: all 0.2s; user-select: none; }
-    .tag:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
-    .tag.on { border-color: var(--brand); color: white; background: var(--brand); font-weight: 600; }
+    .tag { position: relative; padding: 8px 16px; border-radius: 24px; border: 1.5px solid var(--border); font-size: 13px; cursor: pointer; background: var(--bg); color: var(--text-2); transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); user-select: none; }
+    .tag:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); transform: translateY(-1px); }
+    .tag:active { transform: scale(0.96); }
+    .tag.on { border-color: var(--brand); color: white; background: var(--brand); font-weight: 600; box-shadow: 0 4px 12px rgba(139,92,246,0.35); transform: scale(1.02); }
+    .tag.on:hover { transform: scale(1.04); }
+    /* 步骤指示器 */
+    .step-indicator { margin-bottom: 16px; text-align: center; }
+    .step-dots { display: flex; align-items: center; justify-content: center; gap: 0; }
+    .step-dot { width: 28px; height: 28px; border-radius: 50%; background: var(--border); color: var(--text-3); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; transition: all 0.3s; }
+    .step-dot.active { background: var(--brand); color: white; box-shadow: 0 2px 8px rgba(139,92,246,0.4); transform: scale(1.1); }
+    .step-dot.done { background: var(--green); color: white; }
+    .step-line { width: 40px; height: 2px; background: var(--border); transition: background 0.3s; }
+    .step-line.done { background: var(--green); }
+    .step-labels { display: flex; justify-content: space-between; margin-top: 8px; padding: 0 8px; }
+    .step-label { font-size: 11px; color: var(--text-3); transition: all 0.3s; }
+    .step-label.active { color: var(--brand); font-weight: 600; }
+    .step-label.done { color: var(--green); }
     .auth-card { max-width: 480px; margin: 0 auto; padding: 0 16px 16px; }
     .auth-inner { background: var(--card); border-radius: var(--radius); border: 1.5px dashed var(--border); padding: 16px; }
     .auth-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -84,8 +101,11 @@
     .auth-state.logged { background: var(--green-light); color: var(--green); }
     .auth-divider { text-align: center; color: var(--text-3); font-size: 12px; margin: 10px 0; }
     .btn-box { max-width: 480px; margin: 0 auto; padding: 0 16px 20px; }
-    .btn-submit { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--brand), #A78BFA); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 4px 20px rgba(139,92,246,0.35); transition: opacity 0.2s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-submit { position: relative; overflow: hidden; width: 100%; padding: 16px; background: linear-gradient(135deg, var(--brand), #A78BFA); color: white; border: none; border-radius: 14px; font-size: 16px; font-weight: 700; letter-spacing: 0.5px; cursor: pointer; box-shadow: 0 4px 20px rgba(139,92,246,0.35); transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(139,92,246,0.45); }
+    .btn-submit:active { transform: translateY(0) scale(0.98); }
+    .btn-submit .ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,0.4); transform: scale(0); animation: ripple 0.6s linear; pointer-events: none; }
+    @keyframes ripple { to { transform: scale(4); opacity: 0; } }
     /* ── 全屏加载遮罩 ── */
     #loading {
       display: none; position: fixed; inset: 0; z-index: 999;
@@ -384,28 +404,35 @@
     /* ── 行动摘要卡（最顶部） ── */
     .action-summary-card {
       background: linear-gradient(135deg, #1E1B4B 0%, #4C1D95 100%);
-      border-radius: var(--radius); padding: 16px 18px; margin-bottom: 14px;
+      border-radius: var(--radius); padding: 18px 20px; margin-bottom: 14px;
       color: white; border: none;
+      box-shadow: 0 8px 32px rgba(139,92,246,0.25);
+      animation: slideDown 0.4s ease-out;
     }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     .action-summary-label {
       font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
-      color: rgba(255,255,255,0.6); text-transform: uppercase; margin-bottom: 8px;
+      color: rgba(255,255,255,0.6); text-transform: uppercase; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 6px;
     }
+    .action-summary-label::before { content: '⚡'; font-size: 12px; }
     .action-summary-main {
-      font-size: 17px; font-weight: 800; color: white; line-height: 1.4; margin-bottom: 12px;
+      font-size: 16px; font-weight: 800; color: white; line-height: 1.5; margin-bottom: 14px;
     }
     .action-summary-main .asm-highlight {
-      background: rgba(251,191,36,0.25); color: #FCD34D; padding: 1px 6px;
-      border-radius: 4px; font-weight: 900;
+      background: rgba(251,191,36,0.3); color: #FCD34D; padding: 2px 8px;
+      border-radius: 6px; font-weight: 900;
     }
     .action-summary-tags {
-      display: flex; flex-wrap: wrap; gap: 6px;
+      display: flex; flex-wrap: wrap; gap: 8px;
     }
     .action-summary-tag {
-      background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
       color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600;
-      padding: 4px 10px; border-radius: 6px;
+      padding: 5px 12px; border-radius: 20px;
+      transition: all 0.2s;
     }
+    .action-summary-tag:hover { background: rgba(255,255,255,0.2); transform: translateY(-1px); }
 
     /* ── 形势判断：紧凑合并版 ── */
     .situation-grid {
@@ -509,10 +536,10 @@
 
 <div class="hero">
   <div class="hero-badge">
-    🔥 HR 第一口价 ≠ 你的天花板
+    💡 薪资谈判是入职最后一步，别急着签字
   </div>
-  <h1 class="title-gradient">你的下一句话，决定多拿几千</h1>
-  <p class="hero-desc">输入 Offer，AI 分析谈判空间，生成可直接发给 HR 的话术</p>
+  <h1 class="title-gradient">拿到 Offer 后，多说一句话就能多拿几千</h1>
+  <p class="hero-desc">还在纠结"怎么开口"、"会不会谈崩"？输入你的 Offer，AI 帮你生成可以直接发给 HR 的话术</p>
   <div class="stats">
     <div class="stat-card"><span class="num">3套</span><span class="label">话术方案</span></div>
     <div class="stat-card"><span class="num">AI</span><span class="label">智能分析</span></div>
@@ -522,11 +549,27 @@
 
 <main class="main">
 
+  <!-- 步骤指示器 -->
+  <div class="step-indicator" id="stepIndicator">
+    <div class="step-dots">
+      <div class="step-dot active" data-step="1"><span>1</span></div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="2"><span>2</span></div>
+      <div class="step-line"></div>
+      <div class="step-dot" data-step="3"><span>3</span></div>
+    </div>
+    <div class="step-labels">
+      <span class="step-label active">基本信息</span>
+      <span class="step-label">你的情况</span>
+      <span class="step-label">期望薪资</span>
+    </div>
+  </div>
+
   <!-- Form -->
   <div id="formWrap">
     
     <!-- 第一步：Offer信息 -->
-    <div class="card">
+    <div class="card step-card" data-step="1">
       <div class="step-head">
         <div class="step-num" id="n1">1</div>
         <div>
@@ -582,7 +625,7 @@
     </div>
 
     <!-- 第二步：个人情况 -->
-    <div class="card">
+    <div class="card step-card" data-step="2">
       <div class="step-head">
         <div class="step-num" id="n2">2</div>
         <div>
@@ -1288,6 +1331,48 @@ async function saveHistory(data, result, aiData) {
 // Helpers
 // ================================================================
 function formatNum(n) { return '¥' + parseInt(n).toLocaleString(); }
+
+// 步骤指示器控制
+function updateStepIndicator(currentStep) {
+  const dots = document.querySelectorAll('.step-dot');
+  const lines = document.querySelectorAll('.step-line');
+  const labels = document.querySelectorAll('.step-label');
+  dots.forEach((dot, i) => {
+    const step = i + 1;
+    if (step < currentStep) {
+      dot.classList.add('done');
+      dot.classList.remove('active');
+      dot.innerHTML = '✓';
+    } else if (step === currentStep) {
+      dot.classList.add('active');
+      dot.classList.remove('done');
+      dot.innerHTML = '<span>' + step + '</span>';
+    } else {
+      dot.classList.remove('active', 'done');
+      dot.innerHTML = '<span>' + step + '</span>';
+    }
+  });
+  lines.forEach((line, i) => {
+    if (i + 1 < currentStep) line.classList.add('done');
+    else line.classList.remove('done');
+  });
+  labels.forEach((label, i) => {
+    const step = i + 1;
+    label.classList.remove('active', 'done');
+    if (step < currentStep) label.classList.add('done');
+    else if (step === currentStep) label.classList.add('active');
+  });
+}
+
+// 滚动到指定步骤
+function scrollToStep(step) {
+  const card = document.querySelector('.step-card[data-step="' + step + '"]');
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    updateStepIndicator(step);
+  }
+}
+
 function syncSalary(v) { 
   document.getElementById('salaryShow').textContent = formatNum(v); 
   document.getElementById('salaryInput').value = '';
@@ -1326,7 +1411,40 @@ function toggleConcern() { var w = document.getElementById('concernWrap'); if (w
 function toggleAdvance() { var c = document.getElementById('advanceContent'); var arrow = document.querySelector('#advanceCard [style*="cursor"] div:last-child'); if (c) { var show = c.style.display !== 'none'; c.style.display = show ? 'none' : 'block'; if (arrow) arrow.textContent = show ? '▶' : '▼'; } }
 function getVal(gid) { const sel = document.querySelectorAll('#' + gid + ' .tag.on'); return sel.length > 0 ? Array.from(sel).map(t => t.textContent) : []; }
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
-function validate() { const c = document.getElementById('company').value.trim(); const p = document.getElementById('position').value.trim(); const ci = document.getElementById('city').value; if (!c || !p || !ci) { toast('请填写公司、岗位和城市 🙏'); return false; } return true; }
+
+// 滚动监听更新步骤指示器
+let lastStep = 1;
+window.addEventListener('scroll', function() {
+  if (document.getElementById('result')?.classList.contains('open')) return;
+  const cards = document.querySelectorAll('.step-card');
+  const scrollTop = window.scrollY + 150;
+  cards.forEach((card, i) => {
+    const top = card.offsetTop;
+    const bottom = top + card.offsetHeight;
+    if (scrollTop >= top && scrollTop < bottom) {
+      const step = i + 1;
+      if (step !== lastStep) {
+        lastStep = step;
+        updateStepIndicator(step);
+      }
+    }
+  });
+});
+
+function validate() {
+  const c = document.getElementById('company');
+  const p = document.getElementById('position');
+  const ci = document.getElementById('city');
+  let valid = true;
+  // 清除之前的错误状态
+  [c, p, ci].forEach(el => el.classList.remove('error', 'valid'));
+  // 检查必填项
+  if (!c.value.trim()) { c.classList.add('error'); valid = false; } else { c.classList.add('valid'); }
+  if (!p.value.trim()) { p.classList.add('error'); valid = false; } else { p.classList.add('valid'); }
+  if (!ci.value) { ci.classList.add('error'); valid = false; } else { ci.classList.add('valid'); }
+  if (!valid) { toast('请填写必填项 🙏'); scrollToStep(1); }
+  return valid;
+}
 function collect() { const sal = document.getElementById('salaryInput').value || document.getElementById('salary').value; return { company: document.getElementById('company').value.trim(), position: document.getElementById('position').value.trim(), city: document.getElementById('city').value, edu: document.getElementById('edu').value, salary: parseInt(sal), target: parseInt(document.getElementById('target').value), structure: getVal('structure'), exp: getVal('exp')[0] || '应届生', adv: getVal('adv'), concern: getVal('concern'), stage: getVal('stage')[0] || '口头Offer', hrmood: getVal('hrmood')[0] || '正常', note: document.getElementById('note').value.trim() }; }
 
 // ================================================================
@@ -1905,6 +2023,21 @@ function render(r, aiData) {
 // ================================================================
 // Main
 // ================================================================
+
+// 按钮涟漪效果
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-submit, .copy-btn, .header-btn, .tag');
+  if (!btn) return;
+  const ripple = document.createElement('span');
+  ripple.className = 'ripple';
+  const rect = btn.getBoundingClientRect();
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  btn.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 600);
+});
 
 async function go() {
   try {
