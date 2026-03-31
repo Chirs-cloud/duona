@@ -514,9 +514,9 @@
   <h1 class="title-gradient">你的下一句话，决定多拿几千</h1>
   <p class="hero-desc">输入 Offer，AI 分析谈判空间，生成可直接发给 HR 的话术</p>
   <div class="stats">
-    <div class="stat-card"><span class="num">89%</span><span class="label">成功率</span></div>
-    <div class="stat-card"><span class="num">+¥3.2k</span><span class="label">平均多谈到</span></div>
-    <div class="stat-card"><span class="num">3套</span><span class="label">话术模板</span></div>
+    <div class="stat-card"><span class="num">3套</span><span class="label">话术方案</span></div>
+    <div class="stat-card"><span class="num">AI</span><span class="label">智能分析</span></div>
+    <div class="stat-card"><span class="num">免费</span><span class="label">先体验</span></div>
   </div>
 </div>
 
@@ -550,7 +550,7 @@
         <div class="input-row">
           <div>
             <label class="field-label">工作城市 <span>*</span></label>
-            <select id="city"><option value="">选城市</option><option value="北京">北京</option><option value="上海">上海</option><option value="深圳">深圳</option><option value="杭州">杭州</option><option value="广州">广州</option><option value="成都">成都</option><option value="武汉">武汉</option><option value="南京">南京</option><option value="西安">西安</option><option value="其他">其他</option></select>
+            <select id="city"><option value="">选城市</option><option value="北京">北京</option><option value="上海">上海</option><option value="深圳">深圳</option><option value="杭州">杭州</option><option value="广州">广州</option><option value="成都">成都</option><option value="武汉">武汉</option><option value="南京">南京</option><option value="西安">西安</option><option value="苏州">苏州</option><option value="重庆">重庆</option><option value="天津">天津</option><option value="长沙">长沙</option><option value="郑州">郑州</option><option value="东莞">东莞</option><option value="佛山">佛山</option><option value="宁波">宁波</option><option value="青岛">青岛</option><option value="大连">大连</option><option value="厦门">厦门</option><option value="合肥">合肥</option><option value="福州">福州</option><option value="济南">济南</option><option value="沈阳">沈阳</option><option value="其他">其他</option></select>
           </div>
           <div>
             <label class="field-label">学历</label>
@@ -609,7 +609,7 @@
           <span class="tag" onclick="toggleTag(this)">面试表现好</span>
         </div>
       </div>
-      <div class="field">
+      <div class="field" id="concernWrap" style="display:none;">
         <label class="field-label">顾虑（可选）</label>
         <div class="tags" id="concern">
           <span class="tag" onclick="toggleTag(this)">跳槽频繁</span>
@@ -617,6 +617,9 @@
           <span class="tag" onclick="toggleTag(this)">经验不匹配</span>
           <span class="tag" onclick="toggleTag(this)">空窗期</span>
         </div>
+      </div>
+      <div class="field" style="text-align:center;padding:10px;">
+        <a href="javascript:toggleConcern()" style="color:var(--brand);font-size:12px;text-decoration:none;">+ 更多选项（顾虑/优势）</a>
       </div>
       <div class="field">
         <label class="field-label">期望月薪</label>
@@ -630,36 +633,39 @@
       </div>
     </div>
 
-    <!-- 第三步：谈判进展 -->
-    <div class="card">
-      <div class="step-head">
+    <!-- 第三步：谈判进展（折叠） -->
+    <div class="card" id="advanceCard">
+      <div class="step-head" style="cursor:pointer;" onclick="toggleAdvance()">
         <div class="step-num" id="n3">3</div>
         <div>
           <div class="step-title">📋 谈判进展</div>
-          <div class="step-sub">补充越细，话术越贴合</div>
+          <div class="step-sub" id="advanceHint">补充越细，话术越贴合（选填）</div>
         </div>
+        <div style="margin-left:auto;color:var(--text-3);">▼</div>
       </div>
-      <div class="field">
-        <label class="field-label">目前进展</label>
-        <div class="tags" id="stage">
-          <span class="tag" onclick="sel1(this,'stage')">口头Offer</span>
-          <span class="tag" onclick="sel1(this,'stage')">等书面Offer</span>
-          <span class="tag" onclick="sel1(this,'stage')">已收到书面</span>
-          <span class="tag" onclick="sel1(this,'stage')">背调中</span>
+      <div id="advanceContent" style="display:none;">
+        <div class="field">
+          <label class="field-label">目前进展</label>
+          <div class="tags" id="stage">
+            <span class="tag" onclick="sel1(this,'stage')">口头Offer</span>
+            <span class="tag" onclick="sel1(this,'stage')">等书面Offer</span>
+            <span class="tag" onclick="sel1(this,'stage')">已收到书面</span>
+            <span class="tag" onclick="sel1(this,'stage')">背调中</span>
+          </div>
         </div>
-      </div>
-      <div class="field">
-        <label class="field-label">HR 态度</label>
-        <div class="tags" id="hrmood">
-          <span class="tag" onclick="sel1(this,'hrmood')">很热情</span>
-          <span class="tag" onclick="sel1(this,'hrmood')">正常</span>
-          <span class="tag" onclick="sel1(this,'hrmood')">不温不火</span>
-          <span class="tag" onclick="sel1(this,'hrmood')">说不能改</span>
+        <div class="field">
+          <label class="field-label">HR 态度</label>
+          <div class="tags" id="hrmood">
+            <span class="tag" onclick="sel1(this,'hrmood')">很热情</span>
+            <span class="tag" onclick="sel1(this,'hrmood')">正常</span>
+            <span class="tag" onclick="sel1(this,'hrmood')">不温不火</span>
+            <span class="tag" onclick="sel1(this,'hrmood')">说不能改</span>
+          </div>
         </div>
-      </div>
-      <div class="field">
-        <label class="field-label">补充说明</label>
-        <textarea id="note" placeholder="比如：我有另一家 18k 的 Offer 但更想去这家..."></textarea>
+        <div class="field">
+          <label class="field-label">补充说明</label>
+          <textarea id="note" placeholder="比如：我有另一家 18k 的 Offer 但更想去这家..."></textarea>
+        </div>
       </div>
     </div>
     
@@ -786,6 +792,7 @@
 
     <div class="action-row">
       <button class="btn-reset" onclick="reset()">🔄 重新分析</button>
+      <button class="btn-share" onclick="shareReport()">🔗 分享给好友</button>
       <button class="btn-share" onclick="copyAll()">📋 复制全部报告</button>
     </div>
 
@@ -1316,6 +1323,8 @@ function syncFromTargetInput(v) {
 }
 function toggleTag(el) { el.classList.toggle('on'); }
 function sel1(el, gid) { document.querySelectorAll('#' + gid + ' .tag').forEach(t => t.classList.remove('on')); el.classList.add('on'); }
+function toggleConcern() { var w = document.getElementById('concernWrap'); if (w) { var show = w.style.display !== 'none'; w.style.display = show ? 'none' : 'block'; } }
+function toggleAdvance() { var c = document.getElementById('advanceContent'); var arrow = document.querySelector('#advanceCard [style*="cursor"] div:last-child'); if (c) { var show = c.style.display !== 'none'; c.style.display = show ? 'none' : 'block'; if (arrow) arrow.textContent = show ? '▶' : '▼'; } }
 function getVal(gid) { const sel = document.querySelectorAll('#' + gid + ' .tag.on'); return sel.length > 0 ? Array.from(sel).map(t => t.textContent) : []; }
 function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
 function validate() { const c = document.getElementById('company').value.trim(); const p = document.getElementById('position').value.trim(); const ci = document.getElementById('city').value; if (!c || !p || !ci) { toast('请填写公司、岗位和城市 🙏'); return false; } return true; }
@@ -2034,6 +2043,15 @@ function copyScript(btn, text) {
     setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '📋 复制话术'; }, 1800);
   });
 }
+function shareReport() {
+  var title = '多拿点 - 薪资谈判 AI 助手';
+  var text = '刚用这个工具分析了 Offer 谈判空间，生成了超实用的薪资谈判话术！需要的朋友可以试试👇';
+  if (navigator.share) {
+    navigator.share({ title: title, text: text, url: 'https://duoduo-dian.vercel.app' }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(text + ' https://duoduo-dian.vercel.app').then(() => toast('链接已复制，快去分享给好友吧！')).catch(() => {});
+  }
+}
 
 // ── 报告计数器（新IP访问自动累加）─────────
 (function initReportCounter() {
@@ -2094,5 +2112,9 @@ document.querySelector('#stage .tag')?.click();
 document.querySelector('#hrmood .tag:nth-child(2)')?.click();
 initUser();
 </script>
+<footer style="text-align:center;padding:24px 16px 40px;font-size:12px;color:var(--text-3);max-width:480px;margin:0 auto;">
+  <p style="margin-bottom:8px;">AI 内容仅供参考，谈判结果因人而异</p>
+  <p>© 2026 多拿点 · <a href="javascript:void(0)" onclick="alert('我们重视您的隐私：\n• 仅收集登录所需手机号\n• 分析报告仅您本人可查看\n• 数据仅用于服务优化')" style="color:var(--brand);text-decoration:none;">隐私说明</a></p>
+</footer>
 </body>
 </html>
