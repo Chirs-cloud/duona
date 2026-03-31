@@ -861,7 +861,7 @@
     <!-- 用户卡片 -->
     <div class="profile-user-card">
       <div class="profile-phone" id="profilePhone">138****8888</div>
-      <div class="profile-badge" id="profileBadge">免费用户 · 每月2次</div>
+      <div class="profile-badge" id="profileBadge">免费用户 · 仅1次</div>
     </div>
 
     <!-- 付费标识（已付费用户显示） -->
@@ -946,7 +946,7 @@ const CONFIG = {
 // ================================================================
 // 用户体系（Supabase 后端 + localStorage 缓存）
 // ================================================================
-const FREE_LIMIT = 2;
+const FREE_LIMIT = 1;
 let currentUser = null;
 let smsCountdown = 0;
 let smsTimer = null;
@@ -1102,7 +1102,7 @@ async function doLogin() {
     if (loginModal) { loginModal.classList.remove('show'); loginModal.style.display = 'none'; }
     const profile = document.getElementById('profile');
     if (profile) profile.classList.remove('open');
-    toast(isNew ? `🎉 注册成功！每月免费分析 ${FREE_LIMIT} 次` : `欢迎回来！`);
+    toast(isNew ? `🎉 注册成功！免费分析 ${FREE_LIMIT} 次` : `欢迎回来！`);
     // 刷新个人中心数据
     updateProfileUI();
   } catch(e) {
@@ -1188,7 +1188,7 @@ async function updateProfileUI() {
   } else {
     const used = u.usage_count || 0;
     const left = Math.max(0, FREE_LIMIT - used);
-    if (badge) { badge.textContent = `免费用户 · 本月剩余 ${left} 次`; badge.className = 'profile-badge'; }
+    if (badge) { badge.textContent = `免费用户 · 剩余 ${left} 次`; badge.className = 'profile-badge'; }
     if (paidBadge) paidBadge.style.display = 'none';
     if (upgradeCard) upgradeCard.style.display = 'block';
   }
@@ -1271,7 +1271,7 @@ async function saveHistory(data, result, aiData) {
     });
     const resp = await res.json();
     if (resp.need_upgrade) {
-      toast('本月免费次数已用完，请升级完整版');
+      toast('免费次数已用完，请升级完整版');
       return;
     }
     if (resp.success) {
@@ -1912,7 +1912,7 @@ async function go() {
     const user = getCurrentUser();
     if (!user) { showDemoGate(); return; }
     if (!user.is_paid && getUsageCount() >= FREE_LIMIT) {
-      toast('本月 ' + FREE_LIMIT + ' 次免费机会已用完');
+      toast(FREE_LIMIT + ' 次免费机会已用完');
       showUpgradeModal(); return;
     }
     const data = collect();
