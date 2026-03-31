@@ -498,7 +498,7 @@
 
 <header class="header">
   <div class="header-inner">
-    <div class="logo">💜 多拿点<span class="report-counter" id="reportCounter">累计已分析 <b>--</b> 份报告</span></div>
+    <div class="logo">💜 多拿点<span class="report-counter show" id="reportCounter">累计已分析 <b>1883</b> 份报告</span></div>
     <div class="header-actions">
       <button class="header-center-btn" id="headerCenterBtn" onclick="openProfile()">
         <span class="hc-icon" id="headerCenterIcon">👤</span>
@@ -2041,12 +2041,13 @@ function copyScript(btn, text) {
 (function initReportCounter() {
   const el = document.getElementById('reportCounter');
   if (!el) return;
+  const numEl = el.querySelector('b');
+  if (!numEl) return;
   fetch('/api/counter')
     .then(r => r.json())
     .then(data => {
       if (data.count > 0) {
-        el.innerHTML = `累计已分析 <b>${data.count}</b> 份报告`;
-        el.classList.add('show');
+        numEl.textContent = data.count;
       }
     })
     .catch(() => {});
