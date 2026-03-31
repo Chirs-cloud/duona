@@ -80,10 +80,27 @@
     .tag:active { transform: scale(0.96); }
     .tag.on { border-color: var(--brand); color: white; background: var(--brand); font-weight: 600; box-shadow: 0 4px 12px rgba(139,92,246,0.35); transform: scale(1.02); }
     .tag.on:hover { transform: scale(1.04); }
-    /* 步骤浮条 */
-    .step-bar { display: flex; align-items: center; gap: 8px; background: var(--card); border: 1.5px solid var(--border); border-radius: 24px; padding: 8px 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(139,92,246,0.06); }
-    .step-bar-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--brand); flex-shrink: 0; box-shadow: 0 0 0 3px rgba(139,92,246,0.15); transition: background 0.3s; }
-    .step-bar-text { font-size: 13px; font-weight: 600; color: var(--text-2); }
+    /* 步骤 Tab 指示器 */
+    .step-tabs { display: flex; gap: 6px; margin-bottom: 16px; justify-content: center; }
+    .step-tab { flex: 1; max-width: 120px; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; border-radius: 16px; background: var(--card); border: 1.5px solid var(--border); cursor: pointer; transition: all 0.25s; }
+    .step-tab span { font-size: 13px; font-weight: 700; color: var(--text-3); transition: color 0.25s; }
+    .step-tab .tab-label { font-size: 12px; font-weight: 500; color: var(--text-3); transition: color 0.25s; }
+    .step-tab.active { background: var(--brand); border-color: var(--brand); box-shadow: 0 4px 12px rgba(139,92,246,0.3); transform: translateY(-1px); }
+    .step-tab.active span { color: white; }
+    .step-tab.active .tab-label { color: rgba(255,255,255,0.85); }
+    .step-tab.done { background: var(--green-light); border-color: var(--green); }
+    .step-tab.done span { color: var(--green); }
+    .step-tab.done .tab-label { color: var(--green); }
+    /* 步骤卡片切换 */
+    .step-card { display: none; animation: fadeSlideIn 0.3s ease; }
+    .step-card.current { display: block; }
+    @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    /* 底部导航按钮 */
+    .step-nav { display: flex; gap: 10px; padding: 16px 0 4px; }
+    .step-nav .btn-prev { flex: 1; padding: 13px; border-radius: 14px; font-size: 14px; font-weight: 700; cursor: pointer; border: 1.5px solid var(--border); background: var(--card); color: var(--text-2); transition: all 0.2s; }
+    .step-nav .btn-prev:hover { border-color: var(--brand); color: var(--brand); background: var(--brand-light); }
+    .step-nav .btn-next { flex: 2; padding: 13px; border-radius: 14px; font-size: 14px; font-weight: 700; cursor: pointer; border: none; background: var(--brand); color: white; transition: all 0.2s; box-shadow: 0 4px 12px rgba(139,92,246,0.3); }
+    .step-nav .btn-next:active { transform: scale(0.97); }
     .auth-card { max-width: 480px; margin: 0 auto; padding: 0 16px 16px; }
     .auth-inner { background: var(--card); border-radius: var(--radius); border: 1.5px dashed var(--border); padding: 16px; }
     .auth-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
@@ -541,17 +558,18 @@
 
 <main class="main">
 
-  <!-- 步骤浮条 -->
-  <div class="step-bar" id="stepBar">
-    <span class="step-bar-dot"></span>
-    <span class="step-bar-text" id="stepBarText">步骤 1/3 · 基本信息</span>
+  <!-- 步骤 Tab 指示器 -->
+  <div class="step-tabs" id="stepTabs">
+    <div class="step-tab active" onclick="goToStep(1)"><span>1</span><span class="tab-label">基本信息</span></div>
+    <div class="step-tab" onclick="goToStep(2)"><span>2</span><span class="tab-label">你的情况</span></div>
+    <div class="step-tab" onclick="goToStep(3)"><span>3</span><span class="tab-label">补充说明</span></div>
   </div>
 
   <!-- Form -->
   <div id="formWrap">
     
     <!-- 第一步：Offer信息 -->
-    <div class="card step-card" data-step="1">
+    <div class="card step-card current" data-step="1">
       <div class="step-head">
         <div class="step-num" id="n1">1</div>
         <div>
@@ -603,6 +621,9 @@
           <span class="tag" onclick="toggleTag(this)">有年终奖</span>
           <span class="tag" onclick="toggleTag(this)">期权/股票</span>
         </div>
+      </div>
+      <div class="step-nav">
+        <button class="btn-next" onclick="goToStep(2)">下一步 →</button>
       </div>
     </div>
 
@@ -656,11 +677,15 @@
           💡 直接输入 <input type="number" id="targetInput" placeholder="金额" style="width:90px;padding:3px 8px;font-size:12px;border:1px solid var(--brand);border-radius:6px;background:transparent;margin:0 4px;color:var(--brand);" oninput="syncFromTargetInput(this.value)">
         </div>
       </div>
+      <div class="step-nav">
+        <button class="btn-prev" onclick="goToStep(1)">← 上一步</button>
+        <button class="btn-next" onclick="goToStep(3)">下一步 →</button>
+      </div>
     </div>
 
-    <!-- 第三步：谈判进展（折叠） -->
+    <!-- 第三步：谈判进展 -->
     <div class="card step-card" data-step="3" id="advanceCard">
-      <div class="step-head" style="cursor:pointer;" onclick="toggleAdvance()">
+      <div class="step-head">
         <div class="step-num" id="n3">3</div>
         <div>
           <div class="step-title">📋 谈判进展</div>
@@ -668,7 +693,7 @@
         </div>
         <div style="margin-left:auto;color:var(--text-3);">▼</div>
       </div>
-      <div id="advanceContent" style="display:none;">
+      <div id="advanceContent">
         <div class="field">
           <label class="field-label">目前进展</label>
           <div class="tags" id="stage">
@@ -692,12 +717,12 @@
           <textarea id="note" placeholder="比如：我有另一家 18k 的 Offer 但更想去这家..."></textarea>
         </div>
       </div>
+      <div class="step-nav">
+        <button class="btn-prev" onclick="goToStep(2)">← 上一步</button>
+        <button class="btn-next" onclick="go()">⚡ 开始分析</button>
+      </div>
     </div>
     
-  </div>
-
-  <div class="btn-box">
-    <button class="btn-submit" id="submitBtn" onclick="go()">⚡ 试试多拿点，生成谈判方案</button>
   </div>
 
   <div id="loading">
@@ -1314,25 +1339,31 @@ async function saveHistory(data, result, aiData) {
 // ================================================================
 function formatNum(n) { return '¥' + parseInt(n).toLocaleString(); }
 
-// 步骤浮条：滚动时更新
-const stepLabels = { 1: '基本信息', 2: '你的情况', 3: '补充说明' };
-let lastStep = 0;
-function syncStepBar(step) {
-  if (step === lastStep) return;
-  lastStep = step;
-  const barText = document.getElementById('stepBarText');
-  if (barText) barText.textContent = '步骤 ' + step + '/3 · ' + (stepLabels[step] || '');
-}
-window.addEventListener('scroll', function() {
-  if (document.getElementById('result')?.classList.contains('open')) return;
-  const cards = document.querySelectorAll('.step-card');
-  let activeStep = 1;
-  cards.forEach((card, i) => {
-    const rect = card.getBoundingClientRect();
-    if (rect.top <= 180) activeStep = i + 1;
+// 步骤卡片切换
+let currentStep = 1;
+function goToStep(step) {
+  currentStep = step;
+  // 切换 Tab 状态
+  document.querySelectorAll('.step-tab').forEach((tab, i) => {
+    const s = i + 1;
+    tab.classList.remove('active', 'done');
+    if (s < step) tab.classList.add('done');
+    else if (s === step) tab.classList.add('active');
   });
-  syncStepBar(activeStep);
-}, { passive: true });
+  // 切换卡片
+  document.querySelectorAll('.step-card').forEach(card => {
+    const s = parseInt(card.dataset.step);
+    card.classList.remove('current');
+    if (s === step) {
+      card.classList.add('current');
+      card.style.animation = 'none';
+      card.offsetHeight; // 触发重排，重启动画
+      card.style.animation = '';
+    }
+  });
+  // 滚动到顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 
 function syncSalary(v) { 
   document.getElementById('salaryShow').textContent = formatNum(v); 
@@ -1386,7 +1417,7 @@ function validate() {
   if (!c.value.trim()) { c.classList.add('error'); valid = false; } else { c.classList.add('valid'); }
   if (!p.value.trim()) { p.classList.add('error'); valid = false; } else { p.classList.add('valid'); }
   if (!ci.value) { ci.classList.add('error'); valid = false; } else { ci.classList.add('valid'); }
-  if (!valid) { toast('请填写必填项 🙏'); syncStepBar(1); document.querySelector('.step-card[data-step="1"]')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  if (!valid) { toast('请填写必填项 🙏'); goToStep(1); }
   return valid;
 }
 function collect() { const sal = document.getElementById('salaryInput').value || document.getElementById('salary').value; return { company: document.getElementById('company').value.trim(), position: document.getElementById('position').value.trim(), city: document.getElementById('city').value, edu: document.getElementById('edu').value, salary: parseInt(sal), target: parseInt(document.getElementById('target').value), structure: getVal('structure'), exp: getVal('exp')[0] || '应届生', adv: getVal('adv'), concern: getVal('concern'), stage: getVal('stage')[0] || '口头Offer', hrmood: getVal('hrmood')[0] || '正常', note: document.getElementById('note').value.trim() }; }
